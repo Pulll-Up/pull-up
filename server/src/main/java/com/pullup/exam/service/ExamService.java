@@ -21,10 +21,10 @@ public class ExamService {
     private final ExamRepository examRepository;
     private final ProblemOptionRepository problemOptionRepository;
 
-    public List<ExamDetailsDto> getExamDetails(Long id) {
+    public GetExamDetailsResponse getExamDetails(Long id) {
         List<ExamDetailsWithoutOptionsDto> examDetailsWithoutOptionsDtos = examRepository.findExamDetailsWithoutOptionsById(id);
 
-        if (examDetailsWithoutOptionsDtos == null) {
+        if (examDetailsWithoutOptionsDtos == null || examDetailsWithoutOptionsDtos.isEmpty()) {
             throw new NotFoundException(ErrorMessage.ERR_EXAM_NOT_FOUND);
         }
 
@@ -39,7 +39,7 @@ public class ExamService {
                     new ExamDetailsDto(dto.problemId(), dto.problem(), contents, dto.subject().name()));
         }
 
-        return examDetailsDtos;
+        return new GetExamDetailsResponse(examDetailsDtos);
 
     }
 

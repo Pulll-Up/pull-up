@@ -24,10 +24,10 @@ public class ExamController {
     @GetMapping("/{examId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<GetExamDetailsResponse> getExamDetails(@PathVariable("examId") Long id) {
-        List<ExamDetailsDto> examDetailsDtos = examService.getExamDetails(id);
+        GetExamDetailsResponse getExamDetailsResponse = examService.getExamDetails(id);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new GetExamDetailsResponse(examDetailsDtos));
+                .body(getExamDetailsResponse);
     }
 
 }
