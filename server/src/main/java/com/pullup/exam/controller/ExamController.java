@@ -1,5 +1,6 @@
 package com.pullup.exam.controller;
 
+import com.pullup.exam.dto.ExamDetailsDto;
 import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
 import com.pullup.exam.dto.GetExamDetailsResponse;
 import com.pullup.exam.service.ExamService;
@@ -22,11 +23,11 @@ public class ExamController {
 
     @GetMapping("/{examId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<GetExamDetailsResponse>> getExamDetails(@PathVariable("examId") Long id) {
-        List<GetExamDetailsResponse> getExamDetailsResponses = examService.getExamDetails(id);
+    public ResponseEntity<GetExamDetailsResponse> getExamDetails(@PathVariable("examId") Long id) {
+        List<ExamDetailsDto> examDetailsDtos = examService.getExamDetails(id);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(getExamDetailsResponses);
+                .body(new GetExamDetailsResponse(examDetailsDtos));
     }
 
 }
