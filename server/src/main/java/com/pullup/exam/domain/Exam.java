@@ -4,6 +4,8 @@ import com.pullup.common.auditing.BaseTimeEntity;
 import com.pullup.member.domain.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,9 +31,13 @@ public class Exam extends BaseTimeEntity {
     private Integer score;
 
     @Column(nullable = false)
-    private String difficultyLevel;
+    @Enumerated(EnumType.STRING)
+    private DifficultyLevel difficultyLevel;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @Column(nullable = false)
+    private Integer round;
 }

@@ -3,6 +3,8 @@ package com.pullup.problem.domain;
 import com.pullup.common.auditing.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,4 +31,13 @@ public class Problem extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Integer correctRate;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Subject subject;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ProblemType problemType;
+
 }
