@@ -25,7 +25,6 @@ public class ExamController {
     private static final Long TEMP_MEMBER_ID = 1L;
 
     @GetMapping("/{examId}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<GetExamDetailsResponse> getExamDetails(@PathVariable("examId") Long id) {
         GetExamDetailsResponse getExamDetailsResponse = examService.getExamDetails(id);
 
@@ -34,7 +33,6 @@ public class ExamController {
     }
 
     @PostMapping("/me")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Long> postExam(@Valid @RequestBody PostExamRequest postExamRequest) {
         Long memberId = TEMP_MEMBER_ID;
         Long examId = examService.postExam(postExamRequest, memberId);
@@ -44,7 +42,6 @@ public class ExamController {
     }
 
     @PostMapping("/{examId}")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> postExamWithAnswer(@PathVariable("examId") Long id, @RequestBody PostExamWithAnswerReqeust postExamWithAnswerReqeust) {
         examService.postExamWithAnswer(id, postExamWithAnswerReqeust);
 
