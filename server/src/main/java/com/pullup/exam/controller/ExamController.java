@@ -1,5 +1,6 @@
 package com.pullup.exam.controller;
 
+import com.pullup.exam.dto.PostExamWithAnswerReqeust;
 import com.pullup.exam.dto.GetExamDetailsResponse;
 import com.pullup.exam.dto.PostExamRequest;
 import com.pullup.exam.service.ExamService;
@@ -24,7 +25,6 @@ public class ExamController {
     private static final Long TEMP_MEMBER_ID = 1L;
 
     @GetMapping("/{examId}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<GetExamDetailsResponse> getExamDetails(@PathVariable("examId") Long id) {
         GetExamDetailsResponse getExamDetailsResponse = examService.getExamDetails(id);
 
@@ -33,7 +33,6 @@ public class ExamController {
     }
 
     @PostMapping("/me")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Long> postExam(@Valid @RequestBody PostExamRequest postExamRequest) {
         Long memberId = TEMP_MEMBER_ID;
         Long examId = examService.postExam(postExamRequest, memberId);
@@ -42,4 +41,11 @@ public class ExamController {
                 .body(examId);
     }
 
+    @PostMapping("/{examId}")
+    public ResponseEntity<Void> postExamWithAnswer(@PathVariable("examId") Long id, @RequestBody PostExamWithAnswerReqeust postExamWithAnswerReqeust) {
+        examService.postExamWithAnswer(id, postExamWithAnswerReqeust);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .build();
+    }
 }

@@ -8,8 +8,10 @@
     import com.pullup.exam.domain.ExamProblem;
     import com.pullup.exam.dto.ExamDetailsDto;
     import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
+    import com.pullup.exam.dto.PostExamWithAnswerReqeust;
     import com.pullup.exam.dto.GetExamDetailsResponse;
     import com.pullup.exam.dto.PostExamRequest;
+    import com.pullup.exam.dto.ProblemAndChosenAnswer;
     import com.pullup.exam.repository.ExamProblemRepository;
     import com.pullup.exam.repository.ExamRepository;
     import com.pullup.member.domain.Member;
@@ -22,6 +24,7 @@
     import com.pullup.problem.repository.ProblemRepository;
     import java.util.ArrayList;
     import java.util.List;
+    import java.util.Map;
     import java.util.stream.Collectors;
     import lombok.RequiredArgsConstructor;
     import org.springframework.data.domain.PageRequest;
@@ -119,6 +122,51 @@
             return savedExam.getId();
         }
 
+        @Transactional
+        public void postExamWithAnswer(Long examId, PostExamWithAnswerReqeust request) {
+            // 시험 존재 여부 확인
+            Exam exam = findExamById(examId);
+            // 시험 문제 mapping
+            Map<Long, ExamProblem> examProblemMap = getExamProblemMap(examId);
+
+            // 각 답안 처리
+            for (ProblemAndChosenAnswer answer : request.problemAndChosenAnswers()) {
+                ExamProblem examProblem = examProblemMap.get(answer.problemId());
+                if (examProblem == null) {
+                    throw new NotFoundException(ErrorMessage.ERR_EXAM_PROBLEM_NOT_FOUND);
+                }
+
+                updateExamProblemWithAnswer(
+                        examProblem,
+                        answer.chosenAnswer()
+                );
+            }
+
+            // 시험 전체 점수 계산 및 업데이트
+            updateExamScore(exam, new ArrayList<>(examProblemMap.values()));
+        }
+
+        private void updateExamProblemWithAnswer(
+                ExamProblem examProblem,
+                String chosenAnswer
+        ) {
+            examProblem.updateCheckedAnswerAndAnswerStauts(chosenAnswer);
+        }
+
+        private void updateExamScore(Exam exam, List<ExamProblem> examProblems) {
+            long correctCount = examProblems.stream()
+                    .filter(ExamProblem::getAnswerStatus)
+                    .count();
+
+            int totalScore = calculateScore(correctCount, examProblems.size());
+            exam.updateScore(totalScore);
+        }
+
+        private int calculateScore(long correctCount, int totalProblems) {
+            return (int) ((correctCount * 100.0) / totalProblems);
+        }
+
+
         private CorrectRateRange getDifficultyRange(DifficultyLevel difficultyLevel) {
             return switch (difficultyLevel) {
                 case HARD -> new CorrectRateRange(0, 29);
@@ -150,5 +198,21 @@
                 }
             }
         }
+
+        private Map<Long, ExamProblem> getExamProblemMap(Long examId) {
+            List<ExamProblem> examProblems = examProblemRepository.findAllByExamId(examId);
+            return examProblems.stream()
+                    .collect(Collectors.toMap(
+                            ep -> ep.getProblem().getId(),
+                            ep -> ep
+                    ));
+        }
+
+        private Exam findExamById(Long examId) {
+            return examRepository.findById(examId)
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_EXAM_NOT_FOUND));
+        }
+
+
 
     }
