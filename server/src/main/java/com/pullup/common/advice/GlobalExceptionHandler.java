@@ -24,7 +24,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(PullUpException.class)
     public ResponseEntity<FailResponse> handleGlobalException(PullUpException exception) {
-        log.warn("[PullUpException] {}: {}", exception.getClass().getName(), exception.getErrorMessage().getMessage());
+        log.warn("[PullUpException] {}: {}", exception.getClass().getName(), exception.getErrorMessage());
 
         return ResponseEntity.status(exception.getStatus())
                 .body(FailResponse.fail(exception.getStatus().value(), exception.getErrorMessage().getMessage()));
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         BindingResult bindingResult = ex.getBindingResult();
         List<ValidationError> validationErrors = bindingResult.getFieldErrors()
                 .stream()
-                .map(error -> ValidationError.of(error))
+                .map(ValidationError::of)
                 .toList();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
