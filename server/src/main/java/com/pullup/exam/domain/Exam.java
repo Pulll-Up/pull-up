@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,4 +41,31 @@ public class Exam extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Integer round;
+
+    // 정적 팩토리 메서드 사용
+    private Exam(Integer score, DifficultyLevel difficultyLevel, Member member, Integer round) {
+        validateScore(score);
+        validateRound(round);
+
+        this.score = score;
+        this.difficultyLevel = difficultyLevel;
+        this.member = member;
+        this.round = round;
+    }
+
+    public static Exam create(Integer score, DifficultyLevel difficultyLevel, Member member, Integer round) {
+        return new Exam(score, difficultyLevel, member, round);
+    }
+
+    private void validateScore(Integer score) {
+        if (score < 0 || score > 100) {
+            throw new IllegalArgumentException("시험 점수는 0에서 100 사이여야 합니다.");
+        }
+    }
+
+    private void validateRound(Integer round) {
+        if (round < 1) {
+            throw new IllegalArgumentException("회차는 1 이상이어야 합니다.");
+        }
+    }
 }

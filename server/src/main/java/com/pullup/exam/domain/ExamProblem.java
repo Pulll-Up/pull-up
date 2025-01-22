@@ -38,4 +38,19 @@ public class ExamProblem extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
+
+    private ExamProblem(Exam exam, Problem problem) {
+        this.exam = exam;
+        this.problem = problem;
+        this.memberCheckedAnswer = "";  // 초기에는 빈 값
+        this.answerStatus = false;      // 초기에는 미체크 상태
+    }
+
+    public static ExamProblem create(Exam exam, Problem problem) {
+        return new ExamProblem(exam, problem);
+    }
+
+
+
+
 }

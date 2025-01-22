@@ -15,11 +15,13 @@ public interface ProblemRepository extends CrudRepository<Problem, Long> {
     @Query("SELECT p "
             + "FROM Problem p "
             + "WHERE p.subject = :subject "
-            + "AND p.difficultyLevel = :difficultyLevel "
+            + "AND p.correctRate >= :lowCorrectRate "
+            + "AND p.correctRate <= :highCorrectRate "
             + "ORDER BY FUNCTION('RAND')")
-    List<Problem> findProblemsBySubjectAndDifficultyLevel(
+    List<Problem> findTopNBySubjectAndCorrectRateOrderByRandom(
             @Param("subject") String subject,
-            @Param("difficultyLevel") String difficultyLevel,
+            @Param("highCorrectRate") Integer highCorrectRate,
+            @Param("lowCorrectRate") Integer lowCorrectRate,
             Pageable pageable
     );
 }
