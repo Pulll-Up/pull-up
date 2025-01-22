@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -69,5 +70,9 @@ public class Exam extends BaseTimeEntity {
         if (round < 1) {
             throw new IllegalArgumentException(ErrorMessage.ERR_EXAM_ROUND_INVALID);
         }
+    }
+
+    public void updateScore(Integer score) {
+        this.score = score;
     }
 }

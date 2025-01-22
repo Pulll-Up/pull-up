@@ -50,5 +50,12 @@ public class ExamProblem extends BaseTimeEntity {
         return new ExamProblem(exam, problem);
     }
 
+    public void updateCheckedAnswerAndAnswerStauts(String checkedAnswer) {
+        this.memberCheckedAnswer = checkedAnswer;
+        this.answerStatus = this.problem.getAnswer().equals(checkedAnswer);
+    }
+
+
+
 
 }
