@@ -1,6 +1,7 @@
 package com.pullup.exam.service;
 
 import com.pullup.common.exception.ErrorMessage;
+import com.pullup.common.exception.InternalServerException;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.exam.domain.DifficultyLevel;
 import com.pullup.exam.domain.Exam;
@@ -15,6 +16,7 @@ import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Problem;
 import com.pullup.problem.domain.ProblemOption;
+import com.pullup.problem.domain.Subject;
 import com.pullup.problem.dto.CorrectRateRange;
 import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
@@ -24,10 +26,13 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class ExamService {
+
+    private static final int PROBLEM_COUNT = 5;
 
     private final ExamRepository examRepository;
     private final ProblemOptionRepository problemOptionRepository;
@@ -57,22 +62,42 @@ public class ExamService {
 
     }
 
+    @Transactional
     public Long postExam(PostExamRequest postExamRequest, Long memberId) {
         List<String> subjects = postExamRequest.subjects();
+        // 과목 리스트를 Enum으로 변환
+        List<Subject> enumSubjects = subjects.stream()
+                .map(subject -> Subject.valueOf(subject.toUpperCase()))
+                .collect(Collectors.toList());
         // Enum 변환 수정
         DifficultyLevel difficultyLevel = DifficultyLevel.valueOf(postExamRequest.difficultyLevel().toUpperCase());
         List<Problem> selectedProblems = new ArrayList<>();
 
         // 과목별 문제 수 계산
-        int baseCount = 20 / subjects.size();
-        int remainCount = 20 % subjects.size();
+        int baseCount = PROBLEM_COUNT / subjects.size();
+        int remainCount = PROBLEM_COUNT % subjects.size();
 
         // 난이도에 따른 정답률 범위 설정
         CorrectRateRange correctRateRange = getDifficultyRange(difficultyLevel);
 
+        // 각 과목별로 문제 수 충분한지 먼저 확인
+        for (Subject subject : enumSubjects) {
+            long problemCount = problemRepository.countBySubjectAndCorrectRateBetween(
+                    subject,
+                    correctRateRange.low(),
+                    correctRateRange.high()
+            );
+
+            if (problemCount < PROBLEM_COUNT) {
+                throw new InternalServerException(
+                        ErrorMessage.ERR_INSUFFICIENT_PROBLEMS
+                );
+            }
+        }
+
         // 각 과목별로 문제 선택
-        for (int i = 0; i < subjects.size(); i++) {
-            String subject = subjects.get(i);
+        for (int i = 0; i < enumSubjects.size(); i++) {
+            Subject subject = enumSubjects.get(i);
             int problemCount = baseCount + (i < remainCount ? 1 : 0);
 
             List<Problem> problems = problemRepository.findTopNBySubjectAndCorrectRateOrderByRandom(

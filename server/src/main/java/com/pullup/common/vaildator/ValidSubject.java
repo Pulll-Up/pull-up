@@ -11,7 +11,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = SubjectValidator.class)
 public @interface ValidSubject {
-    String message() default "Invalid subject";
+    String message() default "과목은 COMPUTER_ARCHITECTURE, "
+            + "OPERATING_SYSTEM, "
+            + "NETWORK, "
+            + "DATABASE, "
+            + "ALGORITHM, "
+            + "DATA_STRUCTURE "
+            + "중에서 골라야 합니다";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

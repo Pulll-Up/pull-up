@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = DifficultyLevelValidator.class)
 public @interface ValidDifficultyLevel {
-    String message() default "Invalid difficulty level";
+    String message() default "난이도는 HARD, MEDIUM, EASY 중 한가지를 골라야 합니다";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
