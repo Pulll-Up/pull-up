@@ -1,6 +1,8 @@
 package com.pullup.exam.domain;
 
 import com.pullup.common.auditing.BaseTimeEntity;
+import com.pullup.common.exception.ErrorMessage;
+import com.pullup.common.exception.IllegalArgumentException;
 import com.pullup.member.domain.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -59,13 +61,13 @@ public class Exam extends BaseTimeEntity {
 
     private void validateScore(Integer score) {
         if (score < 0 || score > 100) {
-            throw new IllegalArgumentException("시험 점수는 0에서 100 사이여야 합니다.");
+            throw new IllegalArgumentException(ErrorMessage.ERR_EXAM_SCORE_INVALID);
         }
     }
 
     private void validateRound(Integer round) {
         if (round < 1) {
-            throw new IllegalArgumentException("회차는 1 이상이어야 합니다.");
+            throw new IllegalArgumentException(ErrorMessage.ERR_EXAM_ROUND_INVALID);
         }
     }
 }

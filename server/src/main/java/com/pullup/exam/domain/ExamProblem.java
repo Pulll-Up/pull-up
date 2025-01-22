@@ -51,6 +51,4 @@ public class ExamProblem extends BaseTimeEntity {
     }
 
 
-
-
 }
