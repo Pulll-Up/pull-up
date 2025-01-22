@@ -19,4 +19,6 @@ public interface ExamRepository extends CrudRepository<Exam, Long> {
             "JOIN Problem p ON ep.problem.id = p.id " +
             "WHERE e.id = :examId")
     List<ExamDetailsWithoutOptionsDto> findExamDetailsWithoutOptionsById(@Param("examId") Long examId);
+
+    Integer countByMemberId(@Param("memberId") Long memberId);
 }

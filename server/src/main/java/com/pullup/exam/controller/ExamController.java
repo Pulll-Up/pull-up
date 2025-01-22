@@ -1,15 +1,16 @@
 package com.pullup.exam.controller;
 
-import com.pullup.exam.dto.ExamDetailsDto;
-import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
 import com.pullup.exam.dto.GetExamDetailsResponse;
+import com.pullup.exam.dto.PostExamRequest;
 import com.pullup.exam.service.ExamService;
-import java.util.List;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExamController {
 
     private final ExamService examService;
+    private static final Long TEMP_MEMBER_ID = 1L;
 
     @GetMapping("/{examId}")
     @ResponseStatus(HttpStatus.OK)
@@ -28,6 +30,16 @@ public class ExamController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getExamDetailsResponse);
+    }
+
+    @PostMapping("/me")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Long> postExam(@Valid @RequestBody PostExamRequest postExamRequest) {
+        Long memberId = TEMP_MEMBER_ID;
+        Long examId = examService.postExam(postExamRequest, memberId);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(examId);
     }
 
 }
