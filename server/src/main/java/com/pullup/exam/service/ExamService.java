@@ -8,7 +8,7 @@
     import com.pullup.exam.domain.ExamProblem;
     import com.pullup.exam.dto.ExamDetailsDto;
     import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
-    import com.pullup.exam.dto.ExamWithAnswerReqeust;
+    import com.pullup.exam.dto.PostExamWithAnswerReqeust;
     import com.pullup.exam.dto.GetExamDetailsResponse;
     import com.pullup.exam.dto.PostExamRequest;
     import com.pullup.exam.dto.ProblemAndChosenAnswer;
@@ -123,18 +123,11 @@
         }
 
         @Transactional
-        public void postExamWithAnswer(Long examId, ExamWithAnswerReqeust request) {
+        public void postExamWithAnswer(Long examId, PostExamWithAnswerReqeust request) {
             // 시험 존재 여부 확인
-            Exam exam = examRepository.findById(examId)
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_EXAM_NOT_FOUND));
-
-            // 해당 시험의 모든 문제 가져오기
-            List<ExamProblem> examProblems = examProblemRepository.findAllByExamId(examId);
-            Map<Long, ExamProblem> examProblemMap = examProblems.stream()
-                    .collect(Collectors.toMap(
-                            ep -> ep.getProblem().getId(),
-                            ep -> ep
-                    ));
+            Exam exam = findExamById(examId);
+            // 시험 문제 mapping
+            Map<Long, ExamProblem> examProblemMap = getExamProblemMap(examId);
 
             // 각 답안 처리
             for (ProblemAndChosenAnswer answer : request.problemAndChosenAnswers()) {
@@ -150,7 +143,7 @@
             }
 
             // 시험 전체 점수 계산 및 업데이트
-            updateExamScore(exam, examProblems);
+            updateExamScore(exam, new ArrayList<>(examProblemMap.values()));
         }
 
         private void updateExamProblemWithAnswer(
@@ -205,5 +198,21 @@
                 }
             }
         }
+
+        private Map<Long, ExamProblem> getExamProblemMap(Long examId) {
+            List<ExamProblem> examProblems = examProblemRepository.findAllByExamId(examId);
+            return examProblems.stream()
+                    .collect(Collectors.toMap(
+                            ep -> ep.getProblem().getId(),
+                            ep -> ep
+                    ));
+        }
+
+        private Exam findExamById(Long examId) {
+            return examRepository.findById(examId)
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_EXAM_NOT_FOUND));
+        }
+
+
 
     }
