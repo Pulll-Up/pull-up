@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,6 +36,13 @@ public class Bookmark extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
+
+    @Builder
+    public Bookmark(Problem problem, Member member, boolean isBookmarked) {
+        this.problem = problem;
+        this.member = member;
+        this.isBookmarked = isBookmarked;
+    }
 
     public void toggleBookmarked() {
         this.isBookmarked = !this.isBookmarked;
