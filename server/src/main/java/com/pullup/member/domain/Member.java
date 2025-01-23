@@ -1,6 +1,6 @@
 package com.pullup.member.domain;
 
-import com.pullup.auth.type.OAuthProvider;
+import com.pullup.auth.OAuth.domain.type.OAuthProvider;
 import com.pullup.common.auditing.BaseTimeEntity;
 import com.pullup.member.type.Role;
 import jakarta.persistence.Column;
