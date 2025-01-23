@@ -1,6 +1,7 @@
 package com.pullup.common.config;
 
 import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
+import com.pullup.common.Handler.OAuth2AuthenticationFailureHandler;
 import com.pullup.common.Handler.OAuth2AuthenticationSuccessHandler;
 import com.pullup.common.filter.JwtAuthenticationFilter;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     private static final String[] SWAGGER_URL = {
             "/swagger-resources/**",
@@ -65,7 +66,8 @@ public class SecurityConfig {
                 )
 
                 .oauth2Login((oauth2) ->oauth2
-                        .successHandler(oAuth2AuthenticationSuccessHandler))
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+                        .failureHandler(oAuth2AuthenticationFailureHandler))
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling ->
