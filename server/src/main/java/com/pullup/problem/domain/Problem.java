@@ -30,6 +30,9 @@ public class Problem extends BaseTimeEntity {
     private String answer;
 
     @Column(nullable = false)
+    private String explanation;
+
+    @Column(nullable = false)
     private Integer correctRate;
 
     @Column(nullable = false)

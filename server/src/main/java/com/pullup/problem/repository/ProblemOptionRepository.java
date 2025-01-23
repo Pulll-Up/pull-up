@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProblemOptionRepository extends CrudRepository<ProblemOption, Long> {
     List<ProblemOption> findAllByProblemId(Long problemId);
+
+    List<ProblemOption> findAllByProblemIdIn(List<Long> problemIds);
 }
