@@ -27,7 +27,6 @@ import com.pullup.problem.repository.BookmarkRepository;
 import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -167,7 +166,7 @@ public class ExamService {
         Map<Long, List<String>> problemOptionsMap = getProblemOptionsMap(problemIds);
 
         List<ExamResultDetailDto> examResultDetailDtos = examProblems.stream()
-                .map(examProblem -> createExamResultDetailDto(
+                .map(examProblem -> ExamResultDetailDto.of(
                         examProblem,
                         problemOptionsMap,
                         bookmarkStatusMap,
@@ -195,26 +194,6 @@ public class ExamService {
                 ));
     }
 
-    private ExamResultDetailDto createExamResultDetailDto(
-            ExamProblem examProblem,
-            Map<Long, List<String>> problemOptionsMap,
-            Map<Long, Boolean> bookmarkStatusMap,
-            int round
-    ) {
-        Problem problem = examProblem.getProblem();
-        return new ExamResultDetailDto(
-                problem.getId(),
-                problem.getQuestion(),
-                problemOptionsMap.getOrDefault(problem.getId(), Collections.emptyList()),
-                examProblem.getMemberCheckedAnswer(),
-                problem.getAnswer(),
-                examProblem.getAnswerStatus(),
-                bookmarkStatusMap.getOrDefault(problem.getId(), false),
-                problem.getExplanation(),
-                problem.getCorrectRate(),
-                String.format("제 %d회 모의고사", round)
-        );
-    }
 
     private void updateExamProblemWithAnswer(
             ExamProblem examProblem,
