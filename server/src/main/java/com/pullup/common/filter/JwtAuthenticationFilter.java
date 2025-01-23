@@ -1,12 +1,13 @@
 package com.pullup.common.filter;
 
-import static com.pullup.auth.jwt.exception.JwtExceptionMessage.NOT_EXISTS_JWT;
+import static com.pullup.auth.jwt.exception.JwtExceptionMessage.ERR_NOT_EXISTS_JWT;
 
 import com.pullup.auth.jwt.JwtTokenValidator;
 import com.pullup.auth.jwt.TokenType;
 import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
 import com.pullup.auth.jwt.exception.JwtAuthenticationException;
 import com.pullup.auth.jwt.util.JwtUtil;
+import com.pullup.common.util.RedisUtil;
 import com.pullup.common.util.SecurityUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final JwtTokenValidator jwtTokenValidator;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(
@@ -64,13 +66,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwtTokenValidator.validateJwtToken(refreshToken, TokenType.REFRESH_TOKEN);
 
         if (!jwtUtil.existsByRefreshToken(refreshToken)) {
-            throw new JwtAuthenticationException(NOT_EXISTS_JWT, TokenType.REFRESH_TOKEN);
+            throw new JwtAuthenticationException(ERR_NOT_EXISTS_JWT, TokenType.REFRESH_TOKEN);
         }
         jwtUtil.issueAccessTokenAndRefreshToken(jwtUtil.resolveMemberIdFromJwtToken(refreshToken), response);
     }
 
     private void handleLogout(HttpServletRequest request, HttpServletResponse response) {
         //TODO : Cookie와 Redis에서 Refresh Token 삭제
+
     }
 
 
