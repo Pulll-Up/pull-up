@@ -35,4 +35,8 @@ public class Bookmark extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
+
+    public void toggleBookmarked() {
+        this.isBookmarked = !this.isBookmarked;
+    }
 }

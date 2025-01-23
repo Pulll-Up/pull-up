@@ -1,8 +1,9 @@
 package com.pullup.exam.controller;
 
-import com.pullup.exam.dto.PostExamWithAnswerReqeust;
 import com.pullup.exam.dto.GetExamDetailsResponse;
+import com.pullup.exam.dto.GetExamResultResponse;
 import com.pullup.exam.dto.PostExamRequest;
+import com.pullup.exam.dto.PostExamWithAnswerReqeust;
 import com.pullup.exam.service.ExamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,10 +42,19 @@ public class ExamController {
     }
 
     @PostMapping("/{examId}")
-    public ResponseEntity<Void> postExamWithAnswer(@PathVariable("examId") Long id, @RequestBody PostExamWithAnswerReqeust postExamWithAnswerReqeust) {
+    public ResponseEntity<Void> postExamWithAnswer(@PathVariable("examId") Long id,
+                                                   @RequestBody PostExamWithAnswerReqeust postExamWithAnswerReqeust) {
         examService.postExamWithAnswer(id, postExamWithAnswerReqeust);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .build();
+    }
+
+    @GetMapping("/{examId}/result")
+    public ResponseEntity<GetExamResultResponse> getExamResult(@PathVariable("examId") Long id) {
+        GetExamResultResponse getExamResultResponse = examService.getExamResult(id);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getExamResultResponse);
     }
 }
