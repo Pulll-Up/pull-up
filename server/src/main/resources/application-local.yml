@@ -19,3 +19,15 @@ spring:
         show_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
         storage_engine: innodb
+
+  jwt:
+    secret: ${SECRET_KEY}
+    accessTokenExpiration: ${ACCESS_TOKEN_EXPIRATION}
+    refreshTokenExpiration: ${REFRESH_TOKEN_EXPIRATION}
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      repositories:
+        enabled: true
