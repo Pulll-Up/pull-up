@@ -2,8 +2,8 @@ package com.pullup.common.filter;
 
 import static com.pullup.auth.jwt.exception.JwtExceptionMessage.ERR_NOT_EXISTS_JWT;
 
-import com.pullup.auth.jwt.JwtTokenValidator;
-import com.pullup.auth.jwt.TokenType;
+import com.pullup.auth.jwt.domain.JwtTokenValidator;
+import com.pullup.auth.jwt.domain.TokenType;
 import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
 import com.pullup.auth.jwt.exception.JwtAuthenticationException;
 import com.pullup.auth.jwt.util.JwtUtil;

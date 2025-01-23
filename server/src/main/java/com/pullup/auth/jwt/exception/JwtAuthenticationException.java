@@ -1,6 +1,6 @@
 package com.pullup.auth.jwt.exception;
 
-import com.pullup.auth.jwt.TokenType;
+import com.pullup.auth.jwt.domain.TokenType;
 import org.springframework.security.core.AuthenticationException;
 
 public class JwtAuthenticationException extends AuthenticationException {

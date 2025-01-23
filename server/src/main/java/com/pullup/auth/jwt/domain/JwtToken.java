@@ -1,4 +1,4 @@
-package com.pullup.auth.jwt;
+package com.pullup.auth.jwt.domain;
 
 public record JwtToken(
         String accessToken,

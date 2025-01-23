@@ -1,4 +1,4 @@
-package com.pullup.auth.jwt;
+package com.pullup.auth.jwt.domain;
 
 import static com.pullup.auth.jwt.exception.JwtExceptionMessage.ERR_EMPTY_JWT;
 import static com.pullup.auth.jwt.exception.JwtExceptionMessage.ERR_EXPIRED_JWT_TOKEN;

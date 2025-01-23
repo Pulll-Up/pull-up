@@ -3,7 +3,7 @@ package com.pullup.auth.jwt.util;
 import static com.pullup.auth.jwt.config.JwtConstants.REFRESH_TOKEN_COOKIE_NAME;
 import static com.pullup.auth.jwt.config.JwtConstants.REFRESH_TOKEN_PREFIX;
 
-import com.pullup.auth.jwt.JwtToken;
+import com.pullup.auth.jwt.domain.JwtToken;
 import com.pullup.auth.jwt.config.JwtConstants;
 import com.pullup.auth.jwt.config.JwtProperties;
 import com.pullup.auth.jwt.config.JwtSecretKey;
