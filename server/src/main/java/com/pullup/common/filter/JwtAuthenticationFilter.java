@@ -1,5 +1,7 @@
 package com.pullup.common.filter;
 
+import static com.pullup.auth.jwt.exception.JwtExceptionMessage.NOT_EXISTS_JWT;
+
 import com.pullup.auth.jwt.JwtTokenValidator;
 import com.pullup.auth.jwt.TokenType;
 import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
@@ -19,8 +21,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String REISSUE_API_URL = "/v1/member/reissue";
-    private static final String LOGOUT_API_URL = "/v1/member/logout";
+    private static final String REISSUE_API_URL = "/api/v1/auth/reissue";
+    private static final String LOGOUT_API_URL = "/api/v1/auth/logout";
 
     private final JwtUtil jwtUtil;
     private final JwtTokenValidator jwtTokenValidator;
@@ -33,11 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            if(isReissueRequest(request)){
+            if (isReissueRequest(request)) {
                 handleRefreshToken(request, response);
-            } else if(isLogoutRequest(request)){
-                //handleLogout(request, response);
-            }else{
+            } else if (isLogoutRequest(request)) {
+                handleLogout(request, response);
+            } else {
                 handleAccessToken(request);
             }
         } catch (JwtAuthenticationException e) {
@@ -48,24 +50,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean isReissueRequest(HttpServletRequest request){
+    private boolean isReissueRequest(HttpServletRequest request) {
         return REISSUE_API_URL.equals(request.getRequestURI());
     }
 
-    private boolean isLogoutRequest(HttpServletRequest request){
+    private boolean isLogoutRequest(HttpServletRequest request) {
         return LOGOUT_API_URL.equals(request.getRequestURI());
     }
 
-    private void handleRefreshToken(HttpServletRequest request, HttpServletResponse response){
+    private void handleRefreshToken(HttpServletRequest request, HttpServletResponse response)
+            throws JwtAuthenticationException {
         String refreshToken = jwtUtil.resolveRefreshTokenFromCookie(request);
-        jwtTokenValidator.validateToken(refreshToken, TokenType.REFRESH_TOKEN);
-        //TODO : 엑세스 토큰을 재발급하고 쿠키에 저장
+        jwtTokenValidator.validateJwtToken(refreshToken, TokenType.REFRESH_TOKEN);
 
+        if (!jwtUtil.existsByRefreshToken(refreshToken)) {
+            throw new JwtAuthenticationException(NOT_EXISTS_JWT, TokenType.REFRESH_TOKEN);
+        }
+        jwtUtil.issueAccessTokenAndRefreshToken(jwtUtil.resolveMemberIdFromJwtToken(refreshToken), response);
     }
 
-    private void handleAccessToken(HttpServletRequest request){
+    private void handleLogout(HttpServletRequest request, HttpServletResponse response) {
+        //TODO : Cookie와 Redis에서 Refresh Token 삭제
+    }
+
+
+    private void handleAccessToken(HttpServletRequest request) {
         String accessToken = jwtUtil.resolveAccessTokenFromHeader(request);
-        jwtTokenValidator.validateToken(accessToken, TokenType.ACCESS_TOKEN);
-        SecurityUtil.createAuthentication(jwtUtil.resolveMemberIdFromAccessToken(accessToken));
+        jwtTokenValidator.validateJwtToken(accessToken, TokenType.ACCESS_TOKEN);
+        SecurityUtil.createAuthentication(jwtUtil.resolveMemberIdFromJwtToken(accessToken));
     }
 }

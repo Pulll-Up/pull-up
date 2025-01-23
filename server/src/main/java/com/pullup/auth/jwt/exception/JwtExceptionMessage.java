@@ -13,7 +13,8 @@ public enum JwtExceptionMessage {
     INVALID_JWT_TOKEN("유효하지 않은 Token 입니다."),
     EXPIRED_JWT_TOKEN("만료된 Token 입니다."),
     UNSUPPORTED_JWT_TOKEN("지원하지 않는 형식의 Token 입니다."),
-    EMPTY_JWT("토큰이 비어있습니다.");
+    EMPTY_JWT("토큰이 비어있습니다."),
 
+    NOT_EXISTS_JWT("토큰이 존재하지 않습니다.");
     private final String message;
 }

@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class JwtTokenValidator {
     private final JwtSecretKey secretKey;
 
-    public void validateToken(String token, TokenType tokenType) throws JwtAuthenticationException {
+    public void validateJwtToken(String token, TokenType tokenType) throws JwtAuthenticationException {
         try {
             Jwts.parser()
                     .verifyWith(secretKey.getSecretKey())
