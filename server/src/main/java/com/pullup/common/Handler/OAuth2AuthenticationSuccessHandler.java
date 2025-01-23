@@ -1,4 +1,4 @@
-package com.pullup.common.advice;
+package com.pullup.common.Handler;
 
 import com.pullup.auth.OAuth.domain.PrincipalDetail;
 import com.pullup.auth.jwt.domain.JwtToken;
