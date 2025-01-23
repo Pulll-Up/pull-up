@@ -43,7 +43,7 @@ public class JwtUtil {
         response.addHeader("set-cookie", refreshTokenCookie.toString());
     }
 
-    private JwtToken generateJwtTokens(Long memberId) {
+    public JwtToken generateJwtTokens(Long memberId) {
         String accessToken = generateAccessToken(memberId);
         String refreshToken = generateRefreshToken(memberId);
         storeRefreshTokenInRedis(memberId, refreshToken);

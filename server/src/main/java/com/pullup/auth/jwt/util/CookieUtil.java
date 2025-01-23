@@ -7,7 +7,7 @@ import org.springframework.http.ResponseCookie;
 
 public class CookieUtil {
 
-    public static ResponseCookie createAccessTokenCookie(String accessToken) {
+    public static ResponseCookie createAccessTokenForCookie(String accessToken) {
         return ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, accessToken)
                 .secure(true)
                 .path("/")
