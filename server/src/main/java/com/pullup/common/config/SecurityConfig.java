@@ -1,7 +1,6 @@
 package com.pullup.common.config;
 
 import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
-import com.pullup.auth.jwt.exception.JwtAuthenticationException;
 import com.pullup.common.filter.JwtAuthenticationFilter;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;

@@ -3,10 +3,10 @@ package com.pullup.auth.jwt.util;
 import static com.pullup.auth.jwt.config.JwtConstants.REFRESH_TOKEN_COOKIE_NAME;
 import static com.pullup.auth.jwt.config.JwtConstants.REFRESH_TOKEN_PREFIX;
 
-import com.pullup.auth.jwt.domain.JwtToken;
 import com.pullup.auth.jwt.config.JwtConstants;
 import com.pullup.auth.jwt.config.JwtProperties;
 import com.pullup.auth.jwt.config.JwtSecretKey;
+import com.pullup.auth.jwt.domain.JwtToken;
 import com.pullup.common.util.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -45,7 +46,7 @@ public class JwtUtil {
     private JwtToken generateJwtTokens(Long memberId) {
         String accessToken = generateAccessToken(memberId);
         String refreshToken = generateRefreshToken(memberId);
-        storeRefreshToken(memberId, refreshToken);
+        storeRefreshTokenInRedis(memberId, refreshToken);
 
         return new JwtToken(accessToken, refreshToken);
     }
@@ -98,20 +99,45 @@ public class JwtUtil {
                 .getPayload();
     }
 
+    public void clearAuthenticationAndCookies(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = resolveRefreshTokenFromCookie(request);
+        Long memberId = resolveMemberIdFromJwtToken(refreshToken);
+        redisUtil.delete(JwtConstants.REFRESH_TOKEN_PREFIX + memberId);
+
+        response.addHeader("set-cookie", CookieUtil.deleteTokenAtCookie(REFRESH_TOKEN_COOKIE_NAME).toString());
+        SecurityContextHolder.clearContext();
+    }
+
     /**
      * Redis 관련 Method
      */
 
-    private void storeRefreshToken(Long memberId, String refreshToken) {
+    private void storeRefreshTokenInRedis(Long memberId, String refreshToken) {
         String key = REFRESH_TOKEN_PREFIX + memberId;
         redisUtil.delete(key);
         redisUtil.setValueWithExpiration(key, refreshToken, jwtProperties.getRefreshTokenExpiration());
     }
 
-    public boolean existsByRefreshToken(String refreshToken) {
+    public boolean isRefreshTokenValid(String refreshToken) {
         Long memberId = resolveMemberIdFromJwtToken(refreshToken);
         String key = REFRESH_TOKEN_PREFIX + memberId;
         String storedToken = redisUtil.getValue(key);
-        return storedToken != null && storedToken.equals(refreshToken);
+
+        if (storedToken == null || !storedToken.equals(refreshToken)) {
+            handleInvalidRefreshToken(memberId, storedToken);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void handleInvalidRefreshToken(Long memberId, String storedToken) {
+        if (storedToken != null) {
+            deleteRefreshTokenInRedis(memberId);
+        }
+    }
+
+    private void deleteRefreshTokenInRedis(Long memberId) {
+        redisUtil.delete(JwtConstants.REFRESH_TOKEN_PREFIX + memberId);
     }
 }

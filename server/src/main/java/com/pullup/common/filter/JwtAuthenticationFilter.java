@@ -2,12 +2,13 @@ package com.pullup.common.filter;
 
 import static com.pullup.auth.jwt.exception.JwtExceptionMessage.ERR_NOT_EXISTS_JWT;
 
+import com.pullup.auth.jwt.config.JwtConstants;
 import com.pullup.auth.jwt.domain.JwtTokenValidator;
 import com.pullup.auth.jwt.domain.TokenType;
 import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
 import com.pullup.auth.jwt.exception.JwtAuthenticationException;
+import com.pullup.auth.jwt.util.CookieUtil;
 import com.pullup.auth.jwt.util.JwtUtil;
-import com.pullup.common.util.RedisUtil;
 import com.pullup.common.util.SecurityUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,7 +30,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final JwtTokenValidator jwtTokenValidator;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-    private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(
@@ -65,15 +66,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String refreshToken = jwtUtil.resolveRefreshTokenFromCookie(request);
         jwtTokenValidator.validateJwtToken(refreshToken, TokenType.REFRESH_TOKEN);
 
-        if (!jwtUtil.existsByRefreshToken(refreshToken)) {
+        if (!jwtUtil.isRefreshTokenValid(refreshToken)) {
             throw new JwtAuthenticationException(ERR_NOT_EXISTS_JWT, TokenType.REFRESH_TOKEN);
         }
         jwtUtil.issueAccessTokenAndRefreshToken(jwtUtil.resolveMemberIdFromJwtToken(refreshToken), response);
     }
 
     private void handleLogout(HttpServletRequest request, HttpServletResponse response) {
-        //TODO : Cookie와 Redis에서 Refresh Token 삭제
-
+        if (!SecurityUtil.isAuthenticated()) {
+            return;
+        }
+        ResponseCookie responseCookie = CookieUtil.deleteTokenAtCookie(JwtConstants.REFRESH_TOKEN_COOKIE_NAME);
+        response.addHeader("set-cookie", responseCookie.toString());
+        jwtUtil.clearAuthenticationAndCookies(request, response);
     }
 
 
