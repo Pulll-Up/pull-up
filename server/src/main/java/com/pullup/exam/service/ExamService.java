@@ -9,14 +9,18 @@ import com.pullup.exam.domain.ExamProblem;
 import com.pullup.exam.dto.ExamDetailsDto;
 import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
 import com.pullup.exam.dto.ExamResultDetailDto;
+import com.pullup.exam.dto.ExamStrengthDto;
 import com.pullup.exam.dto.GetExamDetailsResponse;
 import com.pullup.exam.dto.GetExamResultResponse;
+import com.pullup.exam.dto.GetExamStrengthResponse;
 import com.pullup.exam.dto.PostExamRequest;
 import com.pullup.exam.dto.PostExamWithAnswerReqeust;
 import com.pullup.exam.dto.ProblemAndChosenAnswer;
 import com.pullup.exam.repository.ExamProblemRepository;
 import com.pullup.exam.repository.ExamRepository;
 import com.pullup.member.domain.Member;
+import com.pullup.member.domain.MemberExamStatistic;
+import com.pullup.member.repository.MemberExamStatisticRepository;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
@@ -47,6 +51,8 @@ public class ExamService {
     private final MemberRepository memberRepository;
     private final ExamProblemRepository examProblemRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final MemberExamStatisticRepository examStatisticRepository;
+
 
     public GetExamDetailsResponse getExamDetails(Long id) {
         List<ExamDetailsWithoutOptionsDto> examDetailsWithoutOptionsDtos = examRepository.findExamDetailsWithoutOptionsById(
@@ -175,6 +181,29 @@ public class ExamService {
 
         return new GetExamResultResponse(examResultDetailDtos);
     }
+
+    public GetExamStrengthResponse getExamStrength(Long memberId) {
+        List<MemberExamStatistic> statistics = examStatisticRepository.findAllByMemberId(memberId);
+
+        List<ExamStrengthDto> strengthDtos = statistics.stream()
+                .map(stat -> new ExamStrengthDto(
+                        stat.getSubject().name(),
+                        calculateCorrectRate(stat.getTotalCount(), stat.getWrongCount())
+                ))
+                .collect(Collectors.toList());
+
+        return new GetExamStrengthResponse(strengthDtos);
+    }
+
+    private Integer calculateCorrectRate(int totalCount, int wrongCount) {
+        if (totalCount == 0) {
+            return 0;
+        }
+
+        int correctCount = totalCount - wrongCount;
+        return (int) ((correctCount / (double) totalCount) * 100);
+    }
+
 
     private Map<Long, Boolean> getBookmarkStatusMap(List<Long> problemIds, Long memberId) {
         return bookmarkRepository.findAllByProblemIdInAndMemberId(problemIds, memberId)

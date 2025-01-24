@@ -1,8 +1,11 @@
 package com.pullup.member.domain;
 
 import com.pullup.common.auditing.BaseTimeEntity;
+import com.pullup.problem.domain.Subject;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,7 +33,8 @@ public class MemberExamStatistic extends BaseTimeEntity {
     private Integer wrongCount;
 
     @Column(nullable = false)
-    private String subject;
+    @Enumerated(EnumType.STRING)
+    private Subject subject;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
