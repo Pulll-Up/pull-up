@@ -17,6 +17,9 @@ public enum ErrorMessage {
     //* OAuth2 관련 Exception
     ERR_UNSUPPORTED_OAUTH2_PROVIDER("지원하지 않는 OAUTH2 제공자입니다"),
     ERR_FAILURE_OAUTH2_AUTHENTICATION("OAuth2 로그인에 실패하였습니다."),
+
+    //* Cookie 관련 Exception
+    ERR_COOKIE_NOT_FOUND("쿠키를 찾을 수 없습니다"),
     ;
 
     private final String message;

@@ -1,5 +1,6 @@
 package com.pullup.auth.jwt.util;
 
+import static com.pullup.auth.jwt.config.JwtConstants.ACCESS_TOKEN_COOKIE_NAME;
 import static com.pullup.auth.jwt.config.JwtConstants.REFRESH_TOKEN_COOKIE_NAME;
 import static com.pullup.auth.jwt.config.JwtConstants.REFRESH_TOKEN_PREFIX;
 
@@ -104,8 +105,13 @@ public class JwtUtil {
         Long memberId = resolveMemberIdFromJwtToken(refreshToken);
         redisUtil.delete(JwtConstants.REFRESH_TOKEN_PREFIX + memberId);
 
-        response.addHeader("set-cookie", CookieUtil.deleteTokenAtCookie(REFRESH_TOKEN_COOKIE_NAME).toString());
+        response.addHeader("set-cookie", CookieUtil.createDeleteTokenAtCookie(REFRESH_TOKEN_COOKIE_NAME).toString());
         SecurityContextHolder.clearContext();
+    }
+    public void extractAccessTokenFromCookieAndIssueAccessTokenInHeader(String accessToken, HttpServletResponse response) {
+        ResponseCookie deletedAccessTokenCookie = CookieUtil.createDeleteTokenAtCookie(ACCESS_TOKEN_COOKIE_NAME);
+        response.addHeader("set-cookie", deletedAccessTokenCookie.toString());
+        issueAccessTokenInHeader(accessToken, response);
     }
 
     /**

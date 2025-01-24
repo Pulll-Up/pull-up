@@ -35,7 +35,7 @@ public class OAuth2AuthenticationSuccessHandler implements
 
         JwtToken jwtToken = jwtUtil.generateJwtTokens(member.getId());
         setJwtTokenAtCookie(response, jwtToken);
-        response.sendRedirect("http://localhost:5173/signin");
+        response.sendRedirect("http://localhost:5173/api/v1/auth/signin");
     }
 
     private static void setJwtTokenAtCookie(HttpServletResponse response, JwtToken jwtToken) {

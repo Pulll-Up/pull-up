@@ -44,6 +44,10 @@ public class SecurityConfig {
             "/v3/api-docs/**"
     };
 
+    private static final String[] AUTH_WHITELIST = {
+            "/**"
+    };
+
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     @Bean
@@ -59,6 +63,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(SWAGGER_URL).permitAll()
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 )
 
