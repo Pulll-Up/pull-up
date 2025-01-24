@@ -14,10 +14,10 @@ public enum ErrorMessage {
     ERR_PROBLEM_NOT_FOUND("문제를 찾을 수 없습니다"),
     ERR_EXAM_PROBLEM_NOT_FOUND("해당 시험에 대한 해당 문제가 존재하지 않습니다"),
 
-    //* OAuth2 관련 에러
+    //* OAuth2 관련 Exception
     ERR_UNSUPPORTED_OAUTH2_PROVIDER("지원하지 않는 OAUTH2 제공자입니다"),
     ERR_FAILURE_OAUTH2_AUTHENTICATION("OAuth2 로그인에 실패하였습니다."),
     ;
 
-    private String message;
+    private final String message;
 }

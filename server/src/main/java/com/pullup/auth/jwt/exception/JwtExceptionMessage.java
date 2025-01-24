@@ -18,7 +18,7 @@ public enum JwtExceptionMessage {
     ERR_NOT_EXISTS_JWT("토큰이 존재하지 않습니다."),
 
     /*
-    Authorization 관전 Exception
+    Authorization 관련 Exception
      */
     ERR_NOT_AUTHENTICATED_MEMBER("인증되지 않은 사용자입니다."),
     ;
