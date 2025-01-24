@@ -17,6 +17,8 @@ import com.pullup.exam.dto.ProblemAndChosenAnswer;
 import com.pullup.exam.repository.ExamProblemRepository;
 import com.pullup.exam.repository.ExamRepository;
 import com.pullup.member.domain.Member;
+import com.pullup.member.domain.MemberExamStatistic;
+import com.pullup.member.repository.MemberExamStatisticRepository;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
@@ -47,6 +49,7 @@ public class ExamService {
     private final MemberRepository memberRepository;
     private final ExamProblemRepository examProblemRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final MemberExamStatisticRepository memberExamStatisticRepository;
 
     public GetExamDetailsResponse getExamDetails(Long id) {
         List<ExamDetailsWithoutOptionsDto> examDetailsWithoutOptionsDtos = examRepository.findExamDetailsWithoutOptionsById(
@@ -129,7 +132,7 @@ public class ExamService {
     }
 
     @Transactional
-    public void postExamWithAnswer(Long examId, PostExamWithAnswerReqeust request) {
+    public void postExamWithAnswer(Long examId, PostExamWithAnswerReqeust request, Long memberId) {
         // 시험 존재 여부 확인
         Exam exam = findExamById(examId);
         // 시험 문제 mapping
@@ -143,6 +146,15 @@ public class ExamService {
             }
 
             examProblem.updateCheckedAnswerAndAnswerStauts(answer.chosenAnswer());
+
+            MemberExamStatistic memberExamStatistic = memberExamStatisticRepository.findByMemberIdAndSubject(memberId,
+                            examProblem.getProblem().getSubject())
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_EXAM_STATISTIC_NOT_FOUND));
+
+            // total count, wrong count 업데이트하기
+            boolean isAnswerCorrect = isAnswerCorrect(answer.chosenAnswer(), examProblem.getProblem().getAnswer());
+            memberExamStatistic.updateCounts(isAnswerCorrect);
+
 
         }
 
@@ -172,6 +184,14 @@ public class ExamService {
                 .toList();
 
         return new GetExamResultResponse(examResultDetailDtos);
+    }
+
+    private boolean isAnswerCorrect(String chosenAnswer, String problemAnswer) {
+        if (chosenAnswer.equals(problemAnswer)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private Map<Long, Boolean> getBookmarkStatusMap(List<Long> problemIds, Long memberId) {
