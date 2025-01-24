@@ -142,10 +142,8 @@ public class ExamService {
                 throw new NotFoundException(ErrorMessage.ERR_EXAM_PROBLEM_NOT_FOUND);
             }
 
-            updateExamProblemWithAnswer(
-                    examProblem,
-                    answer.chosenAnswer()
-            );
+            examProblem.updateCheckedAnswerAndAnswerStauts(answer.chosenAnswer());
+
         }
 
         // 시험 전체 점수 계산 및 업데이트
@@ -194,13 +192,6 @@ public class ExamService {
                 ));
     }
 
-
-    private void updateExamProblemWithAnswer(
-            ExamProblem examProblem,
-            String chosenAnswer
-    ) {
-        examProblem.updateCheckedAnswerAndAnswerStauts(chosenAnswer);
-    }
 
     private void updateExamScore(Exam exam, List<ExamProblem> examProblems) {
         long correctCount = examProblems.stream()
