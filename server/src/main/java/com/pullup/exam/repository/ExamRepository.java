@@ -1,9 +1,9 @@
 package com.pullup.exam.repository;
 
-import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
-import com.pullup.exam.dto.GetExamDetailsResponse;
 import com.pullup.exam.domain.Exam;
+import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -21,4 +21,6 @@ public interface ExamRepository extends CrudRepository<Exam, Long> {
     List<ExamDetailsWithoutOptionsDto> findExamDetailsWithoutOptionsById(@Param("examId") Long examId);
 
     Integer countByMemberId(@Param("memberId") Long memberId);
+
+    Optional<Exam> findFirstByMemberIdOrderByCreatedAtDesc(Long memberId);
 }

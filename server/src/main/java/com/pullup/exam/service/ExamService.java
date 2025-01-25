@@ -10,6 +10,7 @@ import com.pullup.exam.dto.ExamDetailsDto;
 import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
 import com.pullup.exam.dto.ExamResultDetailDto;
 import com.pullup.exam.dto.GetExamDetailsResponse;
+import com.pullup.exam.dto.GetExamResponse;
 import com.pullup.exam.dto.GetExamResultResponse;
 import com.pullup.exam.dto.PostExamRequest;
 import com.pullup.exam.dto.PostExamWithAnswerReqeust;
@@ -262,5 +263,26 @@ public class ExamService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_EXAM_NOT_FOUND));
     }
 
+    public GetExamResponse getExam(Long memberId) {
+        Exam exam = findFirstExamByMemberId(memberId);
+        List<Subject> subjects = findSubjectsOfExam(exam.getId());
+
+        return GetExamResponse.of(exam, subjects);
+    }
+
+    // 시험에 있는 문제 조회해서, 문제 과목 알아오기
+    private List<Subject> findSubjectsOfExam(Long examId) {
+        return examProblemRepository.findByExamId(examId)
+                .stream()
+                .map(examProblem -> examProblem.getProblem().getSubject())
+                .distinct()
+                .toList();
+    }
+
+    // 멤버의 가장 최근 시험 알아오기
+    private Exam findFirstExamByMemberId(Long memberId) {
+        return examRepository.findFirstByMemberIdOrderByCreatedAtDesc(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
+    }
 
 }

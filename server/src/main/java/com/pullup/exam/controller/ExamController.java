@@ -1,6 +1,7 @@
 package com.pullup.exam.controller;
 
 import com.pullup.exam.dto.GetExamDetailsResponse;
+import com.pullup.exam.dto.GetExamResponse;
 import com.pullup.exam.dto.GetExamResultResponse;
 import com.pullup.exam.dto.PostExamRequest;
 import com.pullup.exam.dto.PostExamWithAnswerReqeust;
@@ -56,5 +57,14 @@ public class ExamController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getExamResultResponse);
+    }
+
+    @GetMapping("/me/recent")
+    public ResponseEntity<GetExamResponse> getRecentExam() {
+        Long memberId = TEMP_MEMBER_ID;
+        GetExamResponse getExamResponse = examService.getExam(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getExamResponse);
     }
 }
