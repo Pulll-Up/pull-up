@@ -22,7 +22,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void saveMemberExamStatic(Long memberId) {
+    public void saveMemberExamStatistic(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));

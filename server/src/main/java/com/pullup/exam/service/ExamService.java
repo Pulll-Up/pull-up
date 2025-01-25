@@ -152,7 +152,7 @@ public class ExamService {
                     .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_EXAM_STATISTIC_NOT_FOUND));
 
             // total count, wrong count 업데이트하기
-            boolean isAnswerCorrect = isAnswerCorrect(answer.chosenAnswer(), examProblem.getProblem().getAnswer());
+            boolean isAnswerCorrect = examProblem.getAnswerStatus();
             memberExamStatistic.updateCounts(isAnswerCorrect);
 
 
@@ -186,13 +186,6 @@ public class ExamService {
         return new GetExamResultResponse(examResultDetailDtos);
     }
 
-    private boolean isAnswerCorrect(String chosenAnswer, String problemAnswer) {
-        if (chosenAnswer.equals(problemAnswer)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     private Map<Long, Boolean> getBookmarkStatusMap(List<Long> problemIds, Long memberId) {
         return bookmarkRepository.findAllByProblemIdInAndMemberId(problemIds, memberId)
