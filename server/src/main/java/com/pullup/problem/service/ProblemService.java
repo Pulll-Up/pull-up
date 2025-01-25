@@ -4,10 +4,13 @@ import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
+import com.pullup.problem.controller.BookmarkedProblemDto;
+import com.pullup.problem.controller.GetBookmarkedProblemsResponse;
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
 import com.pullup.problem.repository.BookmarkRepository;
 import com.pullup.problem.repository.ProblemRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +53,12 @@ public class ProblemService {
     }
 
 
+    public GetBookmarkedProblemsResponse getBookmarkedProblems(Long memberId) {
+        List<Bookmark> bookmarks = bookmarkRepository.findBookmarkedProblemsByMemberIdWithProblem(memberId);
+        List<BookmarkedProblemDto> bookmarkedProblemDtos = bookmarks.stream()
+                .map(BookmarkedProblemDto::of)
+                .toList();
 
-
+        return GetBookmarkedProblemsResponse.of(bookmarkedProblemDtos);
+    }
 }
