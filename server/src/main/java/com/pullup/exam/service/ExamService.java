@@ -17,6 +17,8 @@ import com.pullup.exam.dto.ProblemAndChosenAnswer;
 import com.pullup.exam.repository.ExamProblemRepository;
 import com.pullup.exam.repository.ExamRepository;
 import com.pullup.member.domain.Member;
+import com.pullup.member.domain.MemberExamStatistic;
+import com.pullup.member.repository.MemberExamStatisticRepository;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
@@ -47,6 +49,7 @@ public class ExamService {
     private final MemberRepository memberRepository;
     private final ExamProblemRepository examProblemRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final MemberExamStatisticRepository memberExamStatisticRepository;
 
     public GetExamDetailsResponse getExamDetails(Long id) {
         List<ExamDetailsWithoutOptionsDto> examDetailsWithoutOptionsDtos = examRepository.findExamDetailsWithoutOptionsById(
@@ -129,7 +132,7 @@ public class ExamService {
     }
 
     @Transactional
-    public void postExamWithAnswer(Long examId, PostExamWithAnswerReqeust request) {
+    public void postExamWithAnswer(Long examId, PostExamWithAnswerReqeust request, Long memberId) {
         // 시험 존재 여부 확인
         Exam exam = findExamById(examId);
         // 시험 문제 mapping
@@ -142,10 +145,17 @@ public class ExamService {
                 throw new NotFoundException(ErrorMessage.ERR_EXAM_PROBLEM_NOT_FOUND);
             }
 
-            updateExamProblemWithAnswer(
-                    examProblem,
-                    answer.chosenAnswer()
-            );
+            examProblem.updateCheckedAnswerAndAnswerStauts(answer.chosenAnswer());
+
+            MemberExamStatistic memberExamStatistic = memberExamStatisticRepository.findByMemberIdAndSubject(memberId,
+                            examProblem.getProblem().getSubject())
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_EXAM_STATISTIC_NOT_FOUND));
+
+            // total count, wrong count 업데이트하기
+            boolean isAnswerCorrect = examProblem.getAnswerStatus();
+            memberExamStatistic.updateCounts(isAnswerCorrect);
+
+
         }
 
         // 시험 전체 점수 계산 및 업데이트
@@ -176,6 +186,7 @@ public class ExamService {
         return new GetExamResultResponse(examResultDetailDtos);
     }
 
+
     private Map<Long, Boolean> getBookmarkStatusMap(List<Long> problemIds, Long memberId) {
         return bookmarkRepository.findAllByProblemIdInAndMemberId(problemIds, memberId)
                 .stream()
@@ -194,13 +205,6 @@ public class ExamService {
                 ));
     }
 
-
-    private void updateExamProblemWithAnswer(
-            ExamProblem examProblem,
-            String chosenAnswer
-    ) {
-        examProblem.updateCheckedAnswerAndAnswerStauts(chosenAnswer);
-    }
 
     private void updateExamScore(Exam exam, List<ExamProblem> examProblems) {
         long correctCount = examProblems.stream()
