@@ -188,20 +188,11 @@ public class ExamService {
         List<ExamStrengthDto> strengthDtos = statistics.stream()
                 .map(stat -> new ExamStrengthDto(
                         stat.getSubject().name(),
-                        calculateCorrectRate(stat.getTotalCount(), stat.getWrongCount())
+                        stat.calculateCorrectRate(stat.getTotalCount(), stat.getWrongCount())
                 ))
                 .collect(Collectors.toList());
 
         return new GetExamStrengthResponse(strengthDtos);
-    }
-
-    private Integer calculateCorrectRate(int totalCount, int wrongCount) {
-        if (totalCount == 0) {
-            return 0;
-        }
-
-        int correctCount = totalCount - wrongCount;
-        return (int) ((correctCount / (double) totalCount) * 100);
     }
 
 
