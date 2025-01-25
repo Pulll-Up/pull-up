@@ -6,8 +6,12 @@ import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
+import com.pullup.problem.dto.GetProblemResponse;
 import com.pullup.problem.repository.BookmarkRepository;
+import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +22,7 @@ public class ProblemService {
     private final ProblemRepository problemRepository;
     private final BookmarkRepository bookmarkRepository;
     private final MemberRepository memberRepository;
+    private final ProblemOptionRepository problemOptionRepository;
 
     @Transactional
     public void toggleProblemBookmark(Long problemId, Long memberId) {
@@ -50,6 +55,15 @@ public class ProblemService {
     }
 
 
+    public GetProblemResponse getProblem(Long problemId) {
+        Problem problem = problemRepository.findById(problemId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_PROBLEM_NOT_FOUND));
 
+        List<String> options = problemOptionRepository.findAllByProblemId(problemId)
+                .stream()
+                .map(po -> po.getContent())
+                .collect(Collectors.toList());
 
+        return GetProblemResponse.of(problem, options);
+    }
 }

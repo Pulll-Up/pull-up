@@ -1,9 +1,11 @@
 package com.pullup.problem.controller;
 
+import com.pullup.problem.dto.GetProblemResponse;
 import com.pullup.problem.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,5 +23,13 @@ public class ProblemController {
         problemService.toggleProblemBookmark(problemId, TEMP_MEMBER_ID);
 
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/{problemId}")
+    public ResponseEntity<GetProblemResponse> getProblem(@PathVariable("problemId") Long problemId) {
+        GetProblemResponse getProblemResponse = problemService.getProblem(problemId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getProblemResponse);
     }
 }

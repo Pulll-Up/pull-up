@@ -10,4 +10,5 @@ public interface ProblemOptionRepository extends CrudRepository<ProblemOption, L
     List<ProblemOption> findAllByProblemId(Long problemId);
 
     List<ProblemOption> findAllByProblemIdIn(List<Long> problemIds);
+
 }
