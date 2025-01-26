@@ -38,15 +38,7 @@ public class SecurityConfig {
     private final PrincipalOAuth2UserService principalOAuth2UserService;
 
     private static final String[] SWAGGER_URL = {
-            "/swagger-resources/**",
-            "/favicon.ico",
-            "/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html",
-            "/swagger-ui/index.html",
-            "/docs/swagger-ui/index.html",
-            "/swagger-ui/swagger-ui.css",
-            "/v3/api-docs/**"
+            "/api/**"
     };
 
     private static final String[] AUTH_WHITELIST = {

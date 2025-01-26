@@ -56,6 +56,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenValidator jwtTokenValidator;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getServletPath().startsWith("/api/");
+    }
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
