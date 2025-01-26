@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -48,4 +49,30 @@ public class MemberExamStatistic extends BaseTimeEntity {
         int correctCount = totalCount - wrongCount;
         return (int) ((correctCount / (double) totalCount) * 100);
     }
+
+    public void updateCounts(boolean isCorrect) {
+        this.totalCount++;
+        if (!isCorrect) {
+            this.wrongCount++;
+        }
+    }
+
+    @Builder
+    private MemberExamStatistic(Integer totalCount, Integer wrongCount, Subject subject, Member member) {
+        this.totalCount = totalCount;
+        this.wrongCount = wrongCount;
+        this.subject = subject;
+        this.member = member;
+    }
+
+    public static MemberExamStatistic of(Subject subject, Member member) {
+        return MemberExamStatistic.builder()
+                .member(member)
+                .subject(subject)
+                .wrongCount(0)
+                .totalCount(0)
+                .build();
+    }
+
+
 }
