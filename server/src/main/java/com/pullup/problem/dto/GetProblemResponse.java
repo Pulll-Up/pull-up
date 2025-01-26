@@ -5,6 +5,7 @@ import com.pullup.problem.domain.Subject;
 import java.util.List;
 import lombok.Builder;
 
+@Builder
 public record GetProblemResponse(
         String question,
         List<String> options,
@@ -13,9 +14,6 @@ public record GetProblemResponse(
         Integer correctRate,
         Subject subject
 ) {
-    @Builder
-    public GetProblemResponse {
-    }
 
     public static GetProblemResponse of(Problem problem, List<String> options) {
         return GetProblemResponse.builder()

@@ -61,7 +61,7 @@ public class ProblemService {
 
         List<String> options = problemOptionRepository.findAllByProblemId(problemId)
                 .stream()
-                .map(po -> po.getContent())
+                .map(problemOption -> problemOption.getContent())
                 .collect(Collectors.toList());
 
         return GetProblemResponse.of(problem, options);
