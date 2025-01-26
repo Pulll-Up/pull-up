@@ -1,6 +1,7 @@
 package com.pullup.exam.controller;
 
 import com.pullup.exam.dto.GetExamDetailsResponse;
+import com.pullup.exam.dto.GetExamPageResponse;
 import com.pullup.exam.dto.GetExamResponse;
 import com.pullup.exam.dto.GetExamResultResponse;
 import com.pullup.exam.dto.PostExamRequest;
@@ -8,6 +9,8 @@ import com.pullup.exam.dto.PostExamWithAnswerReqeust;
 import com.pullup.exam.service.ExamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,4 +70,15 @@ public class ExamController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getExamResponse);
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<GetExamPageResponse> getExamPageOrderByCreatedAt(
+            @PageableDefault(size = 10) Pageable pageable) {
+        Long memberId = TEMP_MEMBER_ID;
+        GetExamPageResponse getExamPageResponse = examService.getExamPageOrderByCreatedAt(pageable, memberId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getExamPageResponse);
+    }
+
 }

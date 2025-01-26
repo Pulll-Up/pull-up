@@ -10,6 +10,7 @@ import com.pullup.exam.dto.ExamDetailsDto;
 import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
 import com.pullup.exam.dto.ExamResultDetailDto;
 import com.pullup.exam.dto.GetExamDetailsResponse;
+import com.pullup.exam.dto.GetExamPageResponse;
 import com.pullup.exam.dto.GetExamResponse;
 import com.pullup.exam.dto.GetExamResultResponse;
 import com.pullup.exam.dto.PostExamRequest;
@@ -32,7 +33,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -284,5 +288,31 @@ public class ExamService {
         return examRepository.findFirstByMemberIdOrderByCreatedAtDesc(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
     }
+
+    public GetExamPageResponse getExamPageOrderByCreatedAt(Pageable pageable, Long memberId) {
+        // createdAt 기준 내림차순 정렬 추가
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by("createdAt").descending()
+        );
+
+        Page<Exam> examPage = examRepository.findAllByMemberId(memberId, sortedPageable);
+
+        List<GetExamResponse> content = examPage.stream()
+                .map(exam -> GetExamResponse.of(
+                        exam,
+                        findSubjectsOfExam(exam.getId())
+                ))
+                .toList();
+
+        return GetExamPageResponse.of(
+                content,
+                examPage.getTotalPages(),
+                (int) examPage.getTotalElements(),
+                examPage.isLast()
+        );
+    }
+
 
 }
