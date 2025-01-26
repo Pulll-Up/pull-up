@@ -9,8 +9,10 @@ import com.pullup.exam.domain.ExamProblem;
 import com.pullup.exam.dto.ExamDetailsDto;
 import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
 import com.pullup.exam.dto.ExamResultDetailDto;
+import com.pullup.exam.dto.ExamScoreDto;
 import com.pullup.exam.dto.GetExamDetailsResponse;
 import com.pullup.exam.dto.GetExamResultResponse;
+import com.pullup.exam.dto.GetExamScoresResponse;
 import com.pullup.exam.dto.PostExamRequest;
 import com.pullup.exam.dto.PostExamWithAnswerReqeust;
 import com.pullup.exam.dto.ProblemAndChosenAnswer;
@@ -267,4 +269,11 @@ public class ExamService {
     }
 
 
+    public GetExamScoresResponse getRecentFiveExamScores(Long memberId) {
+        List<Exam> recentExams = examRepository.findTop5ByMemberIdOrderByCreatedAtDesc(memberId);
+        List<ExamScoreDto> examScoreDtos = recentExams.stream()
+                .map(ExamScoreDto::of)
+                .toList();
+        return GetExamScoresResponse.of(examScoreDtos);
+    }
 }

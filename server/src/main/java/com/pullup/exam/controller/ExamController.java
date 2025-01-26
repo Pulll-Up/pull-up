@@ -2,6 +2,7 @@ package com.pullup.exam.controller;
 
 import com.pullup.exam.dto.GetExamDetailsResponse;
 import com.pullup.exam.dto.GetExamResultResponse;
+import com.pullup.exam.dto.GetExamScoresResponse;
 import com.pullup.exam.dto.PostExamRequest;
 import com.pullup.exam.dto.PostExamWithAnswerReqeust;
 import com.pullup.exam.service.ExamService;
@@ -56,5 +57,14 @@ public class ExamController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getExamResultResponse);
+    }
+
+    @GetMapping("/me/score")
+    public ResponseEntity<GetExamScoresResponse> getRecentFiveExamScores() {
+        Long memberId = TEMP_MEMBER_ID;
+        GetExamScoresResponse getExamScoresResponse = examService.getRecentFiveExamScores(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getExamScoresResponse);
     }
 }
