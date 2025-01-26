@@ -10,9 +10,9 @@ public record GetBookmarkedProblemsResponse(
     public GetBookmarkedProblemsResponse {
     }
 
-    public static GetBookmarkedProblemsResponse of(List<BookmarkedProblemDto> dtos) {
+    public static GetBookmarkedProblemsResponse of(List<BookmarkedProblemDto> bookmarkedProblemDtos) {
         return GetBookmarkedProblemsResponse.builder()
-                .bookmarkedProblemDtos(dtos)
+                .bookmarkedProblemDtos(bookmarkedProblemDtos)
                 .build();
     }
 }
