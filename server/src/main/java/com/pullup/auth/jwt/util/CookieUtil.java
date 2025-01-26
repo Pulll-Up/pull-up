@@ -3,11 +3,14 @@ package com.pullup.auth.jwt.util;
 import static com.pullup.auth.jwt.config.JwtConstants.ACCESS_TOKEN_COOKIE_NAME;
 import static com.pullup.auth.jwt.config.JwtConstants.REFRESH_TOKEN_COOKIE_NAME;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Optional;
 import org.springframework.http.ResponseCookie;
 
 public class CookieUtil {
 
-    public static ResponseCookie createAccessTokenCookie(String accessToken) {
+    public static ResponseCookie createAccessTokenForCookie(String accessToken) {
         return ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, accessToken)
                 .secure(true)
                 .path("/")
@@ -26,12 +29,24 @@ public class CookieUtil {
                 .build();
     }
 
-    public static ResponseCookie deleteTokenAtCookie(String token) {
+    public static ResponseCookie createDeleteTokenAtCookie(String token) {
         return ResponseCookie.from(token, "")
                 .secure(true)
                 .path("/")
                 .maxAge(0)
                 .sameSite("Strict")
                 .build();
+    }
+
+    public static Optional<String> extractAccessTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String accessToken = null;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("access_token")) {
+                accessToken = cookie.getValue();
+                break;
+            }
+        }
+        return Optional.ofNullable(accessToken);
     }
 }
