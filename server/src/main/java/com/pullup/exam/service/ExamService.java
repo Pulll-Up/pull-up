@@ -10,9 +10,11 @@ import com.pullup.exam.dto.ExamDetailsDto;
 import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
 import com.pullup.exam.dto.ExamResultDetailDto;
 import com.pullup.exam.dto.ExamScoreDto;
+import com.pullup.exam.dto.ExamStrengthDto;
 import com.pullup.exam.dto.GetExamDetailsResponse;
 import com.pullup.exam.dto.GetExamResultResponse;
 import com.pullup.exam.dto.GetExamScoresResponse;
+import com.pullup.exam.dto.GetExamStrengthResponse;
 import com.pullup.exam.dto.PostExamRequest;
 import com.pullup.exam.dto.PostExamWithAnswerReqeust;
 import com.pullup.exam.dto.ProblemAndChosenAnswer;
@@ -51,6 +53,7 @@ public class ExamService {
     private final MemberRepository memberRepository;
     private final ExamProblemRepository examProblemRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final MemberExamStatisticRepository examStatisticRepository;
     private final MemberExamStatisticRepository memberExamStatisticRepository;
 
     public GetExamDetailsResponse getExamDetails(Long id) {
@@ -188,6 +191,18 @@ public class ExamService {
         return new GetExamResultResponse(examResultDetailDtos);
     }
 
+    public GetExamStrengthResponse getExamStrength(Long memberId) {
+        List<MemberExamStatistic> statistics = examStatisticRepository.findAllByMemberId(memberId);
+
+        List<ExamStrengthDto> strengthDtos = statistics.stream()
+                .map(stat -> new ExamStrengthDto(
+                        stat.getSubject().name(),
+                        stat.calculateCorrectRate(stat.getTotalCount(), stat.getWrongCount())
+                ))
+                .collect(Collectors.toList());
+
+        return new GetExamStrengthResponse(strengthDtos);
+    }
 
     private Map<Long, Boolean> getBookmarkStatusMap(List<Long> problemIds, Long memberId) {
         return bookmarkRepository.findAllByProblemIdInAndMemberId(problemIds, memberId)

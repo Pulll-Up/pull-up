@@ -41,6 +41,15 @@ public class MemberExamStatistic extends BaseTimeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    public Integer calculateCorrectRate(int totalCount, int wrongCount) {
+        if (totalCount == 0) {
+            return 0;
+        }
+
+        int correctCount = totalCount - wrongCount;
+        return (int) ((correctCount / (double) totalCount) * 100);
+    }
+
     public void updateCounts(boolean isCorrect) {
         this.totalCount++;
         if (!isCorrect) {
