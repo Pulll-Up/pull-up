@@ -17,10 +17,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
@@ -108,7 +110,9 @@ public class JwtUtil {
         response.addHeader("set-cookie", CookieUtil.createDeleteTokenAtCookie(REFRESH_TOKEN_COOKIE_NAME).toString());
         SecurityContextHolder.clearContext();
     }
-    public void extractAccessTokenFromCookieAndIssueAccessTokenInHeader(String accessToken, HttpServletResponse response) {
+
+    public void extractAccessTokenFromCookieAndIssueAccessTokenInHeader(String accessToken,
+                                                                        HttpServletResponse response) {
         ResponseCookie deletedAccessTokenCookie = CookieUtil.createDeleteTokenAtCookie(ACCESS_TOKEN_COOKIE_NAME);
         response.addHeader("set-cookie", deletedAccessTokenCookie.toString());
         issueAccessTokenInHeader(accessToken, response);

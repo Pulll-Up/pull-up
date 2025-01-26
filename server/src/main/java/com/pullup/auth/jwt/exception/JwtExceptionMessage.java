@@ -20,7 +20,9 @@ public enum JwtExceptionMessage {
     /*
     Authorization 관련 Exception
      */
-    ERR_NOT_AUTHENTICATED_MEMBER("인증되지 않은 사용자입니다."),
+    ERR_NOT_AUTHENTICATED_MEMBER("권한이 없는 사용자입니다."),
+    ERR_INVALID_PRINCIPAL_TYPE("유효하지 않은 Principal Type 입니다."),
     ;
+
     private final String message;
 }

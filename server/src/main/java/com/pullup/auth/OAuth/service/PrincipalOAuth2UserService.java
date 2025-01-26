@@ -27,7 +27,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
         String email = oAuth2UserInfo.getEmail();
         Member member = memberRepository.findByEmail(email)
-                .orElseGet(() -> Member.of(oAuth2UserInfo));
+                .orElseGet(() -> memberRepository.save(Member.of(oAuth2UserInfo)));
 
         return new PrincipalDetail(member, oAuth2User.getAttributes());
     }

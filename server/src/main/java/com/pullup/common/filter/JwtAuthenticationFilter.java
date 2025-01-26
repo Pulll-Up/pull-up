@@ -36,7 +36,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             new AntPathRequestMatcher("/api/v1/auth/signin", HttpMethod.POST.toString())
     );
 
-    private static final RequestMatcher EXCLUDED_PATHS_REQUEST_MATCHER = new OrRequestMatcher(LOGIN_PATHS);
+    private static final List<RequestMatcher> SWAGGER_PATHS = Arrays.asList(
+            new AntPathRequestMatcher("/swagger-resources/**", HttpMethod.GET.toString()),
+            new AntPathRequestMatcher("/favicon.ico", HttpMethod.GET.toString()),
+            new AntPathRequestMatcher("/api-docs/**", HttpMethod.GET.toString()),
+            new AntPathRequestMatcher("/swagger-ui/**", HttpMethod.GET.toString()),
+            new AntPathRequestMatcher("/swagger-ui.html", HttpMethod.GET.toString()),
+            new AntPathRequestMatcher("/swagger-ui/index.html", HttpMethod.GET.toString()),
+            new AntPathRequestMatcher("/docs/swagger-ui/index.html", HttpMethod.GET.toString()),
+            new AntPathRequestMatcher("/swagger-ui/swagger-ui.css", HttpMethod.GET.toString()),
+            new AntPathRequestMatcher("/v3/api-docs/**", HttpMethod.GET.toString())
+    );
+
+    private static final RequestMatcher EXCLUDED_LOGIN_PATHS_REQUEST_MATCHER = new OrRequestMatcher(LOGIN_PATHS);
+    private static final RequestMatcher EXCLUDED_SWAGGER_PATHS_REQUEST_MATCHER = new OrRequestMatcher(SWAGGER_PATHS);
 
     private static final String REISSUE_API_URL = "/api/v1/auth/reissue";
     private static final String LOGOUT_API_URL = "/api/v1/auth/logout";
@@ -74,7 +87,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        boolean shouldNotFilter = EXCLUDED_PATHS_REQUEST_MATCHER.matches(request);
+        boolean shouldNotFilter = EXCLUDED_LOGIN_PATHS_REQUEST_MATCHER.matches(request);
+        shouldNotFilter |= EXCLUDED_SWAGGER_PATHS_REQUEST_MATCHER.matches(request);
         log.info("Should not filter for request [{}]: {}", request.getRequestURI(), shouldNotFilter);
         return shouldNotFilter;
     }

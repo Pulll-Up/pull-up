@@ -22,6 +22,4 @@ public class OAuthController implements OAuthApi {
         LoginResponse loginResponse = oAuthService.signIn(request, response);
         return ResponseEntity.ok().body(loginResponse);
     }
-
-
 }

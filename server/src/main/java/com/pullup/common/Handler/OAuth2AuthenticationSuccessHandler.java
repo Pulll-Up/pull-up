@@ -31,6 +31,7 @@ public class OAuth2AuthenticationSuccessHandler implements
     ) throws IOException {
         PrincipalDetail principal = (PrincipalDetail) authentication.getPrincipal();
         Member member = principal.getMember();
+
         log.info("OAuth2 로그인 성공: {}", member.getEmail());
 
         JwtToken jwtToken = jwtUtil.generateJwtTokens(member.getId());
