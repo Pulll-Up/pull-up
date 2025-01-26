@@ -2,11 +2,14 @@ package com.pullup.problem.service;
 
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
+import com.pullup.exam.repository.ExamProblemRepository;
 import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
 import com.pullup.problem.dto.GetProblemResponse;
+import com.pullup.problem.dto.GetRecentWrongProblemsResponse;
+import com.pullup.problem.dto.RecentWrongQuestionDto;
 import com.pullup.problem.repository.BookmarkRepository;
 import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
@@ -23,6 +26,7 @@ public class ProblemService {
     private final BookmarkRepository bookmarkRepository;
     private final MemberRepository memberRepository;
     private final ProblemOptionRepository problemOptionRepository;
+    private final ExamProblemRepository examProblemRepository;
 
     @Transactional
     public void toggleProblemBookmark(Long problemId, Long memberId) {
@@ -65,5 +69,19 @@ public class ProblemService {
                 .collect(Collectors.toList());
 
         return GetProblemResponse.of(problem, options);
+    }
+
+    public GetRecentWrongProblemsResponse getRecentWrongProblems(Long memberId) {
+        List<RecentWrongQuestionDto> wrongProblems = examProblemRepository.findTop10ByExamMemberIdAndAnswerStatusOrderByCreatedAtDesc(
+                        memberId, false)
+                .stream()
+                .map(examProblem -> new RecentWrongQuestionDto(
+                        examProblem.getProblem().getId(),
+                        examProblem.getProblem().getQuestion(),
+                        examProblem.getProblem().getSubject()
+                ))
+                .collect(Collectors.toList());
+
+        return new GetRecentWrongProblemsResponse(wrongProblems);
     }
 }
