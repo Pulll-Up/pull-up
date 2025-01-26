@@ -62,11 +62,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        log.warn("JwtAuthenticationFilter.doFilterInternal");
-        if (shouldNotFilter(request)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         try {
             if (isReissueRequest(request)) {
