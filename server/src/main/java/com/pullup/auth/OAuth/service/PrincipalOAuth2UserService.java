@@ -3,7 +3,6 @@ package com.pullup.auth.OAuth.service;
 import com.pullup.auth.OAuth.domain.OAuth2UserInfo;
 import com.pullup.auth.OAuth.domain.OAuth2UserInfoFactory;
 import com.pullup.auth.OAuth.domain.PrincipalDetail;
-import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
 import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
     private final MemberRepository memberRepository;
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) {

@@ -1,7 +1,9 @@
 package com.pullup.common.config;
 
 import com.pullup.auth.OAuth.service.PrincipalOAuth2UserService;
+import com.pullup.auth.jwt.domain.JwtTokenValidator;
 import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
+import com.pullup.auth.jwt.util.JwtUtil;
 import com.pullup.common.Handler.OAuth2AuthenticationFailureHandler;
 import com.pullup.common.Handler.OAuth2AuthenticationSuccessHandler;
 import com.pullup.common.filter.JwtAuthenticationFilter;
@@ -27,7 +29,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Slf4j
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtUtil jwtUtil;
+    private final JwtTokenValidator jwtTokenValidator;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
@@ -80,7 +83,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
                                 .userService(principalOAuth2UserService)))
 
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint))
         ;
@@ -107,5 +110,9 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    private JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtUtil, jwtTokenValidator, customAuthenticationEntryPoint);
     }
 }
