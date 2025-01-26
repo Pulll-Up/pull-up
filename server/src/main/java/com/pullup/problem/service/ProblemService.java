@@ -7,9 +7,11 @@ import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
+import com.pullup.problem.dto.GetProblemResponse;
 import com.pullup.problem.dto.GetRecentWrongProblemsResponse;
 import com.pullup.problem.dto.RecentWrongQuestionDto;
 import com.pullup.problem.repository.BookmarkRepository;
+import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ public class ProblemService {
     private final ProblemRepository problemRepository;
     private final BookmarkRepository bookmarkRepository;
     private final MemberRepository memberRepository;
+    private final ProblemOptionRepository problemOptionRepository;
     private final ExamProblemRepository examProblemRepository;
 
     @Transactional
@@ -55,6 +58,18 @@ public class ProblemService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
     }
 
+
+    public GetProblemResponse getProblem(Long problemId) {
+        Problem problem = problemRepository.findById(problemId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_PROBLEM_NOT_FOUND));
+
+        List<String> options = problemOptionRepository.findAllByProblemId(problemId)
+                .stream()
+                .map(problemOption -> problemOption.getContent())
+                .collect(Collectors.toList());
+
+        return GetProblemResponse.of(problem, options);
+    }
 
     public GetRecentWrongProblemsResponse getRecentWrongProblems(Long memberId) {
         List<RecentWrongQuestionDto> wrongProblems = examProblemRepository.findTop10ByExamMemberIdAndAnswerStatusOrderByCreatedAtDesc(

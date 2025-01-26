@@ -1,5 +1,6 @@
 package com.pullup.problem.controller;
 
+import com.pullup.problem.dto.GetProblemResponse;
 import com.pullup.problem.dto.GetRecentWrongProblemsResponse;
 import com.pullup.problem.service.ProblemService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,14 @@ public class ProblemController {
         problemService.toggleProblemBookmark(problemId, TEMP_MEMBER_ID);
 
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/{problemId}")
+    public ResponseEntity<GetProblemResponse> getProblem(@PathVariable("problemId") Long problemId) {
+        GetProblemResponse getProblemResponse = problemService.getProblem(problemId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getProblemResponse);
     }
 
     @GetMapping("/wrong/recent")
