@@ -290,7 +290,6 @@ public class ExamService {
     }
 
     public GetExamPageResponse getExamPageOrderByCreatedAt(Pageable pageable, Long memberId) {
-        // createdAt 기준 내림차순 정렬 추가
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
