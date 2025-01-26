@@ -1,9 +1,12 @@
 package com.pullup.member.service;
 
+import com.pullup.auth.OAuth.dto.request.SignUpRequest;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
+import com.pullup.member.domain.InterestSubject;
 import com.pullup.member.domain.Member;
 import com.pullup.member.domain.MemberExamStatistic;
+import com.pullup.member.repository.InterestSubjectRepository;
 import com.pullup.member.repository.MemberExamStatisticRepository;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Subject;
@@ -15,11 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberExamStatisticRepository memberExamStatisticRepository;
     private final MemberRepository memberRepository;
+    private final InterestSubjectRepository interestSubjectRepository;
+    private final MemberExamStatisticRepository memberExamStatisticRepository;
 
     @Transactional
     public void saveMemberExamStatistic(Long memberId) {
@@ -34,5 +39,20 @@ public class MemberService {
         memberExamStatisticRepository.saveAll(statistics);
     }
 
+    @Transactional
+    public void saveInterestSubjects(Long memberId, SignUpRequest signUpRequest) {
+        Member member = findMemberById(memberId);
+        List<String> subjectNames = signUpRequest.subjectNames();
 
+        List<InterestSubject> interestSubjects = subjectNames.stream()
+                .map(interestSubject -> new InterestSubject(interestSubject, member))
+                .toList();
+
+        interestSubjectRepository.saveAll(interestSubjects);
+    }
+
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
+    }
 }
