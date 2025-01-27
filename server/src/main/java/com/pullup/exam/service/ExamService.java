@@ -9,6 +9,7 @@ import com.pullup.exam.domain.ExamProblem;
 import com.pullup.exam.dto.ExamDetailsDto;
 import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
 import com.pullup.exam.dto.ExamResultDetailDto;
+import com.pullup.exam.dto.GetAllExamResponse;
 import com.pullup.exam.dto.GetExamDetailsResponse;
 import com.pullup.exam.dto.GetExamPageResponse;
 import com.pullup.exam.dto.GetExamResponse;
@@ -314,4 +315,15 @@ public class ExamService {
     }
 
 
+    public GetAllExamResponse getAllExams(Long memberId) {
+        List<Exam> exams = examRepository.findAllByMemberId(memberId);
+        List<GetExamResponse> examResponses = exams.stream()
+                .map(exam -> GetExamResponse.of(
+                        exam,
+                        findSubjectsOfExam(exam.getId())
+                ))
+                .toList();
+
+        return GetAllExamResponse.of(examResponses);
+    }
 }

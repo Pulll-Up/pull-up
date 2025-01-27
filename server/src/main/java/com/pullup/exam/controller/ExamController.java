@@ -1,5 +1,6 @@
 package com.pullup.exam.controller;
 
+import com.pullup.exam.dto.GetAllExamResponse;
 import com.pullup.exam.dto.GetExamDetailsResponse;
 import com.pullup.exam.dto.GetExamPageResponse;
 import com.pullup.exam.dto.GetExamResponse;
@@ -80,5 +81,15 @@ public class ExamController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getExamPageResponse);
     }
+
+    @GetMapping("/me/all")
+    public ResponseEntity<GetAllExamResponse> getAllExams() {
+        Long memberId = TEMP_MEMBER_ID;
+        GetAllExamResponse getAllExamResponse = examService.getAllExams(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getAllExamResponse);
+    }
+
 
 }
