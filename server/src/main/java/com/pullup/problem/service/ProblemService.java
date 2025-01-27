@@ -88,7 +88,8 @@ public class ProblemService {
     }
 
     public GetAllWrongProblemsResponse getAllWrongProblem(Long memberId) {
-        List<WrongProblemDto> wrongProblemDtos = examProblemRepository.findByExamMemberIdAndAnswerStatusFalse(memberId)
+        List<WrongProblemDto> wrongProblemDtos = examProblemRepository.findByExamMemberIdAndAnswerStatusFalseOrderByCreatedAtDesc(
+                        memberId)
                 .stream()
                 .map(examProblem -> WrongProblemDto.of(
                         examProblem.getProblem().getId(),

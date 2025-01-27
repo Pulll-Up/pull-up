@@ -17,6 +17,7 @@ public interface ExamProblemRepository extends CrudRepository<ExamProblem, Long>
             "JOIN FETCH ep.exam e " +
             "JOIN FETCH e.member m " +
             "WHERE m.id = :memberId " +
-            "AND ep.answerStatus = false")
-    List<ExamProblem> findByExamMemberIdAndAnswerStatusFalse(@Param("memberId") Long memberId);
+            "AND ep.answerStatus = false " +
+            "ORDER BY ep.createdAt DESC")
+    List<ExamProblem> findByExamMemberIdAndAnswerStatusFalseOrderByCreatedAtDesc(@Param("memberId") Long memberId);
 }
