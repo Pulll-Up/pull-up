@@ -122,6 +122,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void handleAccessToken(HttpServletRequest request) {
         String accessToken = jwtUtil.resolveAccessTokenFromHeader(request);
+        log.info("Access Token: {}", accessToken);
         jwtTokenValidator.validateJwtToken(accessToken, TokenType.ACCESS_TOKEN);
         SecurityUtil.createAuthentication(jwtUtil.resolveMemberIdFromJwtToken(accessToken));
     }
