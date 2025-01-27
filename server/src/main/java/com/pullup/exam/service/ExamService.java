@@ -169,11 +169,15 @@ public class ExamService {
                 .map(examProblem -> ExamResultDetailDto.of(
                         examProblem,
                         problemOptionsMap,
-                        bookmarkStatusMap,
-                        exam.getRound()))
+                        bookmarkStatusMap
+                ))
                 .toList();
 
-        return new GetExamResultResponse(examResultDetailDtos);
+        return GetExamResultResponse.of(
+                String.format("제 %d회 모의고사", exam.getRound()),
+                exam.getScore(),
+                examResultDetailDtos
+        );
     }
 
     private Map<Long, Boolean> getBookmarkStatusMap(List<Long> problemIds, Long memberId) {
