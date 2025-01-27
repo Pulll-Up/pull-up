@@ -54,7 +54,8 @@ public class ProblemService {
 
 
     public GetBookmarkedProblemsResponse getBookmarkedProblems(Long memberId) {
-        List<Bookmark> bookmarks = bookmarkRepository.findBookmarkedProblemsByMemberIdWithProblem(memberId);
+        List<Bookmark> bookmarks = bookmarkRepository.findBookmarkedProblemsByMemberIdWithProblemOrderByModifiedAtDesc(
+                memberId);
         List<BookmarkedProblemDto> bookmarkedProblemDtos = bookmarks.stream()
                 .map(BookmarkedProblemDto::of)
                 .toList();
