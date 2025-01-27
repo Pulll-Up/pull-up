@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.pullup.exam.dto.GetExamScoresResponse;
+import com.pullup.exam.dto.GetExamStrengthResponse;
 @RestController
 @RequestMapping("/api/v1/exam")
 @RequiredArgsConstructor
@@ -58,4 +59,23 @@ public class ExamController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getExamResultResponse);
     }
+
+
+    @GetMapping("/me/score")
+    public ResponseEntity<GetExamScoresResponse> getRecentFiveExamScores() {
+        Long memberId = TEMP_MEMBER_ID;
+        GetExamScoresResponse getExamScoresResponse = examService.getRecentFiveExamScores(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getExamScoresResponse);
+    }
+
+    @GetMapping("/me/correct-rate")
+    public ResponseEntity<GetExamStrengthResponse> getExamStrength() {
+        GetExamStrengthResponse getExamStrengthResponse = examService.getExamStrength(TEMP_MEMBER_ID);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getExamStrengthResponse);
+    }
+
 }

@@ -7,9 +7,11 @@ import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
+import com.pullup.problem.dto.GetAllWrongProblemsResponse;
 import com.pullup.problem.dto.GetProblemResponse;
 import com.pullup.problem.dto.GetRecentWrongProblemsResponse;
 import com.pullup.problem.dto.RecentWrongQuestionDto;
+import com.pullup.problem.dto.WrongProblemDto;
 import com.pullup.problem.repository.BookmarkRepository;
 import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
@@ -83,5 +85,19 @@ public class ProblemService {
                 .collect(Collectors.toList());
 
         return new GetRecentWrongProblemsResponse(wrongProblems);
+    }
+
+    public GetAllWrongProblemsResponse getAllWrongProblem(Long memberId) {
+        List<WrongProblemDto> wrongProblemDtos = examProblemRepository.findByExamMemberIdAndAnswerStatusFalse(memberId)
+                .stream()
+                .map(examProblem -> WrongProblemDto.of(
+                        examProblem.getProblem().getId(),
+                        examProblem.getProblem().getQuestion(),
+                        examProblem.getProblem().getSubject(),
+                        examProblem.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
+
+        return GetAllWrongProblemsResponse.of(wrongProblemDtos);
     }
 }

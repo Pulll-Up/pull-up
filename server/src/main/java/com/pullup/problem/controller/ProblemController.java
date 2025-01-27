@@ -1,5 +1,6 @@
 package com.pullup.problem.controller;
 
+import com.pullup.problem.dto.GetAllWrongProblemsResponse;
 import com.pullup.problem.dto.GetProblemResponse;
 import com.pullup.problem.dto.GetRecentWrongProblemsResponse;
 import com.pullup.problem.service.ProblemService;
@@ -41,5 +42,14 @@ public class ProblemController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getRecentWrongProblems);
+    }
+
+    @GetMapping("/me/all")
+    public ResponseEntity<GetAllWrongProblemsResponse> getAllWrongProblems() {
+        Long memberId = TEMP_MEMBER_ID;
+        GetAllWrongProblemsResponse getAllWrongProblemsResponse = problemService.getAllWrongProblem(TEMP_MEMBER_ID);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getAllWrongProblemsResponse);
     }
 }
