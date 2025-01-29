@@ -1,6 +1,7 @@
 package com.pullup.auth.OAuth.controller;
 
 
+import com.pullup.auth.OAuth.dto.request.SignUpRequest;
 import com.pullup.auth.OAuth.dto.response.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "OAuth", description = "OAuth 관련 API")
 public interface OAuthApi {
@@ -49,4 +51,22 @@ public interface OAuthApi {
             }
     )
     ResponseEntity<LoginResponse> signIn(HttpServletRequest request, HttpServletResponse response);
+
+    @Operation(
+            summary = "회원가입",
+            description = "사용자의 선호 과목을 입력받아 회원가입을 진행합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "회원가입 성공",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "회원가입 실패",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest);
 }
