@@ -7,6 +7,7 @@ import com.pullup.common.util.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,8 @@ public class OAuthController implements OAuthApi {
     @PostMapping("/signin")
     public ResponseEntity<LoginResponse> signIn(HttpServletRequest request, HttpServletResponse response) {
         LoginResponse loginResponse = oAuthService.signIn(request, response);
-        return ResponseEntity.ok().body(loginResponse);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(loginResponse);
     }
 
     @Override
@@ -32,6 +34,7 @@ public class OAuthController implements OAuthApi {
     public ResponseEntity<Void> signUp(@RequestBody SignUpRequest singUpRequest) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
         oAuthService.signUp(memberId, singUpRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .build();
     }
 }
