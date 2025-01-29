@@ -25,7 +25,7 @@ public class OAuthService {
     private final MemberHistoryService memberHistoryService;
 
     public LoginResponse signIn(HttpServletRequest request, HttpServletResponse response) {
-        String accessToken = CookieUtil.extractAccessTokenFromCookie(request)
+        String accessToken = CookieUtil.extractTokenFromCookie(request, "access_token")
                 .orElseThrow(() -> new BadRequestException(ErrorMessage.ERR_COOKIE_NOT_FOUND));
 
         jwtUtil.extractAccessTokenFromCookieAndIssueAccessTokenInHeader(accessToken, response);
