@@ -5,6 +5,8 @@ import com.pullup.common.exception.NotFoundException;
 import com.pullup.exam.repository.ExamProblemRepository;
 import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
+import com.pullup.problem.controller.BookmarkedProblemDto;
+import com.pullup.problem.controller.GetBookmarkedProblemsResponse;
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
 import com.pullup.problem.dto.GetProblemResponse;
@@ -58,6 +60,16 @@ public class ProblemService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
     }
 
+
+    public GetBookmarkedProblemsResponse getBookmarkedProblems(Long memberId) {
+        List<Bookmark> bookmarks = bookmarkRepository.findBookmarkedProblemsByMemberIdWithProblemOrderByModifiedAtDesc(
+                memberId);
+        List<BookmarkedProblemDto> bookmarkedProblemDtos = bookmarks.stream()
+                .map(BookmarkedProblemDto::of)
+                .toList();
+
+        return GetBookmarkedProblemsResponse.of(bookmarkedProblemDtos);
+    }
 
     public GetProblemResponse getProblem(Long problemId) {
         Problem problem = problemRepository.findById(problemId)

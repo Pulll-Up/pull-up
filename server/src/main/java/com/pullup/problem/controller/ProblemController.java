@@ -26,6 +26,15 @@ public class ProblemController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @GetMapping("/archive/all")
+    public ResponseEntity<GetBookmarkedProblemsResponse> getBookmarkedProblems() {
+        GetBookmarkedProblemsResponse getBookmarkedProblemsResponse = problemService.getBookmarkedProblems(
+                TEMP_MEMBER_ID);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getBookmarkedProblemsResponse);
+    }
+
     @GetMapping("/{problemId}")
     public ResponseEntity<GetProblemResponse> getProblem(@PathVariable("problemId") Long problemId) {
         GetProblemResponse getProblemResponse = problemService.getProblem(problemId);
@@ -41,5 +50,6 @@ public class ProblemController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getRecentWrongProblems);
+
     }
 }
