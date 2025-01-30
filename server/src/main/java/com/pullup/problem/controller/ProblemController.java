@@ -1,5 +1,7 @@
 package com.pullup.problem.controller;
 
+import com.pullup.problem.dto.GetProblemResponse;
+import com.pullup.problem.dto.GetRecentWrongProblemsResponse;
 import com.pullup.problem.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,5 +33,23 @@ public class ProblemController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getBookmarkedProblemsResponse);
+    }
+
+    @GetMapping("/{problemId}")
+    public ResponseEntity<GetProblemResponse> getProblem(@PathVariable("problemId") Long problemId) {
+        GetProblemResponse getProblemResponse = problemService.getProblem(problemId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getProblemResponse);
+    }
+
+    @GetMapping("/wrong/recent")
+    public ResponseEntity<GetRecentWrongProblemsResponse> getRecentWrongProblems() {
+        Long memberId = TEMP_MEMBER_ID;
+        GetRecentWrongProblemsResponse getRecentWrongProblems = problemService.getRecentWrongProblems(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getRecentWrongProblems);
+
     }
 }

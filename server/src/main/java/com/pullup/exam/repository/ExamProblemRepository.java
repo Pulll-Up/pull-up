@@ -6,4 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface ExamProblemRepository extends CrudRepository<ExamProblem, Long> {
     List<ExamProblem> findAllByExamId(Long examId);
+
+    List<ExamProblem> findTop10ByExamMemberIdAndAnswerStatusOrderByCreatedAtDesc(Long memberId, boolean answerStatus);
 }

@@ -1,9 +1,15 @@
 package com.pullup.common.config;
 
+import com.pullup.auth.OAuth.service.PrincipalOAuth2UserService;
+import com.pullup.auth.jwt.domain.JwtTokenValidator;
 import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
+import com.pullup.auth.jwt.util.JwtUtil;
+import com.pullup.common.Handler.OAuth2AuthenticationFailureHandler;
+import com.pullup.common.Handler.OAuth2AuthenticationSuccessHandler;
 import com.pullup.common.filter.JwtAuthenticationFilter;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -20,13 +26,23 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtUtil jwtUtil;
+    private final JwtTokenValidator jwtTokenValidator;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final PrincipalOAuth2UserService principalOAuth2UserService;
 
     private static final String[] SWAGGER_URL = {
             "/api/**"
+    };
+
+    private static final String[] AUTH_WHITELIST = {
+            "/**"
     };
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -44,6 +60,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(SWAGGER_URL).permitAll()
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 )
 
@@ -52,7 +69,13 @@ public class SecurityConfig {
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login((oauth2) -> oauth2
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+                        .failureHandler(oAuth2AuthenticationFailureHandler)
+                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
+                                .userService(principalOAuth2UserService)))
+
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint))
         ;
@@ -79,5 +102,9 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    private JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtUtil, jwtTokenValidator, customAuthenticationEntryPoint);
     }
 }

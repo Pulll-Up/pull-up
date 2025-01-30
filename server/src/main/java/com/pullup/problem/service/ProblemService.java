@@ -2,15 +2,21 @@ package com.pullup.problem.service;
 
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
+import com.pullup.exam.repository.ExamProblemRepository;
 import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.controller.BookmarkedProblemDto;
 import com.pullup.problem.controller.GetBookmarkedProblemsResponse;
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
+import com.pullup.problem.dto.GetProblemResponse;
+import com.pullup.problem.dto.GetRecentWrongProblemsResponse;
+import com.pullup.problem.dto.RecentWrongQuestionDto;
 import com.pullup.problem.repository.BookmarkRepository;
+import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +27,8 @@ public class ProblemService {
     private final ProblemRepository problemRepository;
     private final BookmarkRepository bookmarkRepository;
     private final MemberRepository memberRepository;
+    private final ProblemOptionRepository problemOptionRepository;
+    private final ExamProblemRepository examProblemRepository;
 
     @Transactional
     public void toggleProblemBookmark(Long problemId, Long memberId) {
@@ -61,5 +69,31 @@ public class ProblemService {
                 .toList();
 
         return GetBookmarkedProblemsResponse.of(bookmarkedProblemDtos);
+    }
+
+    public GetProblemResponse getProblem(Long problemId) {
+        Problem problem = problemRepository.findById(problemId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_PROBLEM_NOT_FOUND));
+
+        List<String> options = problemOptionRepository.findAllByProblemId(problemId)
+                .stream()
+                .map(problemOption -> problemOption.getContent())
+                .collect(Collectors.toList());
+
+        return GetProblemResponse.of(problem, options);
+    }
+
+    public GetRecentWrongProblemsResponse getRecentWrongProblems(Long memberId) {
+        List<RecentWrongQuestionDto> wrongProblems = examProblemRepository.findTop10ByExamMemberIdAndAnswerStatusOrderByCreatedAtDesc(
+                        memberId, false)
+                .stream()
+                .map(examProblem -> new RecentWrongQuestionDto(
+                        examProblem.getProblem().getId(),
+                        examProblem.getProblem().getQuestion(),
+                        examProblem.getProblem().getSubject()
+                ))
+                .collect(Collectors.toList());
+
+        return new GetRecentWrongProblemsResponse(wrongProblems);
     }
 }

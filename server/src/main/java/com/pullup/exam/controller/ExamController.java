@@ -44,7 +44,8 @@ public class ExamController {
     @PostMapping("/{examId}")
     public ResponseEntity<Void> postExamWithAnswer(@PathVariable("examId") Long id,
                                                    @RequestBody PostExamWithAnswerReqeust postExamWithAnswerReqeust) {
-        examService.postExamWithAnswer(id, postExamWithAnswerReqeust);
+        Long memberId = TEMP_MEMBER_ID;
+        examService.postExamWithAnswer(id, postExamWithAnswerReqeust, memberId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .build();

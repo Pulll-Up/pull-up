@@ -37,7 +37,7 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	// Swagger
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
 
 	// Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -49,6 +49,9 @@ dependencies {
 
 	// Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// OAuth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 }
 
 tasks.named('test') {

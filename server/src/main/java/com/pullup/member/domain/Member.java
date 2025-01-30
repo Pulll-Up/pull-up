@@ -1,6 +1,7 @@
 package com.pullup.member.domain;
 
-import com.pullup.auth.type.OAuthProvider;
+import com.pullup.auth.OAuth.domain.OAuth2UserInfo;
+import com.pullup.auth.OAuth.domain.type.OAuthProvider;
 import com.pullup.common.auditing.BaseTimeEntity;
 import com.pullup.member.type.Role;
 import jakarta.persistence.Column;
@@ -14,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -48,6 +50,27 @@ public class Member extends BaseTimeEntity {
     private String profileImageUrl;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_game_result_id", nullable = false)
+    @JoinColumn(name = "member_game_result_id")
     private MemberGameResult memberGameResult;
+
+    @Builder
+    private Member(String name, String email, Role role, OAuthProvider oAuthProvider, String providerId, String profileImageUrl) {
+        this.name = name;
+        this.email = email;
+        this.role = role;
+        this.oAuthProvider = oAuthProvider;
+        this.providerId = providerId;
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public static Member of(OAuth2UserInfo oAuth2UserInfo){
+        return Member.builder()
+                .name(oAuth2UserInfo.getName())
+                .email(oAuth2UserInfo.getEmail())
+                .role(Role.USER)
+                .oAuthProvider(oAuth2UserInfo.getProvider())
+                .providerId(oAuth2UserInfo.getProviderId())
+                .profileImageUrl(oAuth2UserInfo.getProfileImageUrl())
+                .build();
+    }
 }
