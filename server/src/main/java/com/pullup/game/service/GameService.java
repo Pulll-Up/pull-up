@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GameRoomService {
+public class GameService {
 
     private final GameRoomRepository gameRoomRepository;
     private final MemberService memberService;
