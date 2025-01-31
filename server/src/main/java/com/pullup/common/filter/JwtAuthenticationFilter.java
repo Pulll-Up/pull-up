@@ -2,12 +2,10 @@ package com.pullup.common.filter;
 
 import static com.pullup.auth.jwt.exception.JwtExceptionMessage.ERR_NOT_EXISTS_JWT;
 
-import com.pullup.auth.jwt.config.JwtConstants;
 import com.pullup.auth.jwt.domain.JwtTokenValidator;
 import com.pullup.auth.jwt.domain.TokenType;
 import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
 import com.pullup.auth.jwt.exception.JwtAuthenticationException;
-import com.pullup.auth.jwt.util.CookieUtil;
 import com.pullup.auth.jwt.util.JwtUtil;
 import com.pullup.common.util.SecurityUtil;
 import jakarta.servlet.FilterChain;
@@ -20,7 +18,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -68,6 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 handleRefreshToken(request, response);
             } else if (isLogoutRequest(request)) {
                 handleLogout(request, response);
+                return;
             } else {
                 handleAccessToken(request);
             }
@@ -107,14 +105,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void handleLogout(HttpServletRequest request, HttpServletResponse response) {
-        if (!SecurityUtil.isAuthenticated()) {
-            return;
-        }
-        ResponseCookie responseCookie = CookieUtil.createDeleteTokenAtCookie(JwtConstants.REFRESH_TOKEN_COOKIE_NAME);
-        response.addHeader("set-cookie", responseCookie.toString());
         jwtUtil.clearAuthenticationAndCookies(request, response);
     }
-
 
     private void handleAccessToken(HttpServletRequest request) {
         String accessToken = jwtUtil.resolveAccessTokenFromHeader(request);

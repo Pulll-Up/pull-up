@@ -38,15 +38,15 @@ public class CookieUtil {
                 .build();
     }
 
-    public static Optional<String> extractAccessTokenFromCookie(HttpServletRequest request) {
+    public static Optional<String> extractTokenFromCookie(HttpServletRequest request, String tokenName) {
         Cookie[] cookies = request.getCookies();
-        String accessToken = null;
+        String token = null;
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("access_token")) {
-                accessToken = cookie.getValue();
+            if (cookie.getName().equals(tokenName)) {
+                token = cookie.getValue();
                 break;
             }
         }
-        return Optional.ofNullable(accessToken);
+        return Optional.ofNullable(token);
     }
 }

@@ -8,6 +8,8 @@ import com.pullup.auth.jwt.config.JwtConstants;
 import com.pullup.auth.jwt.config.JwtProperties;
 import com.pullup.auth.jwt.config.JwtSecretKey;
 import com.pullup.auth.jwt.domain.JwtToken;
+import com.pullup.common.exception.BadRequestException;
+import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.util.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -81,12 +83,8 @@ public class JwtUtil {
     }
 
     public String resolveRefreshTokenFromCookie(HttpServletRequest request) {
-        return Optional.ofNullable(request.getCookies())
-                .stream()
-                .flatMap(Arrays::stream)
-                .filter(cookie -> REFRESH_TOKEN_COOKIE_NAME.equals(cookie.getName()))
-                .findFirst()
-                .toString();
+        return CookieUtil.extractTokenFromCookie(request, "refresh_token")
+                .orElseThrow(() -> new BadRequestException(ErrorMessage.ERR_COOKIE_NOT_FOUND));
     }
 
     public Long resolveMemberIdFromJwtToken(String token) {
@@ -104,6 +102,7 @@ public class JwtUtil {
 
     public void clearAuthenticationAndCookies(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = resolveRefreshTokenFromCookie(request);
+
         Long memberId = resolveMemberIdFromJwtToken(refreshToken);
         redisUtil.delete(JwtConstants.REFRESH_TOKEN_PREFIX + memberId);
 
