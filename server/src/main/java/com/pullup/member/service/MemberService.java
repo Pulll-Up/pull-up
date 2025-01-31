@@ -6,6 +6,7 @@ import com.pullup.common.exception.NotFoundException;
 import com.pullup.member.domain.InterestSubject;
 import com.pullup.member.domain.Member;
 import com.pullup.member.domain.MemberExamStatistic;
+import com.pullup.member.dto.response.MemberProfileResponse;
 import com.pullup.member.repository.InterestSubjectRepository;
 import com.pullup.member.repository.MemberExamStatisticRepository;
 import com.pullup.member.repository.MemberRepository;
@@ -51,8 +52,19 @@ public class MemberService {
         interestSubjectRepository.saveAll(interestSubjects);
     }
 
+    public MemberProfileResponse getMemberProfile(Long memberId) {
+        Member member = findMemberById(memberId);
+        List<String> interestSubjects = findInterestSubjectsByMemberId(memberId).stream().map(InterestSubject::getSubject).toList();
+
+        return MemberProfileResponse.of(member, interestSubjects);
+    }
+
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
+    }
+
+    private List<InterestSubject> findInterestSubjectsByMemberId(Long memberId) {
+        return interestSubjectRepository.findByMemberId(memberId);
     }
 }

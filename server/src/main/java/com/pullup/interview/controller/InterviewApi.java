@@ -44,6 +44,7 @@ public interface InterviewApi {
                             content = @Content(schema = @Schema(implementation = InterviewAnswerResponse.class))
                     ),
                     @ApiResponse(
+
                             responseCode = "404",
                             description = "오늘의 문제가 없음",
                             content = @Content(schema = @Schema(hidden = true))
