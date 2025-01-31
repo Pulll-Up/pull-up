@@ -14,7 +14,11 @@ public record InterviewResponse(
         List<String> keywords
 ) {
 
-    public static InterviewResponse of(Long interviewId, String question, List<String> keywords) {
+    public static InterviewResponse of(
+            Long interviewId,
+            String question,
+            List<String> keywords
+    ) {
         return InterviewResponse.builder()
                 .interviewId(interviewId)
                 .question(question)
