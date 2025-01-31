@@ -6,8 +6,8 @@ import com.pullup.interview.domain.Interview;
 import com.pullup.interview.domain.InterviewAnswer;
 import com.pullup.interview.domain.InterviewHint;
 import com.pullup.interview.dto.MyInterviewAnswerDto;
-import com.pullup.interview.dto.request.InterviewAnswerRequest;
-import com.pullup.interview.dto.response.InterviewAnswerResponse;
+import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
+import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.repository.InterviewAnswerRepository;
@@ -38,10 +38,10 @@ public class InterviewService {
         return InterviewResponse.of(interview.getId(), interview.getQuestion(), keywords);
     }
 
-    public InterviewAnswerResponse submitInterviewAnswer(
+    public MyInterviewAnswerResponse submitInterviewAnswer(
             Long MemberId,
             Long interviewId,
-            InterviewAnswerRequest interviewAnswerRequest
+            MyInterviewAnswerRequest myInterviewAnswerRequest
     ) {
         Member member = memberService.findMemberById(MemberId);
 
@@ -51,10 +51,10 @@ public class InterviewService {
         InterviewAnswer interviewAnswer = interviewAnswerRepository.save(InterviewAnswer.createInterviewAnswer(
                 member,
                 interview,
-                interviewAnswerRequest.answer()
+                myInterviewAnswerRequest.answer()
         ));
 
-        return InterviewAnswerResponse.of(interviewId, interviewAnswer.getId());
+        return MyInterviewAnswerResponse.of(interviewId, interviewAnswer.getId());
     }
 
     public MyInterviewAnswersResponse getMyInterviewAnswers(Long memberId) {

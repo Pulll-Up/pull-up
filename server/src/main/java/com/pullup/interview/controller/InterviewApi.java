@@ -1,7 +1,7 @@
 package com.pullup.interview.controller;
 
-import com.pullup.interview.dto.request.InterviewAnswerRequest;
-import com.pullup.interview.dto.response.InterviewAnswerResponse;
+import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
+import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,7 +47,7 @@ public interface InterviewApi {
                     @ApiResponse(
                             responseCode = "200",
                             description = "오늘의 문제 제출 성공",
-                            content = @Content(schema = @Schema(implementation = InterviewAnswerResponse.class))
+                            content = @Content(schema = @Schema(implementation = MyInterviewAnswerResponse.class))
                     ),
                     @ApiResponse(
                             responseCode = "401",
@@ -61,8 +61,8 @@ public interface InterviewApi {
                     )
             }
     )
-    public ResponseEntity<InterviewAnswerResponse> submitInterviewAnswer(@PathVariable Long interviewId,
-                                                                         @Valid @RequestBody InterviewAnswerRequest interviewAnswerRequest);
+    public ResponseEntity<MyInterviewAnswerResponse> submitInterviewAnswer(@PathVariable Long interviewId,
+                                                                           @Valid @RequestBody MyInterviewAnswerRequest myInterviewAnswerRequest);
 
     @Operation(
             summary = "멤버가 풀었던 오늘의 문제 전체 조회",
