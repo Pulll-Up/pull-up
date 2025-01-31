@@ -8,6 +8,7 @@ import com.pullup.member.domain.Member;
 import com.pullup.member.domain.MemberExamStatistic;
 import com.pullup.member.dto.response.MemberProfileResponse;
 import com.pullup.member.repository.InterestSubjectRepository;
+import com.pullup.member.repository.LikeRepository;
 import com.pullup.member.repository.MemberExamStatisticRepository;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Subject;
@@ -26,6 +27,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final InterestSubjectRepository interestSubjectRepository;
     private final MemberExamStatisticRepository memberExamStatisticRepository;
+    private final LikeRepository likeRepository;
 
     @Transactional
     public void saveMemberExamStatistic(Long memberId) {
