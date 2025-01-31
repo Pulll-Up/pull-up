@@ -1,5 +1,6 @@
 package com.pullup.interview.controller;
 
+import com.pullup.common.util.SecurityUtil;
 import com.pullup.interview.dto.request.InterviewAnswerRequest;
 import com.pullup.interview.dto.response.InterviewAnswerResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
@@ -35,7 +36,8 @@ public class InterviewController implements InterviewApi {
     @PostMapping("/{interviewId}/submit")
     public ResponseEntity<InterviewAnswerResponse> submitInterviewAnswer(@PathVariable("interviewId") Long interviewId,
                                                                          @Valid @RequestBody InterviewAnswerRequest interviewAnswerRequest) {
-        InterviewAnswerResponse interviewAnswerResponse = interviewService.submitInterviewAnswer(interviewId, interviewAnswerRequest);
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        InterviewAnswerResponse interviewAnswerResponse = interviewService.submitInterviewAnswer(memberId, interviewId, interviewAnswerRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(interviewAnswerResponse);
