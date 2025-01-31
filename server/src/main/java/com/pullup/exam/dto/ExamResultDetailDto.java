@@ -16,15 +16,13 @@ public record ExamResultDetailDto(
         boolean bookmarkStatus,
         String explanation,
         int correctRate,
-        String round,
         String subject,
         String problemType
 ) {
     public static ExamResultDetailDto of(
             ExamProblem examProblem,
             Map<Long, List<String>> problemOptionsMap,
-            Map<Long, Boolean> bookmarkStatusMap,
-            int examRound
+            Map<Long, Boolean> bookmarkStatusMap
     ) {
         Problem problem = examProblem.getProblem();
         return new ExamResultDetailDto(
@@ -37,10 +35,9 @@ public record ExamResultDetailDto(
                 bookmarkStatusMap.getOrDefault(problem.getId(), false),
                 problem.getExplanation(),
                 problem.getCorrectRate(),
-                String.format("제 %d회 모의고사", examRound),
                 problem.getSubject().name(),
                 problem.getProblemType().name()
         );
     }
-    
+
 }

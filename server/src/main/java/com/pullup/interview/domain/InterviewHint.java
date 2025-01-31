@@ -1,5 +1,6 @@
 package com.pullup.interview.domain;
 
+import com.pullup.common.auditing.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "interview_hint")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class InterviewHint {
+public class InterviewHint extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

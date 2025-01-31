@@ -4,6 +4,8 @@ import com.pullup.exam.dto.GetExamDetailsResponse;
 import com.pullup.exam.dto.GetExamPageResponse;
 import com.pullup.exam.dto.GetExamResponse;
 import com.pullup.exam.dto.GetExamResultResponse;
+import com.pullup.exam.dto.GetExamScoresResponse;
+import com.pullup.exam.dto.GetExamStrengthResponse;
 import com.pullup.exam.dto.PostExamRequest;
 import com.pullup.exam.dto.PostExamWithAnswerReqeust;
 import com.pullup.exam.service.ExamService;
@@ -48,7 +50,8 @@ public class ExamController {
     @PostMapping("/{examId}")
     public ResponseEntity<Void> postExamWithAnswer(@PathVariable("examId") Long id,
                                                    @RequestBody PostExamWithAnswerReqeust postExamWithAnswerReqeust) {
-        examService.postExamWithAnswer(id, postExamWithAnswerReqeust);
+        Long memberId = TEMP_MEMBER_ID;
+        examService.postExamWithAnswer(id, postExamWithAnswerReqeust, memberId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .build();
@@ -79,6 +82,24 @@ public class ExamController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getExamPageResponse);
+    }
+
+
+    @GetMapping("/me/score")
+    public ResponseEntity<GetExamScoresResponse> getRecentFiveExamScores() {
+        Long memberId = TEMP_MEMBER_ID;
+        GetExamScoresResponse getExamScoresResponse = examService.getRecentFiveExamScores(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getExamScoresResponse);
+    }
+
+    @GetMapping("/me/correct-rate")
+    public ResponseEntity<GetExamStrengthResponse> getExamStrength() {
+        GetExamStrengthResponse getExamStrengthResponse = examService.getExamStrength(TEMP_MEMBER_ID);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getExamStrengthResponse);
     }
 
 }

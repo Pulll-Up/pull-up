@@ -23,4 +23,7 @@ public class Interview  extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String answer;
+
+    @Column(nullable = false)
+    private String subject;
 }

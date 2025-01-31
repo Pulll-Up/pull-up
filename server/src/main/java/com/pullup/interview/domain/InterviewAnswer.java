@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,15 +27,10 @@ public class InterviewAnswer extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String grade;
-
-    @Column(nullable = false)
     private String answer;
 
-    @Column(nullable = false)
     private String strength;
 
-    @Column(nullable = false)
     private String weakness;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,4 +40,19 @@ public class InterviewAnswer extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interview_id", nullable = false)
     private Interview interview;
+
+    @Builder
+    private InterviewAnswer(Member member, Interview interview, String answer) {
+        this.member = member;
+        this.interview = interview;
+        this.answer = answer;
+    }
+
+    public static InterviewAnswer createInterviewAnswer(Member member, Interview interview, String answer) {
+        return InterviewAnswer.builder()
+                .member(member)
+                .interview(interview)
+                .answer(answer)
+                .build();
+    }
 }

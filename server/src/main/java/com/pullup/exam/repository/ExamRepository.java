@@ -25,6 +25,10 @@ public interface ExamRepository extends CrudRepository<Exam, Long> {
     Integer countByMemberId(@Param("memberId") Long memberId);
 
     Optional<Exam> findFirstByMemberIdOrderByCreatedAtDesc(Long memberId);
-    
+
     Page<Exam> findAllByMemberId(Long memberId, Pageable pageable);
+
+    @Query("SELECT e FROM Exam e WHERE e.member.id = :memberId ORDER BY e.createdAt DESC LIMIT 5")
+    List<Exam> findTop5ByMemberIdOrderByCreatedAtDesc(@Param("memberId") Long memberId);
+
 }
