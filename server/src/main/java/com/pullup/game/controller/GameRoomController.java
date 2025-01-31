@@ -22,7 +22,7 @@ public class GameRoomController {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
         CreateRoomResponse createRoomResponse = gameRoomService.createRoom(memberId);
 
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(createRoomResponse);
     }
 

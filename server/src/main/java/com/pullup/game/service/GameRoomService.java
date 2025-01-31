@@ -1,12 +1,10 @@
 package com.pullup.game.service;
 
-import com.pullup.common.exception.ErrorMessage;
-import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
 import com.pullup.game.dto.response.CreateRoomResponse;
 import com.pullup.game.repository.GameRoomRepository;
 import com.pullup.member.domain.Member;
-import com.pullup.member.repository.MemberRepository;
+import com.pullup.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +13,11 @@ import org.springframework.stereotype.Service;
 public class GameRoomService {
 
     private final GameRoomRepository gameRoomRepository;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     public CreateRoomResponse createRoom(Long memberId) {
         // 멤버 정보 조회
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
+        Member member = memberService.findMemberById(memberId);
 
         // 게임방 생성
         GameRoom gameRoom = GameRoom.of(
