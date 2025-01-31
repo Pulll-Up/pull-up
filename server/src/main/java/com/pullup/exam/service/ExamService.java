@@ -12,6 +12,8 @@ import com.pullup.exam.dto.ExamResultDetailDto;
 import com.pullup.exam.dto.ExamScoreDto;
 import com.pullup.exam.dto.ExamStrengthDto;
 import com.pullup.exam.dto.GetExamDetailsResponse;
+import com.pullup.exam.dto.GetExamPageResponse;
+import com.pullup.exam.dto.GetExamResponse;
 import com.pullup.exam.dto.GetExamResultResponse;
 import com.pullup.exam.dto.GetExamScoresResponse;
 import com.pullup.exam.dto.GetExamStrengthResponse;
@@ -37,7 +39,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -285,6 +290,52 @@ public class ExamService {
     private Exam findExamById(Long examId) {
         return examRepository.findById(examId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_EXAM_NOT_FOUND));
+    }
+
+    public GetExamResponse getExam(Long memberId) {
+        Exam exam = findFirstExamByMemberId(memberId);
+        List<Subject> subjects = findSubjectsOfExam(exam.getId());
+
+        return GetExamResponse.of(exam, subjects);
+    }
+
+    // 시험에 있는 문제 조회해서, 문제 과목 알아오기
+    private List<Subject> findSubjectsOfExam(Long examId) {
+        return examProblemRepository.findByExamId(examId)
+                .stream()
+                .map(examProblem -> examProblem.getProblem().getSubject())
+                .distinct()
+                .toList();
+    }
+
+    // 멤버의 가장 최근 시험 알아오기
+    private Exam findFirstExamByMemberId(Long memberId) {
+        return examRepository.findFirstByMemberIdOrderByCreatedAtDesc(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
+    }
+
+    public GetExamPageResponse getExamPageOrderByCreatedAt(Pageable pageable, Long memberId) {
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by("createdAt").descending()
+        );
+
+        Page<Exam> examPage = examRepository.findAllByMemberId(memberId, sortedPageable);
+
+        List<GetExamResponse> content = examPage.stream()
+                .map(exam -> GetExamResponse.of(
+                        exam,
+                        findSubjectsOfExam(exam.getId())
+                ))
+                .toList();
+
+        return GetExamPageResponse.of(
+                content,
+                examPage.getTotalPages(),
+                (int) examPage.getTotalElements(),
+                examPage.isLast()
+        );
     }
 
 

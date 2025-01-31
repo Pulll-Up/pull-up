@@ -9,6 +9,9 @@ import org.springframework.data.repository.query.Param;
 public interface ExamProblemRepository extends CrudRepository<ExamProblem, Long> {
     List<ExamProblem> findAllByExamId(Long examId);
 
+    @Query("SELECT ep FROM ExamProblem ep JOIN FETCH ep.problem WHERE ep.exam.id = :examId")
+    List<ExamProblem> findByExamId(Long examId);
+
     List<ExamProblem> findTop10ByExamMemberIdAndAnswerStatusOrderByCreatedAtDesc(Long memberId, boolean answerStatus);
 
     @Query("SELECT ep, p, e, m " +
