@@ -7,6 +7,7 @@ import com.pullup.interview.domain.InterviewAnswer;
 import com.pullup.interview.domain.InterviewHint;
 import com.pullup.interview.dto.MyInterviewAnswerDto;
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
+import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
@@ -69,5 +70,9 @@ public class InterviewService {
                 .collect(Collectors.toList());
 
         return MyInterviewAnswersResponse.of(myInterviewAnswerDtos);
+    }
+
+    public InterviewAnswersResponse getInterviewAnswers(Long memberId, Long interviewId) {
+
     }
 }

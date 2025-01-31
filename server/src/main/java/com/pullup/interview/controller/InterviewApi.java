@@ -1,6 +1,7 @@
 package com.pullup.interview.controller;
 
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
+import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
@@ -86,4 +87,27 @@ public interface InterviewApi {
             }
     )
     public ResponseEntity<MyInterviewAnswersResponse> getMyInterviewAnswers();
+
+    @Operation(
+            summary = "오늘의 질문에 대한 답변 전체 조회",
+            description = "오늘의 질문에 대한 답변 전체를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "오늘의 질문에 대한 답변 전체 조회 성공",
+                            content = @Content(schema = @Schema(implementation = InterviewAnswersResponse.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "면접 질문을 찾을 수 없습니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<InterviewAnswersResponse> getInterviewAnswers(@PathVariable Long interviewId);
 }
