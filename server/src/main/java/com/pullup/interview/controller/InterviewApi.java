@@ -2,9 +2,9 @@ package com.pullup.interview.controller;
 
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
+import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
-import com.pullup.interview.dto.response.InterviewResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -81,7 +81,7 @@ public interface InterviewApi {
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "면접 질문을 찾을 수 없습니다.",
+                            description = "면접 답변을 찾을 수 없습니다.",
                             content = @Content(schema = @Schema(hidden = true))
                     )
             }
@@ -104,7 +104,7 @@ public interface InterviewApi {
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "면접 질문을 찾을 수 없습니다.",
+                            description = "면접 답변을 찾을 수 없습니다.",
                             content = @Content(schema = @Schema(hidden = true))
                     )
             }
