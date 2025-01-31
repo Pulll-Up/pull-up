@@ -45,7 +45,7 @@ public interface OAuthApi {
                     ),
                     @ApiResponse(
                             responseCode = "401",
-                            description = "인증 실패",
+                            description = "권한이 없는 사용자입니다.",
                             content = @Content(schema = @Schema(hidden = true))
                     )
             }

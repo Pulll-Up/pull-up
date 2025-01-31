@@ -26,8 +26,13 @@ public interface InterviewApi {
                             content = @Content(schema = @Schema(implementation = InterviewResponse.class))
                     ),
                     @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
                             responseCode = "404",
-                            description = "오늘의 문제가 없음",
+                            description = "면접 질문을 찾을 수 없습니다.",
                             content = @Content(schema = @Schema(hidden = true))
                     )
             }
@@ -44,8 +49,13 @@ public interface InterviewApi {
                             content = @Content(schema = @Schema(implementation = InterviewAnswerResponse.class))
                     ),
                     @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
                             responseCode = "404",
-                            description = "오늘의 문제가 없음",
+                            description = "면접 질문을 찾을 수 없습니다.",
                             content = @Content(schema = @Schema(hidden = true))
                     )
             }
