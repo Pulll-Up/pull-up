@@ -45,7 +45,7 @@ public class InterviewService {
         Interview interview = interviewRepository.findInterviewById(interviewId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
 
-        InterviewAnswer interviewAnswer = interviewAnswerRepository.save(InterviewAnswer.makeInterviewAnswer(
+        InterviewAnswer interviewAnswer = interviewAnswerRepository.save(InterviewAnswer.createInterviewAnswer(
                 member,
                 interview,
                 interviewAnswerRequest.answer()

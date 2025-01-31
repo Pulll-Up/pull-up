@@ -48,7 +48,7 @@ public class InterviewAnswer extends BaseTimeEntity {
         this.answer = answer;
     }
 
-    public static InterviewAnswer makeInterviewAnswer(Member member, Interview interview, String answer) {
+    public static InterviewAnswer createInterviewAnswer(Member member, Interview interview, String answer) {
         return InterviewAnswer.builder()
                 .member(member)
                 .interview(interview)
