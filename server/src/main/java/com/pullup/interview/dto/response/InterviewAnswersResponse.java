@@ -6,7 +6,7 @@ import java.util.List;
 public record InterviewAnswersResponse(
         List<InterviewAnswerDto> interviewAnswers
 ) {
-    public static InterviewAnswersResponse of(List<InterviewAnswerDto> interviewAnswers) {
-        return new InterviewAnswersResponse(interviewAnswers);
+    public static InterviewAnswersResponse of(List<InterviewAnswerDto> interviewAnswersDtos) {
+        return new InterviewAnswersResponse(interviewAnswersDtos);
     }
 }

@@ -47,11 +47,11 @@ public class InterviewService {
     }
 
     public MyInterviewAnswerResponse submitInterviewAnswer(
-            Long MemberId,
+            Long memberId,
             Long interviewId,
             MyInterviewAnswerRequest myInterviewAnswerRequest
     ) {
-        Member member = memberService.findMemberById(MemberId);
+        Member member = memberService.findMemberById(memberId);
 
         Interview interview = interviewRepository.findInterviewById(interviewId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
@@ -66,7 +66,7 @@ public class InterviewService {
     }
 
     public MyInterviewAnswersResponse getMyInterviewAnswers(Long memberId) {
-        List<InterviewAnswer> interviewAnswers = interviewAnswerRepository.findAllByMemberId(memberId);
+        List<InterviewAnswer> interviewAnswers = interviewAnswerRepository.findAllByMemberIdAndInterview(memberId);
         if (interviewAnswers.isEmpty()) {
             throw new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND);
         }
