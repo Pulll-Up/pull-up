@@ -1,6 +1,6 @@
 package com.pullup.member.service;
 
-import com.pullup.auth.OAuth.dto.request.SignUpRequest;
+import com.pullup.auth.oAuth.dto.request.SignUpRequest;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.member.domain.InterestSubject;

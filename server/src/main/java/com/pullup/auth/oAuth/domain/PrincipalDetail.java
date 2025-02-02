@@ -1,4 +1,4 @@
-package com.pullup.auth.OAuth.domain;
+package com.pullup.auth.oAuth.domain;
 
 import com.pullup.member.domain.Member;
 import java.util.ArrayList;

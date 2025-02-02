@@ -1,8 +1,8 @@
-package com.pullup.auth.OAuth.controller;
+package com.pullup.auth.oAuth.controller;
 
 
-import com.pullup.auth.OAuth.dto.request.SignUpRequest;
-import com.pullup.auth.OAuth.dto.response.LoginResponse;
+import com.pullup.auth.oAuth.dto.request.SignUpRequest;
+import com.pullup.auth.oAuth.dto.response.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;

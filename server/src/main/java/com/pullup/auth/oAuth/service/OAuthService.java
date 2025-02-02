@@ -1,7 +1,7 @@
-package com.pullup.auth.OAuth.service;
+package com.pullup.auth.oAuth.service;
 
-import com.pullup.auth.OAuth.dto.request.SignUpRequest;
-import com.pullup.auth.OAuth.dto.response.LoginResponse;
+import com.pullup.auth.oAuth.dto.request.SignUpRequest;
+import com.pullup.auth.oAuth.dto.response.LoginResponse;
 import com.pullup.auth.jwt.util.CookieUtil;
 import com.pullup.auth.jwt.util.JwtUtil;
 import com.pullup.common.exception.BadRequestException;

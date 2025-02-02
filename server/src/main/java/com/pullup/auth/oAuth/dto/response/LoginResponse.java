@@ -1,4 +1,4 @@
-package com.pullup.auth.OAuth.dto.response;
+package com.pullup.auth.oAuth.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

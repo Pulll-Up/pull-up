@@ -1,4 +1,4 @@
-package com.pullup.common.Handler;
+package com.pullup.common.handler;
 
 
 import com.pullup.common.exception.FailResponse;

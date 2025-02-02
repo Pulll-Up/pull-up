@@ -1,4 +1,4 @@
-package com.pullup.common.Handler;
+package com.pullup.common.handler;
 
 import static com.pullup.common.exception.ErrorMessage.ERR_FAILURE_OAUTH2_AUTHENTICATION;
 
