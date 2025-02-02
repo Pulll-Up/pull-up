@@ -67,6 +67,7 @@ public class InterviewService {
 
     public MyInterviewAnswersResponse getMyInterviewAnswers(Long memberId) {
         List<InterviewAnswer> interviewAnswers = interviewAnswerRepository.findAllByMemberIdAndInterview(memberId);
+
         if (interviewAnswers.isEmpty()) {
             throw new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND);
         }
@@ -84,6 +85,7 @@ public class InterviewService {
 
     public InterviewAnswersResponse getInterviewAnswers(Long memberId, Long interviewId) {
         List<InterviewAnswer> interviewAnswers = interviewAnswerRepository.findAllByInterviewId(interviewId);
+
         if (interviewAnswers.isEmpty()) {
             throw new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND);
         }
