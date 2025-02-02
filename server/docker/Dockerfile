@@ -22,6 +22,6 @@ FROM openjdk:17-slim
 
 WORKDIR /app
 
-COPY --from=build /app/build/libs/chat-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/build/libs/*.jar app.jar
 
 ENTRYPOINT ["java", "-Dspring.profiles.active=dev", "-jar", "app.jar"]
