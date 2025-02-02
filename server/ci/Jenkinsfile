@@ -1,0 +1,85 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_COMPOSE_PATH = "${WORKSPACE}/docker/docker-compose.dev.yml"
+        DB_DRIVER_CLASS_NAME = "${env.DB_DRIVER_CLASS_NAME}"
+        SECRET_KEY = "${env.SECRET_KEY}"
+        ACCESS_TOKEN_EXPIRATION = "${env.ACCESS_TOKEN_EXPIRATION}"
+        REFRESH_TOKEN_EXPIRATION = "${env.REFRESH_TOKEN_EXPIRATION}"
+        REDIS_HOST = "${env.REDIS_HOST}"
+        REDIS_PORT = "${env.REDIS_PORT}"
+        GOOGLE_CLIENT_ID = "${env.GOOGLE_CLIENT_ID}"
+        GOOGLE_CLIENT_SECRET = "${env.GOOGLE_CLIENT_SECRET}"
+        GOOGLE_REDIRECT_URI = "${env.GOOGLE_REDIRECT_URI}"
+        GOOGLE_AUTHORIZATION_GRANT_TYPE = "${env.GOOGLE_AUTHORIZATION_GRANT_TYPE}"
+        KAKAO_CLIENT_ID = "${env.KAKAO_CLIENT_ID}"
+        KAKAO_CLIENT_SECRET = "${env.KAKAO_CLIENT_SECRET}"
+        KAKAO_REDIRECT_URI = "${env.KAKAO_REDIRECT_URI}"
+        KAKAO_AUTHORIZATION_GRANT_TYPE = "${env.KAKAO_AUTHORIZATION_GRANT_TYPE}"
+        KAKAO_CLIENT_AUTHENTICATION_METHOD = "${env.KAKAO_CLIENT_AUTHENTICATION_METHOD}"
+        NAVER_CLIENT_ID = "${env.NAVER_CLIENT_ID}"
+        NAVER_CLIENT_SECRET = "${env.NAVER_CLIENT_SECRET}"
+        NAVER_REDIRECT_URI = "${env.NAVER_REDIRECT_URI}"
+        NAVER_AUTHORIZATION_GRANT_TYPE = "${env.NAVER_AUTHORIZATION_GRANT_TYPE}"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "PR 또는 dev/server 브랜치에 대한 빌드 수행"
+                sh "docker-compose -f ${DOCKER_COMPOSE_PATH} build"
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                branch 'dev/server'
+            }
+            steps {
+            withCredentials([
+                string(credentialsId: 'DB-URL', variable: 'DB_URL'),
+                string(credentialsId: 'DB_USERNAME', variable: 'DB_USERNAME'),
+                string(credentialsId: 'DB_PASSWORD', variable: 'DB_PASSWORD')
+            ]) {
+                    sh """
+                    exp
+                    export SPRING_DRIVER_CLASS_NAME=${DB_DRIVER_CLASS_NAME}
+                    export SPRING_DATASOURCE_URL=${DB_URL}
+                    export SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+                    export SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+                    export SECRET_KEY=${SECRET_KEY}
+                    export REDIS_HOST=${REDIS_HOST}
+                    export REDIS_PORT=${REDIS_PORT}
+                    export GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+                    export GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+                    export GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
+                    export GOOGLE_AUTHORIZATION_GRANT_TYPE=${GOOGLE_AUTHORIZATION_GRANT_TYPE}
+                    export KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID}
+                    export KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET}
+                    export KAKAO_REDIRECT_URI=${KAKAO_REDIRECT_URI}
+                    export KAKAO_AUTHORIZATION_GRANT_TYPE=${KAKAO_AUTHORIZATION_GRANT_TYPE}
+                    export KAKAO_CLIENT_AUTHENTICATION_METHOD=${KAKAO_CLIENT_AUTHENTICATION_METHOD}
+                    export NAVER_CLIENT_ID=${NAVER_CLIENT_ID}
+                    export NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET}
+                    export NAVER_REDIRECT_URI=${NAVER_REDIRECT_URI}
+                    export NAVER_AUTHORIZATION_GRANT_TYPE=${NAVER_AUTHORIZATION_GRANT_TYPE}
+
+                    echo "기존 SPRING 컨테이너 삭제"
+                    docker-compose -f ${DOCKER_COMPOSE_PATH} stop spring-app-dev
+                    docker-compose -f ${DOCKER_COMPOSE_PATH} rm -f spring-app-dev
+
+                    echo "새로운 SPRING 컨테이너 실행"
+                    docker-compose -f ${DOCKER_COMPOSE_PATH} up -d --build --no-deps spring-app-dev
+                    """
+                }
+            }
+        }
+    }
+}
