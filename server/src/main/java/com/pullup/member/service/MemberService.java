@@ -27,7 +27,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final InterestSubjectRepository interestSubjectRepository;
     private final MemberExamStatisticRepository memberExamStatisticRepository;
-    private final LikeRepository likeRepository;
 
     @Transactional
     public void saveMemberExamStatistic(Long memberId) {
@@ -56,7 +55,8 @@ public class MemberService {
 
     public MemberProfileResponse getMemberProfile(Long memberId) {
         Member member = findMemberById(memberId);
-        List<String> interestSubjects = findInterestSubjectsByMemberId(memberId).stream().map(InterestSubject::getSubject).toList();
+        List<String> interestSubjects = findInterestSubjectsByMemberId(memberId).stream()
+                .map(InterestSubject::getSubject).toList();
 
         return MemberProfileResponse.of(member, interestSubjects);
     }
