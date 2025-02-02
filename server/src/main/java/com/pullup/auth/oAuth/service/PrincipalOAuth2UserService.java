@@ -1,8 +1,8 @@
-package com.pullup.auth.OAuth.service;
+package com.pullup.auth.oAuth.service;
 
-import com.pullup.auth.OAuth.domain.OAuth2UserInfo;
-import com.pullup.auth.OAuth.domain.OAuth2UserInfoFactory;
-import com.pullup.auth.OAuth.domain.PrincipalDetail;
+import com.pullup.auth.oAuth.domain.OAuth2UserInfo;
+import com.pullup.auth.oAuth.domain.OAuth2UserInfoFactory;
+import com.pullup.auth.oAuth.domain.PrincipalDetail;
 import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

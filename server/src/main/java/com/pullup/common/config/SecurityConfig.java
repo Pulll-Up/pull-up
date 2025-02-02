@@ -1,11 +1,11 @@
 package com.pullup.common.config;
 
-import com.pullup.auth.OAuth.service.PrincipalOAuth2UserService;
+import com.pullup.auth.oAuth.service.PrincipalOAuth2UserService;
 import com.pullup.auth.jwt.domain.JwtTokenValidator;
 import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
 import com.pullup.auth.jwt.util.JwtUtil;
-import com.pullup.common.Handler.OAuth2AuthenticationFailureHandler;
-import com.pullup.common.Handler.OAuth2AuthenticationSuccessHandler;
+import com.pullup.common.handler.OAuth2AuthenticationFailureHandler;
+import com.pullup.common.handler.OAuth2AuthenticationSuccessHandler;
 import com.pullup.common.filter.JwtAuthenticationFilter;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;

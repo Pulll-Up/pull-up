@@ -39,7 +39,6 @@ out/
 ### macOS ###
 .DS_Store
 
-### properties ###
-*.properties
-
 env
+
+redis-data

@@ -1,7 +1,7 @@
-package com.pullup.auth.OAuth.domain;
+package com.pullup.auth.oAuth.domain;
 
 
-import com.pullup.auth.OAuth.domain.type.OAuthProvider;
+import com.pullup.auth.oAuth.domain.type.OAuthProvider;
 import java.util.Map;
 
 public abstract class OAuth2UserInfo {

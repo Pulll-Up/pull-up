@@ -1,8 +1,8 @@
-package com.pullup.auth.OAuth.controller;
+package com.pullup.auth.oAuth.controller;
 
-import com.pullup.auth.OAuth.dto.request.SignUpRequest;
-import com.pullup.auth.OAuth.dto.response.LoginResponse;
-import com.pullup.auth.OAuth.service.OAuthService;
+import com.pullup.auth.oAuth.dto.request.SignUpRequest;
+import com.pullup.auth.oAuth.dto.response.LoginResponse;
+import com.pullup.auth.oAuth.service.OAuthService;
 import com.pullup.common.util.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

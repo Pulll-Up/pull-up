@@ -1,7 +1,7 @@
-package com.pullup.auth.OAuth.domain.impl;
+package com.pullup.auth.oAuth.domain.impl;
 
-import com.pullup.auth.OAuth.domain.OAuth2UserInfo;
-import com.pullup.auth.OAuth.domain.type.OAuthProvider;
+import com.pullup.auth.oAuth.domain.OAuth2UserInfo;
+import com.pullup.auth.oAuth.domain.type.OAuthProvider;
 import java.util.Map;
 
 public class KakaoUserInfo extends OAuth2UserInfo {

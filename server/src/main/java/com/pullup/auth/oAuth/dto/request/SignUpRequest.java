@@ -1,4 +1,4 @@
-package com.pullup.auth.OAuth.dto.request;
+package com.pullup.auth.oAuth.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;

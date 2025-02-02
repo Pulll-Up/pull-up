@@ -1,6 +1,6 @@
-package com.pullup.common.Handler;
+package com.pullup.common.handler;
 
-import com.pullup.auth.OAuth.domain.PrincipalDetail;
+import com.pullup.auth.oAuth.domain.PrincipalDetail;
 import com.pullup.auth.jwt.domain.JwtToken;
 import com.pullup.auth.jwt.util.CookieUtil;
 import com.pullup.auth.jwt.util.JwtUtil;

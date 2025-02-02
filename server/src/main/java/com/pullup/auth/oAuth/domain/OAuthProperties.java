@@ -1,4 +1,4 @@
-package com.pullup.auth.OAuth.domain;
+package com.pullup.auth.oAuth.domain;
 
 import java.util.Map;
 import java.util.Set;

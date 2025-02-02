@@ -1,4 +1,4 @@
-package com.pullup.auth.OAuth.domain.type;
+package com.pullup.auth.oAuth.domain.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,8 +1,8 @@
-package com.pullup.auth.OAuth.domain;
+package com.pullup.auth.oAuth.domain;
 
-import com.pullup.auth.OAuth.domain.impl.GoogleUserInfo;
-import com.pullup.auth.OAuth.domain.impl.KakaoUserInfo;
-import com.pullup.auth.OAuth.domain.impl.NaverUserInfo;
+import com.pullup.auth.oAuth.domain.impl.GoogleUserInfo;
+import com.pullup.auth.oAuth.domain.impl.KakaoUserInfo;
+import com.pullup.auth.oAuth.domain.impl.NaverUserInfo;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.IllegalArgumentException;
 import java.util.Map;
