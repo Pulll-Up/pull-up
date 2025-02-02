@@ -37,9 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             new AntPathRequestMatcher("/api-docs/**", HttpMethod.GET.toString()),
             new AntPathRequestMatcher("/swagger-ui/**", HttpMethod.GET.toString()),
             new AntPathRequestMatcher("/swagger-ui.html", HttpMethod.GET.toString()),
-            new AntPathRequestMatcher("/swagger-ui/index.html", HttpMethod.GET.toString()),
             new AntPathRequestMatcher("/docs/swagger-ui/index.html", HttpMethod.GET.toString()),
-            new AntPathRequestMatcher("/swagger-ui/swagger-ui.css", HttpMethod.GET.toString()),
             new AntPathRequestMatcher("/v3/api-docs/**", HttpMethod.GET.toString())
     );
 
@@ -110,7 +108,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void handleAccessToken(HttpServletRequest request) {
         String accessToken = jwtUtil.resolveAccessTokenFromHeader(request);
-        log.info("Access Token: {}", accessToken);
         jwtTokenValidator.validateJwtToken(accessToken, TokenType.ACCESS_TOKEN);
         SecurityUtil.createAuthentication(jwtUtil.resolveMemberIdFromJwtToken(accessToken));
     }

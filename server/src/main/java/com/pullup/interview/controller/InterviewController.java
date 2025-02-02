@@ -1,8 +1,9 @@
 package com.pullup.interview.controller;
 
 import com.pullup.common.util.SecurityUtil;
-import com.pullup.interview.dto.request.InterviewAnswerRequest;
-import com.pullup.interview.dto.response.InterviewAnswerResponse;
+import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
+import com.pullup.interview.dto.response.InterviewAnswersResponse;
+import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.service.InterviewService;
@@ -35,13 +36,14 @@ public class InterviewController implements InterviewApi {
 
     @Override
     @PostMapping("/{interviewId}/submit")
-    public ResponseEntity<InterviewAnswerResponse> submitInterviewAnswer(@PathVariable("interviewId") Long interviewId,
-                                                                         @Valid @RequestBody InterviewAnswerRequest interviewAnswerRequest) {
+    public ResponseEntity<MyInterviewAnswerResponse> submitInterviewAnswer(@PathVariable("interviewId") Long interviewId,
+                                                                           @Valid @RequestBody MyInterviewAnswerRequest myInterviewAnswerRequest) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-        InterviewAnswerResponse interviewAnswerResponse = interviewService.submitInterviewAnswer(memberId, interviewId, interviewAnswerRequest);
+        MyInterviewAnswerResponse myInterviewAnswerResponse = interviewService.submitInterviewAnswer(memberId, interviewId,
+                myInterviewAnswerRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(interviewAnswerResponse);
+                .body(myInterviewAnswerResponse);
     }
 
     @Override
@@ -54,4 +56,13 @@ public class InterviewController implements InterviewApi {
                 .body(interviewAnswersResponse);
     }
 
+    @Override
+    @GetMapping("{interviewId}/all")
+    public ResponseEntity<InterviewAnswersResponse> getInterviewAnswers(@PathVariable("interviewId") Long interviewId) {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        InterviewAnswersResponse interviewAnswersResponse = interviewService.getInterviewAnswers(memberId, interviewId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(interviewAnswersResponse);
+    }
 }
