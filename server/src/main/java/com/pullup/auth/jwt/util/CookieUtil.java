@@ -15,7 +15,7 @@ public class CookieUtil {
                 .secure(true)
                 .path("/")
                 .maxAge(60 * 10)
-                .sameSite("Strict")
+                .sameSite("None") // 기존에는 "Strict"
                 .build();
     }
 
@@ -25,7 +25,7 @@ public class CookieUtil {
                 .secure(true)
                 .path("/")
                 .maxAge(60 * 60 * 24 * 7)
-                .sameSite("Strict")
+                .sameSite("None") // 기존에는 "Strict"
                 .build();
     }
 
@@ -34,7 +34,7 @@ public class CookieUtil {
                 .secure(true)
                 .path("/")
                 .maxAge(0)
-                .sameSite("Strict")
+                .sameSite("None") // 기존에는 "Strict"
                 .build();
     }
 
