@@ -6,7 +6,6 @@ import com.pullup.game.dto.ProblemCard;
 import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,7 +14,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class GameRoomRepository {
     private final ConcurrentHashMap<String, GameRoom> gameRooms = new ConcurrentHashMap<>();
-    private final Map<String, List<ProblemCard>> gameProblems = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, List<ProblemCard>> gameProblems = new ConcurrentHashMap<>();
+
 
     public GameRoom save(GameRoom gameRoom) {
         gameRooms.put(gameRoom.getRoomId(), gameRoom);
@@ -41,6 +41,7 @@ public class GameRoomRepository {
     // 문제 리스트 저장
     public void saveProblems(String roomId, List<ProblemCard> problems) {
         gameProblems.put(roomId, problems);
+        problems.forEach(problemCard -> System.out.println(problemCard));
     }
 
     // 문제 리스트 조회

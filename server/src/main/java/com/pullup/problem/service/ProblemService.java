@@ -23,8 +23,10 @@ import com.pullup.problem.repository.BookmarkRepository;
 import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -130,41 +132,61 @@ public class ProblemService {
         int remainingQuestions = 8 % numSubjects;     // 나누어떨어지지 않을 때 추가해야 하는 문제 개수
 
         List<ProblemCard> finalProblems = new ArrayList<>();
+        Set<Long> selectedProblemIds = new HashSet<>(); // 중복 방지를 위한 ID 저장
 
         // 각 과목별 기본 개수만큼 문제 가져오기
         for (Subject subject : selectedSubjects) {
             List<Problem> problems = problemRepository.findRandomProblemsBySubject(subject.name(),
                     numQuestionsPerSubject);
+
             for (Problem problem : problems) {
-                finalProblems.add(
-                        ProblemCard.createNewProblemCard(problem.getId(), CardType.QUESTION, problem.getQuestion()));
-                finalProblems.add(
-                        ProblemCard.createNewProblemCard(problem.getId(), CardType.ANSWER, problem.getAnswer()));
+                if (selectedProblemIds.add(problem.getId())) { // 중복되지 않는 경우에만 추가
+                    finalProblems.add(ProblemCard.createNewProblemCard(problem.getId(), CardType.QUESTION,
+                            problem.getQuestion()));
+                    finalProblems.add(
+                            ProblemCard.createNewProblemCard(problem.getId(), CardType.ANSWER, problem.getAnswer()));
+                }
             }
         }
 
-        // 남은 문제 수 만큼 랜덤한 과목에서 추가로 문제 가져오기
-        Random random = new Random();
-        for (int i = 0; i < remainingQuestions; i++) {
-            Subject randomSubject = selectedSubjects.get(random.nextInt(numSubjects)); // 랜덤 과목 선택
-            List<Problem> extraProblems = problemRepository.findRandomProblemsBySubject(randomSubject.name(), 1);
+        // 남은 문제 수 만큼 랜덤한 과목에서 한 번에 가져오기
+        Collections.shuffle(selectedSubjects); // 랜덤 과목 순서 섞기
+        int remainingToFetch = remainingQuestions; // 남은 문제 개수
 
-            if (!extraProblems.isEmpty()) {
-                Problem problem = extraProblems.get(0);
-                finalProblems.add(
-                        ProblemCard.createNewProblemCard(problem.getId(), CardType.QUESTION, problem.getQuestion()));
-                finalProblems.add(
-                        ProblemCard.createNewProblemCard(problem.getId(), CardType.ANSWER, problem.getAnswer()));
+        for (Subject subject : selectedSubjects) {
+            if (remainingToFetch <= 0) {
+                break; // 남은 문제가 없으면 종료
             }
+
+            List<Problem> extraProblems = problemRepository.findRandomProblemsBySubject(subject.name(),
+                    remainingToFetch);
+
+            for (Problem problem : extraProblems) {
+                if (selectedProblemIds.add(problem.getId())) { // 중복 방지
+                    finalProblems.add(
+                            ProblemCard.createNewProblemCard(
+                                    problem.getId(),
+                                    CardType.QUESTION,
+                                    problem.getQuestion()));
+                    finalProblems.add(
+                            ProblemCard.createNewProblemCard(
+                                    problem.getId(),
+                                    CardType.ANSWER,
+                                    problem.getAnswer()));
+                    remainingToFetch--; // 남은 문제 개수 감소
+                    if (remainingToFetch <= 0) {
+                        break;
+                    }
+                }
+            }
+
         }
+
+//        if (finalProblems.size() < 16) {
+//            throw new IllegalStatementException(ErrorMessage.ERR_GAME_PROBLEM_LACK);
+//        }
 
         gameRoomRepository.saveProblems(roomId, finalProblems);
-    }
-
-
-    // 특정 방의 문제 리스트 조회
-    public List<ProblemCard> getProblemsByRoomId(String roomId) {
-        return gameRoomRepository.getProblems(roomId);
     }
 
     private List<Subject> getSelectedSubjects(CreateRoomWithSubjectsRequest request) {
