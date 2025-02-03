@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class GameTestController {
     private final GameRoomRepository gameRoomRepository;
 
-
     @GetMapping("/all")
     public Collection<GameRoom> getAllRooms() {
         return gameRoomRepository.getAllRooms();
