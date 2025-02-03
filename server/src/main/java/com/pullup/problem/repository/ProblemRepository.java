@@ -36,5 +36,15 @@ public interface ProblemRepository extends CrudRepository<Problem, Long> {
             @Param("highCorrectRate") Integer highCorrectRate
     );
 
+    @Query(value = "SELECT * "
+            + "FROM problem "
+            + "WHERE subject = :subject "
+            + "AND CHAR_LENGTH(question) <= 30 "
+            + "AND CHAR_LENGTH(answer) <= 30 "
+            + "ORDER BY RAND() "
+            + "LIMIT :limit",
+            nativeQuery = true)
+    List<Problem> findRandomProblemsBySubject(@Param("subject") String subject, @Param("limit") int limit);
+
 
 }

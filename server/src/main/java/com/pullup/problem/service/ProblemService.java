@@ -3,12 +3,17 @@ package com.pullup.problem.service;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.exam.repository.ExamProblemRepository;
+import com.pullup.game.dto.CardType;
+import com.pullup.game.dto.ProblemCard;
+import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
+import com.pullup.game.repository.GameRoomRepository;
 import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.controller.BookmarkedProblemDto;
 import com.pullup.problem.controller.GetBookmarkedProblemsResponse;
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
+import com.pullup.problem.domain.Subject;
 import com.pullup.problem.dto.GetAllWrongProblemsResponse;
 import com.pullup.problem.dto.GetProblemResponse;
 import com.pullup.problem.dto.GetRecentWrongProblemsResponse;
@@ -17,7 +22,9 @@ import com.pullup.problem.dto.WrongProblemDto;
 import com.pullup.problem.repository.BookmarkRepository;
 import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +38,7 @@ public class ProblemService {
     private final MemberRepository memberRepository;
     private final ProblemOptionRepository problemOptionRepository;
     private final ExamProblemRepository examProblemRepository;
+    private final GameRoomRepository gameRoomRepository;
 
     @Transactional
     public void toggleProblemBookmark(Long problemId, Long memberId) {
@@ -113,4 +121,75 @@ public class ProblemService {
 
         return GetAllWrongProblemsResponse.of(wrongProblemDtos);
     }
+
+
+    public void generateProblems(String roomId, CreateRoomWithSubjectsRequest request) {
+        List<Subject> selectedSubjects = getSelectedSubjects(request);
+        int numSubjects = selectedSubjects.size();
+        int numQuestionsPerSubject = 8 / numSubjects; // 각 과목별 기본 문제 개수
+        int remainingQuestions = 8 % numSubjects;     // 나누어떨어지지 않을 때 추가해야 하는 문제 개수
+
+        List<ProblemCard> finalProblems = new ArrayList<>();
+
+        // 각 과목별 기본 개수만큼 문제 가져오기
+        for (Subject subject : selectedSubjects) {
+            List<Problem> problems = problemRepository.findRandomProblemsBySubject(subject.name(),
+                    numQuestionsPerSubject);
+            for (Problem problem : problems) {
+                finalProblems.add(
+                        ProblemCard.createNewProblemCard(problem.getId(), CardType.QUESTION, problem.getQuestion()));
+                finalProblems.add(
+                        ProblemCard.createNewProblemCard(problem.getId(), CardType.ANSWER, problem.getAnswer()));
+            }
+        }
+
+        // 남은 문제 수 만큼 랜덤한 과목에서 추가로 문제 가져오기
+        Random random = new Random();
+        for (int i = 0; i < remainingQuestions; i++) {
+            Subject randomSubject = selectedSubjects.get(random.nextInt(numSubjects)); // 랜덤 과목 선택
+            List<Problem> extraProblems = problemRepository.findRandomProblemsBySubject(randomSubject.name(), 1);
+
+            if (!extraProblems.isEmpty()) {
+                Problem problem = extraProblems.get(0);
+                finalProblems.add(
+                        ProblemCard.createNewProblemCard(problem.getId(), CardType.QUESTION, problem.getQuestion()));
+                finalProblems.add(
+                        ProblemCard.createNewProblemCard(problem.getId(), CardType.ANSWER, problem.getAnswer()));
+            }
+        }
+
+        gameRoomRepository.saveProblems(roomId, finalProblems);
+    }
+
+
+    // 특정 방의 문제 리스트 조회
+    public List<ProblemCard> getProblemsByRoomId(String roomId) {
+        return gameRoomRepository.getProblems(roomId);
+    }
+
+    private List<Subject> getSelectedSubjects(CreateRoomWithSubjectsRequest request) {
+        List<Subject> selectedSubjects = new ArrayList<>();
+
+        if (request.algorithm()) {
+            selectedSubjects.add(Subject.ALGORITHM);
+        }
+        if (request.computerArchitecture()) {
+            selectedSubjects.add(Subject.COMPUTER_ARCHITECTURE);
+        }
+        if (request.database()) {
+            selectedSubjects.add(Subject.DATABASE);
+        }
+        if (request.dataStructure()) {
+            selectedSubjects.add(Subject.DATA_STRUCTURE);
+        }
+        if (request.network()) {
+            selectedSubjects.add(Subject.NETWORK);
+        }
+        if (request.operatingSystem()) {
+            selectedSubjects.add(Subject.OPERATING_SYSTEM);
+        }
+
+        return selectedSubjects;
+    }
+
 }

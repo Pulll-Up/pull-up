@@ -4,11 +4,13 @@ import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
 import com.pullup.game.domain.GameStatus;
+import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
 import com.pullup.game.repository.GameRoomRepository;
 import com.pullup.member.domain.Member;
 import com.pullup.member.service.MemberService;
+import com.pullup.problem.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class GameService {
 
     private final GameRoomRepository gameRoomRepository;
+    private final ProblemService problemService;
     private final MemberService memberService;
 
-    public CreateRoomResponse createRoom(Long memberId) {
+    public CreateRoomResponse createRoom(Long memberId, CreateRoomWithSubjectsRequest request) {
         // 멤버 정보 조회
         Member member = memberService.findMemberById(memberId);
 
@@ -32,6 +35,9 @@ public class GameService {
 
         // 게임방 저장
         gameRoomRepository.save(gameRoom);
+
+        // 게임 문제 저장
+        problemService.generateProblems(gameRoom.getRoomId(), request);
 
         return CreateRoomResponse.of(
                 gameRoom.getRoomId()
