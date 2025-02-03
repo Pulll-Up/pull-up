@@ -12,26 +12,29 @@ public class CookieUtil {
 
     public static ResponseCookie createAccessTokenForCookie(String accessToken) {
         return ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, accessToken)
+                .secure(true)
                 .path("/")
                 .maxAge(60 * 10)
-                .sameSite("Lax") // 기존에는 "Strict"
+                .sameSite("Strict")
                 .build();
     }
 
     public static ResponseCookie createRefreshTokenForCookie(String refreshToken) {
         return ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, refreshToken)
                 .httpOnly(true)
+                .secure(true)
                 .path("/")
                 .maxAge(60 * 60 * 24 * 7)
-                .sameSite("Lax") // 기존에는 "Strict"
+                .sameSite("Strict")
                 .build();
     }
 
     public static ResponseCookie createDeleteTokenAtCookie(String token) {
         return ResponseCookie.from(token, "")
+                .secure(true)
                 .path("/")
                 .maxAge(0)
-                .sameSite("Lax")
+                .sameSite("Strict")
                 .build();
     }
 
