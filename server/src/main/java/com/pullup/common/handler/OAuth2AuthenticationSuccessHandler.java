@@ -45,12 +45,13 @@ public class OAuth2AuthenticationSuccessHandler implements
     }
 
     private static void setJwtTokenAtCookie(HttpServletResponse response, JwtToken jwtToken) {
-        log.info("Cookie Mehtod 생성");
+        log.info("Cookie Mehtod 시작");
         ResponseCookie accessTokenForCookie = CookieUtil.createAccessTokenForCookie(jwtToken.accessToken());
         ResponseCookie refreshTokenForCookie = CookieUtil.createRefreshTokenForCookie(jwtToken.refreshToken());
         log.info("Access Token: {}", jwtToken.accessToken());
         log.info("Refresh Token: {}", jwtToken.refreshToken());
         response.addHeader("set-cookie", accessTokenForCookie.toString());
         response.addHeader("set-cookie", refreshTokenForCookie.toString());
+        log.info("Cookie Mehtod 끝");
     }
 }
