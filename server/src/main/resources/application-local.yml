@@ -1,3 +1,8 @@
+logging:
+  level:
+    org.springframework.web.socket: TRACE
+    org.springframework.messaging: TRACE
+
 server:
   config:
     activate:
@@ -32,6 +37,8 @@ spring:
       repositories:
         enabled: true
 
+
+
   security:
     oauth2:
       client:
@@ -65,3 +72,4 @@ spring:
               - name
               - email
               - profile_image
+

@@ -13,14 +13,14 @@ public class GameRoom {
     private String roomId;
     private Player player1;
     private Player player2;
-    private GameStatus status;
+    private GameRoomStatus status;
     private LocalDateTime createdAt;
 
     public static GameRoom craeteGameRoomWithHost(Long id, String name) {
         return GameRoom.builder()
                 .roomId(generateUniqueRoomCode())
                 .player1(Player.createNewPlayer(id, name))
-                .status(GameStatus.WAITING)
+                .status(GameRoomStatus.WAITING)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
@@ -35,7 +35,11 @@ public class GameRoom {
     }
 
     private void updateStatusToPlaying() {
-        this.status = GameStatus.PLAYING;
+        this.status = GameRoomStatus.PLAYING;
+    }
+
+    public void updateStatusToFinished() {
+        this.status = GameRoomStatus.FINISHED;
     }
 
     // ✅ playerId로 플레이어 찾기

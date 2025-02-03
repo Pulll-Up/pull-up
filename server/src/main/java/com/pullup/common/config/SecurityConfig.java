@@ -1,18 +1,17 @@
 package com.pullup.common.config;
 
-import com.pullup.auth.oAuth.service.PrincipalOAuth2UserService;
 import com.pullup.auth.jwt.domain.JwtTokenValidator;
 import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
 import com.pullup.auth.jwt.util.JwtUtil;
+import com.pullup.auth.oAuth.service.PrincipalOAuth2UserService;
+import com.pullup.common.filter.JwtAuthenticationFilter;
 import com.pullup.common.handler.OAuth2AuthenticationFailureHandler;
 import com.pullup.common.handler.OAuth2AuthenticationSuccessHandler;
-import com.pullup.common.filter.JwtAuthenticationFilter;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,7 +19,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -53,6 +51,12 @@ public class SecurityConfig {
             "/**"
     };
 
+    private static final String[] WEBSOCKET_URL = {
+            "/game-websocket/**",
+            "/game-websocket/info/**",  // SockJS handshake
+            "/ws/**"                    // 기본 WebSocket 엔드포인트
+    };
+
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     @Bean
@@ -69,6 +73,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(SWAGGER_URL).permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(WEBSOCKET_URL).permitAll()
                         .anyRequest().authenticated()
                 )
 
@@ -96,7 +101,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:5173"
+                "http://localhost:5173",
+                "ws://localhost:5173"  // 웹소켓 프로토콜 추가
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));

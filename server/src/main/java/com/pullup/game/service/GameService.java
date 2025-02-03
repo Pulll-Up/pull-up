@@ -3,7 +3,7 @@ package com.pullup.game.service;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
-import com.pullup.game.domain.GameStatus;
+import com.pullup.game.domain.GameRoomStatus;
 import com.pullup.game.domain.Player;
 import com.pullup.game.dto.PlayerInfo;
 import com.pullup.game.dto.ProblemCard;
@@ -63,7 +63,7 @@ public class GameService {
 
     }
 
-    public GameStatus getGameRoomStatus(String roomId) {
+    public GameRoomStatus getGameRoomStatus(String roomId) {
         return findByRoomId(roomId).getStatus();
     }
 
@@ -91,6 +91,11 @@ public class GameService {
         Player player = gameRoom.getPlayerById(cardSubmitRequest.playerId());
         player.increaseScore();
 
+        // 게임룸 정보 (상태) 업데이트
+        if (isGameEnd(gameRoom.getPlayer1().getScore(), gameRoom.getPlayer2().getScore())) {
+            gameRoom.updateStatusToFinished();
+        }
+
         // 변경된 게임룸 정보 저장
         gameRoomRepository.save(gameRoom);
 
@@ -111,6 +116,14 @@ public class GameService {
 
     public List<ProblemCard> getProblemsByRoomId(String roomId) {
         return gameRoomRepository.getProblemsByRoomId(roomId);
+    }
+
+    private boolean isGameEnd(int player1Score, int player2Score) {
+        if (player1Score + player2Score == 16) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

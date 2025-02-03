@@ -1,33 +1,36 @@
 package com.pullup.game.controller;
 
-import com.pullup.game.domain.GameStatus;
+import com.pullup.game.domain.GameRoomStatus;
 import com.pullup.game.dto.request.CardSubmitRequest;
 import com.pullup.game.dto.response.GameRoomInfoWithProblems;
 import com.pullup.game.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
 public class GameWebSocketController {
     private final GameService gameService;
-    private final SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/game/{roomId}/status")
-    public void getRoomStatus(String roomId) {
-        GameStatus status = gameService.getGameRoomStatus(roomId);
-        messagingTemplate.convertAndSend("/topic/game/" + roomId + "/status", status);
+    @SendTo("/topic/game/{roomId}/status")
+    public GameRoomStatus getRoomStatus(String roomId) {
+        System.out.println("getRoomStatus 호출됨! roomId: " + roomId);
+        GameRoomStatus gameRoomStatus = gameService.getGameRoomStatus(roomId);
+
+        return gameRoomStatus;
     }
 
-
     @MessageMapping("/card/submit")
-    public void submitCard(CardSubmitRequest cardSubmitRequest) {
+    @SendTo("/topic/game/{cardSubmitRequest.roomId}")
+    public GameRoomInfoWithProblems submitCard(CardSubmitRequest cardSubmitRequest) {
+        System.out.println("submitCard 호출됨! roomId: " + cardSubmitRequest.roomId());
+
         GameRoomInfoWithProblems gameRoomInfoWithProblems = gameService.processCardSubmission(cardSubmitRequest);
 
-        // ✅ 모든 클라이언트에게 변경된 게임 상태 전송
-        messagingTemplate.convertAndSend("/topic/game/" + cardSubmitRequest.roomId(), gameRoomInfoWithProblems);
+        return gameRoomInfoWithProblems;
     }
 
 
