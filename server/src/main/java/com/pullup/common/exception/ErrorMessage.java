@@ -28,7 +28,8 @@ public enum ErrorMessage {
 
     //* Game 관련 Exception
     ERR_GAME_ROOM_NOT_FOUND("게임 방을 찾을 수 없습니다"),
-    ERR_GAME_PROBLEM_LACK("해당 과목에 대한 게임 문제 수가 충분하지 않습니다");
+    ERR_GAME_PROBLEM_LACK(" 게임 문제 수가 충분하지 않습니다"),
+    ERR_PLAYER_NOT_FOUND("플레이어를 찾을 수 없습니다");
 
     private final String message;
 }
