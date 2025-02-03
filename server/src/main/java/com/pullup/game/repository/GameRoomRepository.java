@@ -3,6 +3,7 @@ package com.pullup.game.repository;
 import com.pullup.game.domain.GameRoom;
 import com.pullup.game.domain.GameStatus;
 import java.time.ZoneId;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,8 +22,16 @@ public class GameRoomRepository {
         return Optional.ofNullable(gameRooms.get(roomId));
     }
 
-    public void remove(String roomCode) {
-        gameRooms.remove(roomCode);
+    public void deleteById(String roomId) {
+        gameRooms.remove(roomId);
+    }
+
+    public boolean existsById(String roomId) {
+        return gameRooms.containsKey(roomId);
+    }
+
+    public Collection<GameRoom> getAllRooms() {
+        return gameRooms.values();
     }
 
     // 미사용 방 정리를 위한 메서드
