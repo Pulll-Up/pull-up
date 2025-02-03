@@ -46,7 +46,7 @@ public class GameService {
 
         gameRoomRepository.save(gameRoom); // 변경된 상태 저장
 
-        return JoinRoomResponse.of(true);
+        return JoinRoomResponse.success();
 
     }
 

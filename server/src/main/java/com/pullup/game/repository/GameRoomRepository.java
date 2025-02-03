@@ -15,9 +15,6 @@ public class GameRoomRepository {
 
     public GameRoom save(GameRoom gameRoom) {
         gameRooms.put(gameRoom.getRoomId(), gameRoom);
-        System.out.println("[SAVE] 저장됨 - Room ID: " + gameRoom.getRoomId());
-        System.out.println("[INFO] 현재 저장된 방 목록: " + gameRooms);
-
         return gameRoom;
     }
 

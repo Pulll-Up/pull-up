@@ -4,7 +4,7 @@ public record JoinRoomResponse(
         Boolean isReady
 ) {
 
-    public static JoinRoomResponse of(Boolean isReady) {
-        return new JoinRoomResponse(isReady);
+    public static JoinRoomResponse success() {
+        return new JoinRoomResponse(true);
     }
 }
