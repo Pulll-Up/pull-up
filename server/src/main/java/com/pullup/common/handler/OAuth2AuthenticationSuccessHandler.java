@@ -46,6 +46,8 @@ public class OAuth2AuthenticationSuccessHandler implements
     private static void setJwtTokenAtCookie(HttpServletResponse response, JwtToken jwtToken) {
         ResponseCookie accessTokenForCookie = CookieUtil.createAccessTokenForCookie(jwtToken.accessToken());
         ResponseCookie refreshTokenForCookie = CookieUtil.createRefreshTokenForCookie(jwtToken.refreshToken());
+        log.info("Access Token: {}", jwtToken.accessToken());
+        log.info("Refresh Token: {}", jwtToken.refreshToken());
         response.addHeader("set-cookie", accessTokenForCookie.toString());
         response.addHeader("set-cookie", refreshTokenForCookie.toString());
     }
