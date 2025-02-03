@@ -23,7 +23,10 @@ public enum ErrorMessage {
     ERR_FAILURE_OAUTH2_AUTHENTICATION("OAuth2 로그인에 실패하였습니다."),
 
     //* Cookie 관련 Exception,
-    ERR_COOKIE_NOT_FOUND("쿠키를 찾을 수 없습니다");
+    ERR_COOKIE_NOT_FOUND("쿠키를 찾을 수 없습니다"),
+
+    //* Game 관련 Exception
+    ERR_GAME_ROOM_NOT_FOUND("게임 방을 찾을 수 없습니다");
 
     private final String message;
 }

@@ -1,14 +1,17 @@
 package com.pullup.game.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
 @Builder
 public class Player {
-    private String id;
+    @JsonProperty("id")
+    private Long id;
+    @JsonProperty("name")
     private String name;
     private Integer score;
 
-    public static Player of(String id, String name) {
+    public static Player createNewPlayer(Long id, String name) {
         return Player.builder()
                 .id(id)
                 .name(name)

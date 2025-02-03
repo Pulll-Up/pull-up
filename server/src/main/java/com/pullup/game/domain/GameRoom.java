@@ -14,17 +14,27 @@ public class GameRoom {
     private GameStatus status;
     private LocalDateTime createdAt;
 
-    public static GameRoom of(String id, String name) {
+    public static GameRoom craeteGameRoomWithHost(Long id, String name) {
         return GameRoom.builder()
                 .roomId(generateUniqueRoomCode())
-                .player1(Player.of(id, name))
+                .player1(Player.createNewPlayer(id, name))
                 .status(GameStatus.WAITING)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
 
+    public void addGuest(Long id, String name) {
+        this.player2 = Player.createNewPlayer(id, name);
+        updateStatusToPlaying();
+    }
+
     private static String generateUniqueRoomCode() {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
     }
+
+    private void updateStatusToPlaying() {
+        this.status = GameStatus.PLAYING;
+    }
+
 }
 
