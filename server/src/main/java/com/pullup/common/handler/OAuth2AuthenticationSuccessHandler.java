@@ -35,6 +35,7 @@ public class OAuth2AuthenticationSuccessHandler implements
         log.info("OAuth2 로그인 성공: {}", member.getEmail());
 
         JwtToken jwtToken = jwtUtil.generateJwtTokens(member.getId());
+        log.info(member.getId() + "의 JWT 토큰 생성");
         setJwtTokenAtCookie(response, jwtToken);
 
         String accessToken = jwtToken.accessToken();
@@ -44,6 +45,7 @@ public class OAuth2AuthenticationSuccessHandler implements
     }
 
     private static void setJwtTokenAtCookie(HttpServletResponse response, JwtToken jwtToken) {
+        log.info("Cookie Mehtod 생성");
         ResponseCookie accessTokenForCookie = CookieUtil.createAccessTokenForCookie(jwtToken.accessToken());
         ResponseCookie refreshTokenForCookie = CookieUtil.createRefreshTokenForCookie(jwtToken.refreshToken());
         log.info("Access Token: {}", jwtToken.accessToken());
