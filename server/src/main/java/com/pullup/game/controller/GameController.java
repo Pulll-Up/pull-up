@@ -1,6 +1,7 @@
 package com.pullup.game.controller;
 
 import com.pullup.common.util.SecurityUtil;
+import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.dto.request.JoinRoomRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
@@ -21,9 +22,9 @@ public class GameController {
     private final GameService gameService;
 
     @PostMapping("/room")
-    public ResponseEntity<CreateRoomResponse> createRoom() {
+    public ResponseEntity<CreateRoomResponse> createRoom(@RequestBody CreateRoomWithSubjectsRequest request) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-        CreateRoomResponse createRoomResponse = gameService.createRoom(memberId);
+        CreateRoomResponse createRoomResponse = gameService.createRoom(memberId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(createRoomResponse);
@@ -38,7 +39,5 @@ public class GameController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(joinRoomResponse);
-
     }
-
 }

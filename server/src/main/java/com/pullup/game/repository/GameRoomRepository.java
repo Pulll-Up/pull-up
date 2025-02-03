@@ -2,8 +2,11 @@ package com.pullup.game.repository;
 
 import com.pullup.game.domain.GameRoom;
 import com.pullup.game.domain.GameStatus;
+import com.pullup.game.dto.ProblemCard;
 import java.time.ZoneId;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class GameRoomRepository {
     private final ConcurrentHashMap<String, GameRoom> gameRooms = new ConcurrentHashMap<>();
+    private final Map<String, List<ProblemCard>> gameProblems = new ConcurrentHashMap<>();
 
     public GameRoom save(GameRoom gameRoom) {
         gameRooms.put(gameRoom.getRoomId(), gameRoom);
@@ -32,6 +36,21 @@ public class GameRoomRepository {
 
     public Collection<GameRoom> getAllRooms() {
         return gameRooms.values();
+    }
+
+    // 문제 리스트 저장
+    public void saveProblems(String roomId, List<ProblemCard> problems) {
+        gameProblems.put(roomId, problems);
+    }
+
+    // 문제 리스트 조회
+    public List<ProblemCard> getProblems(String roomId) {
+        return gameProblems.getOrDefault(roomId, List.of());
+    }
+
+    // 방 삭제 시 문제 리스트 제거
+    public void deleteRoom(String roomId) {
+        gameProblems.remove(roomId);
     }
 
     // 미사용 방 정리를 위한 메서드
