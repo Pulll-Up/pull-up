@@ -12,7 +12,6 @@ public class CookieUtil {
 
     public static ResponseCookie createAccessTokenForCookie(String accessToken) {
         return ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, accessToken)
-                .secure(true)
                 .path("/")
                 .maxAge(60 * 10)
                 .sameSite("None") // 기존에는 "Strict"
@@ -21,8 +20,6 @@ public class CookieUtil {
 
     public static ResponseCookie createRefreshTokenForCookie(String refreshToken) {
         return ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, refreshToken)
-                .httpOnly(true)
-                .secure(true)
                 .path("/")
                 .maxAge(60 * 60 * 24 * 7)
                 .sameSite("None") // 기존에는 "Strict"
