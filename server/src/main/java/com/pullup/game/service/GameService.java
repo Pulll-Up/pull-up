@@ -3,6 +3,7 @@ package com.pullup.game.service;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
+import com.pullup.game.domain.GameStatus;
 import com.pullup.game.dto.response.CreateRoomResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
 import com.pullup.game.repository.GameRoomRepository;
@@ -48,6 +49,10 @@ public class GameService {
 
         return JoinRoomResponse.success();
 
+    }
+
+    public GameStatus getGameRoomStatus(String roomId) {
+        return findByRoomId(roomId).getStatus();
     }
 
     private GameRoom findByRoomId(String roomId) {
