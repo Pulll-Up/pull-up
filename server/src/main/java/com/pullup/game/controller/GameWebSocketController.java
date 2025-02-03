@@ -18,4 +18,6 @@ public class GameWebSocketController {
         GameStatus status = gameService.getGameRoomStatus(roomId);
         messagingTemplate.convertAndSend("/topic/game/" + roomId + "/status", status);
     }
+
+
 }
