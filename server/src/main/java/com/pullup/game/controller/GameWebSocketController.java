@@ -2,35 +2,44 @@ package com.pullup.game.controller;
 
 import com.pullup.game.domain.GameRoomStatus;
 import com.pullup.game.dto.request.CardSubmitRequest;
-import com.pullup.game.dto.response.GameRoomInfoWithProblems;
+import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
+import com.pullup.game.dto.response.GetGameRoomStatusResponse;
 import com.pullup.game.service.GameService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
 public class GameWebSocketController {
+
     private final GameService gameService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/game/{roomId}/status")
     @SendTo("/topic/game/{roomId}/status")
-    public GameRoomStatus getRoomStatus(String roomId) {
+    public GetGameRoomStatusResponse getRoomStatus(@DestinationVariable String roomId) {
         System.out.println("getRoomStatus 호출됨! roomId: " + roomId);
         GameRoomStatus gameRoomStatus = gameService.getGameRoomStatus(roomId);
 
-        return gameRoomStatus;
+        return GetGameRoomStatusResponse.of(gameRoomStatus.name());
     }
 
+
     @MessageMapping("/card/submit")
-    @SendTo("/topic/game/{cardSubmitRequest.roomId}")
-    public GameRoomInfoWithProblems submitCard(CardSubmitRequest cardSubmitRequest) {
+    public void submitCard(@Payload CardSubmitRequest cardSubmitRequest) {
         System.out.println("submitCard 호출됨! roomId: " + cardSubmitRequest.roomId());
 
-        GameRoomInfoWithProblems gameRoomInfoWithProblems = gameService.processCardSubmission(cardSubmitRequest);
+        GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = gameService.processCardSubmission(
+                cardSubmitRequest);
 
-        return gameRoomInfoWithProblems;
+        // 동적으로 해당 방의 구독 경로에 메시지 전송
+        String destination = "/topic/game/" + cardSubmitRequest.roomId();
+        messagingTemplate.convertAndSend(destination, gameRoomInfoWithProblemsResponse);
     }
 
 

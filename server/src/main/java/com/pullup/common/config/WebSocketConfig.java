@@ -22,4 +22,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setAllowedOrigins("*"); // 단순화
     }
 
+
 }

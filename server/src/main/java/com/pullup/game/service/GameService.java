@@ -10,7 +10,8 @@ import com.pullup.game.dto.ProblemCard;
 import com.pullup.game.dto.request.CardSubmitRequest;
 import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
-import com.pullup.game.dto.response.GameRoomInfoWithProblems;
+import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
+import com.pullup.game.dto.response.GetPlayerNumberResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
 import com.pullup.game.repository.GameRoomRepository;
 import com.pullup.member.domain.Member;
@@ -73,7 +74,7 @@ public class GameService {
     }
 
     // 카드 선택 요청 처리
-    public GameRoomInfoWithProblems processCardSubmission(CardSubmitRequest cardSubmitRequest) {
+    public GameRoomInfoWithProblemsResponse processCardSubmission(CardSubmitRequest cardSubmitRequest) {
 
         GameRoom gameRoom = findByRoomId(cardSubmitRequest.roomId());
         List<ProblemCard> problemCards = getProblemsByRoomId(cardSubmitRequest.roomId());
@@ -100,7 +101,7 @@ public class GameService {
         gameRoomRepository.save(gameRoom);
 
         // 응답 객체 생성
-        return GameRoomInfoWithProblems.of(
+        return GameRoomInfoWithProblemsResponse.of(
                 gameRoom.getRoomId(),
                 PlayerInfo.of(
                         gameRoom.getPlayer1().getId(),
@@ -123,6 +124,17 @@ public class GameService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public GetPlayerNumberResponse getPlayerNumber(String roomId, Long memberId) {
+        GameRoom gameRoom = findByRoomId(roomId);
+        if (gameRoom.getPlayer1().getId() == memberId) {
+            return GetPlayerNumberResponse.of(1L);
+        } else if (gameRoom.getPlayer2().getId() == memberId) {
+            return GetPlayerNumberResponse.of(2L);
+        } else {
+            throw new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND);
         }
     }
 
