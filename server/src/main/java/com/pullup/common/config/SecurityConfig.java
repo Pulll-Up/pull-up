@@ -102,7 +102,8 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5173",
-                "ws://localhost:8080"  // 웹소켓 프로토콜 추가
+                "ws://localhost:8080",  // 웹소켓 프로토콜 추가
+                "https://www.pull-up.store"
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
