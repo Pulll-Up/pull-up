@@ -60,7 +60,7 @@ public class GameRoomRepository {
         gameRooms.entrySet().removeIf(entry -> {
             GameRoom room = entry.getValue();
 
-            // ✅ LocalDateTime을 밀리초로 변환
+            // LocalDateTime을 밀리초로 변환
             long createdAtMillis = room.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
             // 30분 이상 된 방이거나 게임이 끝난 방 삭제
