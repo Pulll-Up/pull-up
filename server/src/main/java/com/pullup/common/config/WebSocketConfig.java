@@ -19,7 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/game-websocket") // 클라이언트가 연결할 웹소켓 엔드포인트
-                .setAllowedOrigins("*");
+                .setAllowedOrigins("https://www.pull-up.store", "*");
     }
 
 }
