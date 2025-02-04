@@ -23,7 +23,6 @@ public class GameWebSocketController {
     @MessageMapping("/game/{roomId}/status")
     @SendTo("/topic/game/{roomId}/status")
     public GetGameRoomStatusResponse getRoomStatus(@DestinationVariable String roomId) {
-        System.out.println("getRoomStatus 호출됨! roomId: " + roomId);
         GameRoomStatus gameRoomStatus = gameService.getGameRoomStatus(roomId);
 
         return GetGameRoomStatusResponse.of(gameRoomStatus.name());
@@ -32,8 +31,6 @@ public class GameWebSocketController {
 
     @MessageMapping("/card/submit")
     public void submitCard(@Payload CardSubmitRequest cardSubmitRequest) {
-        System.out.println("submitCard 호출됨! roomId: " + cardSubmitRequest.roomId());
-
         GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = gameService.processCardSubmission(
                 cardSubmitRequest);
 
