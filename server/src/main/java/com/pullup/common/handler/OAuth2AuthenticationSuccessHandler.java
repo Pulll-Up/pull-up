@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -20,6 +21,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler implements
         AuthenticationSuccessHandler {
+
+    @Value("${app.auth.redirectUrl}")
+    private String authRedirectUrl;
 
     private final JwtUtil jwtUtil;
 
@@ -40,7 +44,7 @@ public class OAuth2AuthenticationSuccessHandler implements
         String accessToken = jwtToken.accessToken();
         log.info("Access Token: {}", accessToken);
 
-        response.sendRedirect("https://www.pull-up.store/redirect");
+        response.sendRedirect(authRedirectUrl);
     }
 
     private static void setJwtTokenAtCookie(HttpServletResponse response, JwtToken jwtToken) {
