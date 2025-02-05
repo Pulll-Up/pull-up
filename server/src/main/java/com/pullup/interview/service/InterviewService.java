@@ -16,8 +16,6 @@ import com.pullup.interview.repository.InterviewAnswerRepository;
 import com.pullup.interview.repository.InterviewHintRepository;
 import com.pullup.interview.repository.InterviewRepository;
 import com.pullup.member.domain.Member;
-import com.pullup.member.service.CommentService;
-import com.pullup.member.service.LikeService;
 import com.pullup.member.service.MemberService;
 import java.util.List;
 import java.util.stream.Collectors;

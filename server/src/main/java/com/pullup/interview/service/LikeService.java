@@ -1,6 +1,6 @@
-package com.pullup.member.service;
+package com.pullup.interview.service;
 
-import com.pullup.member.repository.LikeRepository;
+import com.pullup.interview.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

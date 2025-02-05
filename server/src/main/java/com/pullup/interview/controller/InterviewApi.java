@@ -5,6 +5,7 @@ import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
+import com.pullup.member.dto.request.PostCommentRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -110,4 +111,37 @@ public interface InterviewApi {
             }
     )
     public ResponseEntity<InterviewAnswersResponse> getInterviewAnswers(@PathVariable Long interviewId);
+
+    @Operation(
+            summary = "오늘의 문제에 대한 댓글 작성",
+            description = "오늘의 문제에 대한 댓글을 작성합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "댓글 작성 성공",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "해당 오늘의 문제가 존재하지 않습니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "오늘의 문제의 번호는 필수입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "댓글 내용은 필수입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<Void> postComment(@PathVariable Long interviewId, PostCommentRequest postCommentRequest);
 }

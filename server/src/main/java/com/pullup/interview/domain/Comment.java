@@ -1,7 +1,7 @@
-package com.pullup.member.domain;
+package com.pullup.interview.domain;
 
 import com.pullup.common.auditing.BaseTimeEntity;
-import com.pullup.interview.domain.InterviewAnswer;
+import com.pullup.member.domain.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

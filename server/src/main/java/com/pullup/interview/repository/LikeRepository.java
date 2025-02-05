@@ -1,6 +1,6 @@
-package com.pullup.member.repository;
+package com.pullup.interview.repository;
 
-import com.pullup.member.domain.Like;
+import com.pullup.interview.domain.Like;
 import org.springframework.data.repository.CrudRepository;
 
 public interface LikeRepository extends CrudRepository<Like, Long> {
