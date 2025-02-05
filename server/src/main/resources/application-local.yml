@@ -65,3 +65,8 @@ spring:
               - name
               - email
               - profile_image
+
+app:
+  auth:
+    redirectUri: ${APP_AUTH_REDIRECT_URI}
+
