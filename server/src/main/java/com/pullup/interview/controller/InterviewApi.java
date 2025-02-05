@@ -141,4 +141,33 @@ public interface InterviewApi {
     )
     public ResponseEntity<PostCommentResponse> postComment(@PathVariable Long interviewId,
                                                            PostCommentRequest postCommentRequest);
+
+    @Operation(
+            summary = "오늘의 문제 답변에 대한 댓글 수정",
+            description = "오늘의 문제 답변에 대한 댓글을 수정합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "댓글 수정 성공",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "댓글을 찾을 수 없습니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "댓글 내용은 필수입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<Void> modifyComment(@PathVariable Long commentId,
+                                              PostCommentRequest postCommentRequest);
 }
