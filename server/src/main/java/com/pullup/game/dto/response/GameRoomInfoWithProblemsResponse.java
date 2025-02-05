@@ -6,15 +6,15 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record GameRoomInfoWithProblems(
+public record GameRoomInfoWithProblemsResponse(
         String roomId,
         PlayerInfo player1P,
         PlayerInfo player2P,
         List<ProblemCard> problems
 ) {
-    public static GameRoomInfoWithProblems of(String roomId, PlayerInfo player1P, PlayerInfo player2P,
-                                              List<ProblemCard> problems) {
-        return GameRoomInfoWithProblems.builder()
+    public static GameRoomInfoWithProblemsResponse of(String roomId, PlayerInfo player1P, PlayerInfo player2P,
+                                                      List<ProblemCard> problems) {
+        return GameRoomInfoWithProblemsResponse.builder()
                 .roomId(roomId)
                 .player1P(player1P)
                 .player2P(player2P)
