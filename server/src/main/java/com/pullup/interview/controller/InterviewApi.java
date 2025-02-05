@@ -167,4 +167,27 @@ public interface InterviewApi {
     )
     public ResponseEntity<Void> modifyComment(Long commentId,
                                               PostCommentRequest postCommentRequest);
+
+    @Operation(
+            summary = "오늘의 문제 댓글 삭제",
+            description = "오늘의 문제 댓글을 삭제합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "댓글 삭제 성공",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "댓글을 찾을 수 없습니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<Void> deleteComment(Long commentId);
 }
