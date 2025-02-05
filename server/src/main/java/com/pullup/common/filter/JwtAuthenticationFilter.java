@@ -41,8 +41,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             new AntPathRequestMatcher("/v3/api-docs/**", HttpMethod.GET.toString())
     );
 
+    private static final List<RequestMatcher> WEBSOCKET_PATHS = Arrays.asList(
+            new AntPathRequestMatcher("/game-websocket/**")
+    );
+
     private static final RequestMatcher EXCLUDED_LOGIN_PATHS_REQUEST_MATCHER = new OrRequestMatcher(LOGIN_PATHS);
     private static final RequestMatcher EXCLUDED_SWAGGER_PATHS_REQUEST_MATCHER = new OrRequestMatcher(SWAGGER_PATHS);
+    private static final RequestMatcher EXCLUDED_WEBSOCKET_PATHS_REQUEST_MATCHER = new OrRequestMatcher(
+            WEBSOCKET_PATHS);
 
     private static final String REISSUE_API_URL = "/api/v1/auth/reissue";
     private static final String LOGOUT_API_URL = "/api/v1/auth/logout";
@@ -79,6 +85,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         boolean shouldNotFilter = EXCLUDED_LOGIN_PATHS_REQUEST_MATCHER.matches(request);
         shouldNotFilter |= EXCLUDED_SWAGGER_PATHS_REQUEST_MATCHER.matches(request);
+        shouldNotFilter |= EXCLUDED_WEBSOCKET_PATHS_REQUEST_MATCHER.matches(request);
         log.info("Should not filter for request [{}]: {}", request.getRequestURI(), shouldNotFilter);
         return shouldNotFilter;
     }

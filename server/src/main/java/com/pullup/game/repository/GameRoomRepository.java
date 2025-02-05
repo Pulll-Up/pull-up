@@ -1,7 +1,7 @@
 package com.pullup.game.repository;
 
 import com.pullup.game.domain.GameRoom;
-import com.pullup.game.domain.GameStatus;
+import com.pullup.game.domain.GameRoomStatus;
 import com.pullup.game.dto.ProblemCard;
 import java.time.ZoneId;
 import java.util.Collection;
@@ -65,7 +65,7 @@ public class GameRoomRepository {
 
             // 30분 이상 된 방이거나 게임이 끝난 방 삭제
             return (currentTimeMillis - createdAtMillis > 30 * 60 * 1000)
-                    || room.getStatus() == GameStatus.FINISHED;
+                    || room.getStatus() == GameRoomStatus.FINISHED;
         });
     }
 }
