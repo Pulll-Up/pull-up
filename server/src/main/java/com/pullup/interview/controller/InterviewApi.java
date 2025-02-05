@@ -1,11 +1,12 @@
 package com.pullup.interview.controller;
 
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
+import com.pullup.interview.dto.request.PostCommentRequest;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
-import com.pullup.interview.dto.request.PostCommentRequest;
+import com.pullup.interview.dto.response.PostCommentResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Interview", description = "오늘의 문제 관련 API")
@@ -124,7 +124,7 @@ public interface InterviewApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "해당 오늘의 문제가 존재하지 않습니다.",
+                            description = "면접 답변을 찾을 수 없습니다.",
                             content = @Content(schema = @Schema(hidden = true))
                     ),
                     @ApiResponse(
@@ -139,5 +139,6 @@ public interface InterviewApi {
                     )
             }
     )
-    public ResponseEntity<Void> postComment(@PathVariable Long interviewId, PostCommentRequest postCommentRequest);
+    public ResponseEntity<PostCommentResponse> postComment(@PathVariable Long interviewId,
+                                                           PostCommentRequest postCommentRequest);
 }
