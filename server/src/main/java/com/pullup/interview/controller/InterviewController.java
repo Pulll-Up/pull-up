@@ -2,6 +2,7 @@ package com.pullup.interview.controller;
 
 import com.pullup.common.util.SecurityUtil;
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
+import com.pullup.interview.dto.request.PostCommentRequest;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
@@ -64,5 +65,15 @@ public class InterviewController implements InterviewApi {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(interviewAnswersResponse);
+    }
+
+    @Override
+    @PostMapping("/{interviewId}/comment")
+    public ResponseEntity<Void> postComment(@PathVariable("interviewId") Long interviewId,
+                                                       @RequestBody PostCommentRequest postCommentRequest) {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .build();
     }
 }

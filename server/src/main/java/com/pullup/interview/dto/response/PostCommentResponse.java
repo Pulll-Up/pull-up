@@ -1,4 +1,4 @@
-package com.pullup.member.dto.response;
+package com.pullup.interview.dto.response;
 
 public record PostCommentResponse(
         Long commentId

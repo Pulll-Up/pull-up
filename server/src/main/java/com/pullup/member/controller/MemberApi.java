@@ -1,6 +1,5 @@
 package com.pullup.member.controller;
 
-import com.pullup.member.dto.request.PostCommentRequest;
 import com.pullup.member.dto.response.MemberProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -8,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = "member", description = "회원 API")
 public interface MemberApi {
