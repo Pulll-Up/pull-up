@@ -86,7 +86,7 @@ public class InterviewController implements InterviewApi {
     }
 
     @Override
-    @PatchMapping("/interviewAnswer/comment/{commentId}")
+    @PatchMapping("/interview-answer/comment/{commentId}")
     public ResponseEntity<Void> modifyComment(@PathVariable("commentId") Long commentId,
                                               @Valid @RequestBody PostCommentRequest postCommentRequest) {
         commentService.modifyComment(commentId, postCommentRequest);
@@ -96,7 +96,7 @@ public class InterviewController implements InterviewApi {
     }
 
     @Override
-    @DeleteMapping("/interviewAnswer/comment/{commentId}")
+    @DeleteMapping("/interview-answer/comment/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable("commentId") Long commentId) {
         commentService.deleteComment(commentId);
 
