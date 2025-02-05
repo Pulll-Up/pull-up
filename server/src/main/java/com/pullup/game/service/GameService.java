@@ -31,19 +31,15 @@ public class GameService {
     private final MemberService memberService;
 
     public CreateRoomResponse createRoom(Long memberId, CreateRoomWithSubjectsRequest request) {
-        // 멤버 정보 조회
         Member member = memberService.findMemberById(memberId);
 
-        // 게임방 생성
         GameRoom gameRoom = GameRoom.craeteGameRoomWithHost(
                 memberId,
                 member.getName()
         );
 
-        // 게임방 저장
         gameRoomRepository.save(gameRoom);
 
-        // 게임 문제 저장
         problemService.generateProblems(gameRoom.getRoomId(), request);
 
         return CreateRoomResponse.of(
@@ -58,7 +54,7 @@ public class GameService {
 
         gameRoom.addGuest(member.getId(), member.getName());
 
-        gameRoomRepository.save(gameRoom); // 변경된 상태 저장
+        gameRoomRepository.save(gameRoom);
 
         return JoinRoomResponse.success();
 

@@ -42,7 +42,6 @@ public class GameRoom {
         this.status = GameRoomStatus.FINISHED;
     }
 
-    // ✅ playerId로 플레이어 찾기
     public Player getPlayerById(Long playerId) {
         if (player1.getId().equals(playerId)) {
             return player1;

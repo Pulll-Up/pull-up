@@ -29,7 +29,7 @@ public class ProblemCard {
     }
 
     public void disableCard() {
-        this.disabled = false;
+        this.disabled = true;
     }
 
 
