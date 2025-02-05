@@ -68,5 +68,5 @@ spring:
 
 app:
   auth:
-    redirectUrl: ${APP_AUTH_REDIRECT_URL}
+    redirectUri: ${APP_AUTH_REDIRECT_URI}
 

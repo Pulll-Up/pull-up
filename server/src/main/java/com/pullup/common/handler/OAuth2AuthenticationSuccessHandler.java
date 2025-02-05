@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component;
 public class OAuth2AuthenticationSuccessHandler implements
         AuthenticationSuccessHandler {
 
-    @Value("${app.auth.redirectUrl}")
-    private String authRedirectUrl;
+    @Value("${app.auth.redirectUri}")
+    private String authRedirectUri;
 
     private final JwtUtil jwtUtil;
 
@@ -44,7 +44,7 @@ public class OAuth2AuthenticationSuccessHandler implements
         String accessToken = jwtToken.accessToken();
         log.info("Access Token: {}", accessToken);
 
-        response.sendRedirect(authRedirectUrl);
+        response.sendRedirect(authRedirectUri);
     }
 
     private static void setJwtTokenAtCookie(HttpServletResponse response, JwtToken jwtToken) {
