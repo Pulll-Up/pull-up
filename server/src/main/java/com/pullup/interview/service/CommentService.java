@@ -47,4 +47,15 @@ public class CommentService {
         return interviewAnswerRepository.findById(interviewAnswerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
     }
+
+    @Transactional
+    public void modifyComment(Long commentId, PostCommentRequest postCommentRequest) {
+        Comment comment = findCommentById(commentId);
+        comment.modifyContent(postCommentRequest.content());
+    }
+
+    private Comment findCommentById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_COMMENT_NOT_FOUND));
+    }
 }

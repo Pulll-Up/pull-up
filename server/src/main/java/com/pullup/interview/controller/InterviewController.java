@@ -88,7 +88,7 @@ public class InterviewController implements InterviewApi {
     @PatchMapping("/interviewAnswer/comment/{commentId}")
     public ResponseEntity<Void> modifyComment(@PathVariable("commentId") Long commentId,
                                               @Valid @RequestBody PostCommentRequest postCommentRequest) {
-        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        commentService.modifyComment(commentId, postCommentRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .build();

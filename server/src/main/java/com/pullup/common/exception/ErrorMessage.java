@@ -28,7 +28,10 @@ public enum ErrorMessage {
     ERR_COOKIE_NOT_FOUND("쿠키를 찾을 수 없습니다"),
 
     //* Game 관련 Exception
-    ERR_GAME_ROOM_NOT_FOUND("게임 방을 찾을 수 없습니다");
+    ERR_GAME_ROOM_NOT_FOUND("게임 방을 찾을 수 없습니다"),
+
+    //* Comment 관련 Exception
+    ERR_COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다");
 
     private final String message;
 }
