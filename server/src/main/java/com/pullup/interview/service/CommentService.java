@@ -24,8 +24,11 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public PostCommentResponse postComment(Long memberId, Long interviewAnswerId,
-                                           PostCommentRequest postCommentRequest) {
+    public PostCommentResponse postComment(
+            Long memberId,
+            Long interviewAnswerId,
+            PostCommentRequest postCommentRequest
+    ) {
         Member member = memberService.findMemberById(memberId);
         InterviewAnswer interviewAnswer = findInterviewAnswerById(interviewAnswerId);
 
