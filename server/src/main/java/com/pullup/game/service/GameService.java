@@ -29,7 +29,7 @@ public class GameService {
     private final GameRoomRepository gameRoomRepository;
     private final ProblemService problemService;
     private final MemberService memberService;
-
+    
     public CreateRoomResponse createRoom(Long memberId, CreateRoomWithSubjectsRequest request) {
         Member member = memberService.findMemberById(memberId);
 
