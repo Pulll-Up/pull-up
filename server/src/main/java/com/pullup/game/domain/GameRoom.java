@@ -1,5 +1,7 @@
 package com.pullup.game.domain;
 
+import com.pullup.common.exception.ErrorMessage;
+import com.pullup.common.exception.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.Builder;
@@ -11,14 +13,14 @@ public class GameRoom {
     private String roomId;
     private Player player1;
     private Player player2;
-    private GameStatus status;
+    private GameRoomStatus status;
     private LocalDateTime createdAt;
 
     public static GameRoom craeteGameRoomWithHost(Long id, String name) {
         return GameRoom.builder()
                 .roomId(generateUniqueRoomCode())
                 .player1(Player.createNewPlayer(id, name))
-                .status(GameStatus.WAITING)
+                .status(GameRoomStatus.WAITING)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
@@ -33,7 +35,21 @@ public class GameRoom {
     }
 
     private void updateStatusToPlaying() {
-        this.status = GameStatus.PLAYING;
+        this.status = GameRoomStatus.PLAYING;
+    }
+
+    public void updateStatusToFinished() {
+        this.status = GameRoomStatus.FINISHED;
+    }
+
+    public Player getPlayerById(Long playerId) {
+        if (player1.getId().equals(playerId)) {
+            return player1;
+        } else if (player2.getId().equals(playerId)) {
+            return player2;
+        } else {
+            throw new NotFoundException(ErrorMessage.ERR_PLAYER_NOT_FOUND);
+        }
     }
 
 }

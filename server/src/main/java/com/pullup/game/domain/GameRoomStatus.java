@@ -1,6 +1,6 @@
 package com.pullup.game.domain;
 
-public enum GameStatus {
+public enum GameRoomStatus {
     WAITING,
     PLAYING,
     FINISHED
