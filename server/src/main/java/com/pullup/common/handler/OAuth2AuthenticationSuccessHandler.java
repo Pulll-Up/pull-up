@@ -40,7 +40,7 @@ public class OAuth2AuthenticationSuccessHandler implements
         String accessToken = jwtToken.accessToken();
         log.info("Access Token: {}", accessToken);
 
-        String authRedirectUri = "https://www.pull-up.store/redirect";
+        String authRedirectUri = jwtUtil.getAuthRedirectUri();
 
         log.info("Redirect URI: {}", authRedirectUri);
         response.sendRedirect(authRedirectUri);

@@ -30,7 +30,7 @@ public class OAuthController implements OAuthApi {
     }
 
     @Override
-    @PatchMapping("/signup")
+    @PostMapping("/signup")
     public ResponseEntity<Void> signUp(@RequestBody SignUpRequest singUpRequest) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
         oAuthService.signUp(memberId, singUpRequest);
