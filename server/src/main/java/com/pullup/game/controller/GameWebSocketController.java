@@ -11,7 +11,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -29,12 +28,12 @@ public class GameWebSocketController {
         return GetGameRoomStatusResponse.of(gameRoomStatus.name());
     }
 
-    @SubscribeMapping("/topic/game/{roomId}")
-    public GameRoomInfoWithProblemsResponse sendInitialGameInfo(@DestinationVariable String roomId) {
-        GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = gameService.getInitialGameRoomInfo(roomId);
-
-        return gameRoomInfoWithProblemsResponse;
-    }
+//    @SubscribeMapping("/topic/game/{roomId}")
+//    public GameRoomInfoWithProblemsResponse sendInitialGameInfo(@DestinationVariable String roomId) {
+//        GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = gameService.getInitialGameRoomInfo(roomId);
+//        System.out.println("들어오는지 확인");
+//        return gameRoomInfoWithProblemsResponse;
+//    }
 
 
     @MessageMapping("/card/submit")
@@ -46,6 +45,5 @@ public class GameWebSocketController {
         String destination = "/topic/game/" + cardSubmitRequest.roomId();
         messagingTemplate.convertAndSend(destination, gameRoomInfoWithProblemsResponse);
     }
-
 
 }

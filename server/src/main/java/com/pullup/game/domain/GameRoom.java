@@ -15,6 +15,8 @@ public class GameRoom {
     private Player player2;
     private GameRoomStatus status;
     private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
+
 
     public static GameRoom craeteGameRoomWithHost(Long id, String name) {
         return GameRoom.builder()
@@ -22,6 +24,7 @@ public class GameRoom {
                 .player1(Player.createNewPlayer(id, name))
                 .status(GameRoomStatus.WAITING)
                 .createdAt(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
                 .build();
     }
 
@@ -42,15 +45,16 @@ public class GameRoom {
         this.status = GameRoomStatus.FINISHED;
     }
 
-    public Player getPlayerById(Long playerId) {
-        if (player1.getId().equals(playerId)) {
+    public Player getPlayerByPlayerId(Long playerId) {
+        if (playerId == 1L) {
             return player1;
-        } else if (player2.getId().equals(playerId)) {
+        } else if (playerId == 2L) {
             return player2;
         } else {
             throw new NotFoundException(ErrorMessage.ERR_PLAYER_NOT_FOUND);
         }
     }
+
 
 }
 

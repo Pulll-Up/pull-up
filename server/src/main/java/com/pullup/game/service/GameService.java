@@ -73,6 +73,7 @@ public class GameService {
     public GameRoomInfoWithProblemsResponse processCardSubmission(CardSubmitRequest cardSubmitRequest) {
 
         GameRoom gameRoom = findByRoomId(cardSubmitRequest.roomId());
+
         List<ProblemCard> problemCards = getProblemsByRoomId(cardSubmitRequest.roomId());
 
         int problemNumber = cardSubmitRequest.problemNumber();
@@ -85,16 +86,15 @@ public class GameService {
         gameRoomRepository.saveProblems(gameRoom.getRoomId(), problemCards);
 
         // 플레이어 점수 업데이트
-        Player player = gameRoom.getPlayerById(cardSubmitRequest.playerId());
+        Player player = gameRoom.getPlayerByPlayerId(cardSubmitRequest.playerId());
         player.increaseScore();
+
+        gameRoomRepository.save(gameRoom);
 
         // 게임룸 정보 (상태) 업데이트
         if (isGameEnd(gameRoom.getPlayer1().getScore(), gameRoom.getPlayer2().getScore())) {
             gameRoom.updateStatusToFinished();
         }
-
-        // 변경된 게임룸 정보 저장
-        gameRoomRepository.save(gameRoom);
 
         // 응답 객체 생성
         return GameRoomInfoWithProblemsResponse.of(
