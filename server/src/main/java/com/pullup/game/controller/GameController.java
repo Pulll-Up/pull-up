@@ -53,4 +53,5 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getPlayerNumberResponse);
     }
+
 }

@@ -134,5 +134,19 @@ public class GameService {
         }
     }
 
+    public GameRoomInfoWithProblemsResponse getInitialGameRoomInfo(String roomId) {
+        GameRoom gameRoom = findByRoomId(roomId);
+        List<ProblemCard> problemCards = gameRoomRepository.getProblemsByRoomId(roomId);
+
+        return GameRoomInfoWithProblemsResponse.of(
+                roomId,
+                PlayerInfo.from(gameRoom.getPlayer1()),
+                PlayerInfo.from(gameRoom.getPlayer2()),
+                problemCards
+        );
+
+
+    }
+
 
 }
