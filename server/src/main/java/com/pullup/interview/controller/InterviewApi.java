@@ -12,10 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Interview", description = "오늘의 문제 관련 API")
 public interface InterviewApi {
@@ -41,7 +38,7 @@ public interface InterviewApi {
                     )
             }
     )
-    public ResponseEntity<InterviewResponse> getTodayInterview(@PathVariable Long interviewId);
+    public ResponseEntity<InterviewResponse> getTodayInterview(Long interviewId);
 
     @Operation(
             summary = "오늘의 문제 제출",
@@ -64,8 +61,8 @@ public interface InterviewApi {
                     )
             }
     )
-    public ResponseEntity<MyInterviewAnswerResponse> submitInterviewAnswer(@PathVariable Long interviewId,
-                                                                           @Valid @RequestBody MyInterviewAnswerRequest myInterviewAnswerRequest);
+    public ResponseEntity<MyInterviewAnswerResponse> submitInterviewAnswer(Long interviewId,
+                                                                           MyInterviewAnswerRequest myInterviewAnswerRequest);
 
     @Operation(
             summary = "멤버가 풀었던 오늘의 문제 전체 조회",
@@ -111,7 +108,7 @@ public interface InterviewApi {
                     )
             }
     )
-    public ResponseEntity<InterviewAnswersResponse> getInterviewAnswers(@PathVariable Long interviewId);
+    public ResponseEntity<InterviewAnswersResponse> getInterviewAnswers(Long interviewId);
 
     @Operation(
             summary = "오늘의 문제에 대한 댓글 작성",
@@ -139,6 +136,35 @@ public interface InterviewApi {
                     )
             }
     )
-    public ResponseEntity<PostCommentResponse> postComment(@PathVariable Long interviewId,
+    public ResponseEntity<PostCommentResponse> postComment(Long interviewId,
                                                            PostCommentRequest postCommentRequest);
+
+    @Operation(
+            summary = "오늘의 문제 답변에 대한 댓글 수정",
+            description = "오늘의 문제 답변에 대한 댓글을 수정합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "댓글 수정 성공",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "댓글 내용은 필수입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "댓글을 찾을 수 없습니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<Void> modifyComment(Long commentId,
+                                              PostCommentRequest postCommentRequest);
 }

@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "OAuth", description = "OAuth 관련 API")
 public interface OAuthApi {
@@ -68,5 +67,5 @@ public interface OAuthApi {
                     )
             }
     )
-    ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest);
+    ResponseEntity<Void> signUp(SignUpRequest signUpRequest);
 }
