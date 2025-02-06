@@ -29,10 +29,11 @@ public class SubscriptionEventListener {
             String roomId = destination.substring("/topic/game/".length());
 
             // 초기 게임 데이터 가져오기
-            GameRoomInfoWithProblemsResponse initialData = gameService.getInitialGameRoomInfo(roomId);
+            GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = gameService.getInitialGameRoomInfo(
+                    roomId);
 
             // 해당 토픽으로 초기 데이터 전송
-            messagingTemplate.convertAndSend(destination, initialData);
+            messagingTemplate.convertAndSend(destination, gameRoomInfoWithProblemsResponse);
         }
     }
 }

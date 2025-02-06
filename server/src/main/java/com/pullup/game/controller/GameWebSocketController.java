@@ -28,14 +28,6 @@ public class GameWebSocketController {
         return GetGameRoomStatusResponse.of(gameRoomStatus.name());
     }
 
-//    @SubscribeMapping("/topic/game/{roomId}")
-//    public GameRoomInfoWithProblemsResponse sendInitialGameInfo(@DestinationVariable String roomId) {
-//        GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = gameService.getInitialGameRoomInfo(roomId);
-//        System.out.println("들어오는지 확인");
-//        return gameRoomInfoWithProblemsResponse;
-//    }
-
-
     @MessageMapping("/card/submit")
     public void submitCard(@Payload CardSubmitRequest cardSubmitRequest) {
         GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = gameService.processCardSubmission(
