@@ -55,6 +55,8 @@ public class JwtUtil {
     }
 
     public String getAuthRedirectUri() {
+        System.out.println("JwtUtil.getAuthRedirectUri");
+        log.info("Redirected to: {}", jwtProperties.getAuthRedirectUri());
         return jwtProperties.getAuthRedirectUri();
     }
 

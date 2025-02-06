@@ -40,9 +40,9 @@ public class OAuth2AuthenticationSuccessHandler implements
         String accessToken = jwtToken.accessToken();
         log.info("Access Token: {}", accessToken);
 
-        log.info("Redirecting to: {}", jwtUtil.getAuthRedirectUri());
-        response.sendRedirect(jwtUtil.getAuthRedirectUri());
-        log.info("Redirected to: {}", jwtUtil.getAuthRedirectUri());
+        String authRedirectUri = jwtUtil.getAuthRedirectUri();
+        log.info("Redirected to: {}", authRedirectUri);
+        response.sendRedirect(authRedirectUri);
     }
 
     private static void setJwtTokenAtCookie(HttpServletResponse response, JwtToken jwtToken) {
