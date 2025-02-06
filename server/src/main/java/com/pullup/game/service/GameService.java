@@ -1,6 +1,7 @@
 package com.pullup.game.service;
 
 import com.pullup.common.exception.ErrorMessage;
+import com.pullup.common.exception.IllegalStatementException;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
 import com.pullup.game.domain.GameRoomStatus;
@@ -50,6 +51,15 @@ public class GameService {
     @Transactional
     public JoinRoomResponse join(String roomId, Long memberId) {
         GameRoom gameRoom = findByRoomId(roomId);
+        // 방 상태가 waiting이 아니면, 방에 참가할 수 없다
+        if (!gameRoom.getStatus().equals(GameRoomStatus.WAITING)) {
+            throw new IllegalStatementException(ErrorMessage.ERR_GAME_ROOM_NOT_WAITING);
+        }
+
+        if (gameRoom.getPlayer1().getId() == memberId) {
+            throw new IllegalStatementException(ErrorMessage.ERR_GAME_ROOM_MEMBER_DUPLICATED);
+        }
+
         Member member = memberService.findMemberById(memberId);
 
         gameRoom.addGuest(member.getId(), member.getName());
