@@ -1,6 +1,7 @@
 package com.pullup.game.service;
 
 import com.pullup.common.exception.ErrorMessage;
+import com.pullup.common.exception.IllegalStatementException;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
 import com.pullup.game.domain.GameRoomStatus;
@@ -9,12 +10,13 @@ import com.pullup.game.dto.PlayerInfo;
 import com.pullup.game.dto.ProblemCard;
 import com.pullup.game.dto.request.CardSubmitRequest;
 import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
-import com.pullup.game.dto.response.CreateRoomResponse;
-import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
-import com.pullup.game.dto.response.GetPlayerNumberResponse;
-import com.pullup.game.dto.response.JoinRoomResponse;
+import com.pullup.game.dto.response.*;
 import com.pullup.game.repository.GameRoomRepository;
 import com.pullup.member.domain.Member;
+import com.pullup.member.domain.MemberGameResult;
+import com.pullup.member.repository.MemberExamStatisticRepository;
+import com.pullup.member.repository.MemberGameResultRepository;
+import com.pullup.member.service.MemberGameResultService;
 import com.pullup.member.service.MemberService;
 import com.pullup.problem.service.ProblemService;
 import java.util.List;
@@ -29,6 +31,8 @@ public class GameService {
     private final GameRoomRepository gameRoomRepository;
     private final ProblemService problemService;
     private final MemberService memberService;
+    private final MemberGameResultRepository memberGameResultRepository;
+    private final MemberGameResultService memberGameResultService;
 
     public CreateRoomResponse createRoom(Long memberId, CreateRoomWithSubjectsRequest request) {
         Member member = memberService.findMemberById(memberId);
@@ -132,6 +136,17 @@ public class GameService {
         } else {
             throw new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND);
         }
+    }
+
+    public GetGameWinningRateResponse getGameWinningRateResponse(Long memberId) {
+        MemberGameResult memberGameResult = memberGameResultService.findMemberGameResultByMemberId(memberId);
+
+        Integer winningRate = (memberGameResult.getWinCount() * 100) / memberGameResult.getTotalCount();
+
+        return GetGameWinningRateResponse.of(
+            winningRate
+        );
+
     }
 
 

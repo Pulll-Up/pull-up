@@ -4,6 +4,7 @@ import com.pullup.common.util.SecurityUtil;
 import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.dto.request.JoinRoomRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
+import com.pullup.game.dto.response.GetGameWinningRateResponse;
 import com.pullup.game.dto.response.GetPlayerNumberResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
 import com.pullup.game.service.GameService;
@@ -52,5 +53,14 @@ public class GameController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getPlayerNumberResponse);
+    }
+
+    @GetMapping("/me/winning-rate")
+    public ResponseEntity<GetGameWinningRateResponse> getGameWinningRateResponse() {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        GetGameWinningRateResponse getGameWinningRateResponse = gameService.getGameWinningRateResponse(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getGameWinningRateResponse);
     }
 }
