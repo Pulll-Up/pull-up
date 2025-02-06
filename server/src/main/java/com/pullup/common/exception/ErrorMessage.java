@@ -30,6 +30,7 @@ public enum ErrorMessage {
     //* Game 관련 Exception
     ERR_GAME_ROOM_NOT_FOUND("게임 방을 찾을 수 없습니다"),
     ERR_GAME_ROOM_NOT_WAITING("게임이 이미 진행 중인 방이거나, 끝난 방입니다"),
+    ERR_GAME_ROOM_MEMBER_DUPLICATED("게임 방에 이미 존재하는 플레이어입니다"),
 
     //* Comment 관련 Exception
     ERR_COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다"),
