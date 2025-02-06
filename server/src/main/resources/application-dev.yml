@@ -24,6 +24,7 @@ spring:
     secret: ${SECRET_KEY}
     accessTokenExpiration: ${ACCESS_TOKEN_EXPIRATION}
     refreshTokenExpiration: ${REFRESH_TOKEN_EXPIRATION}
+    authRedirectUri: ${AUTH_REDIRECT_URI}
 
   data:
     redis:
