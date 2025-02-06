@@ -104,7 +104,9 @@ public class SecurityConfig {
                 "http://localhost:5173",
                 "https://www.pull-up.store",
                 "ws://localhost:5173", // 웹소켓 프로토콜 추가
-                "ws://localhost:8080"  // 웹소켓 프로토콜 추가
+                "ws://localhost:8080",  // 웹소켓 프로토콜 추가
+                "wss://www.pull-up.store", // 배포된 웹소켓 도메인 추가
+                "wss://localhost:5173" // 배포된 웹소켓 도메인 추가
         ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
