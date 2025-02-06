@@ -1,5 +1,7 @@
 package com.pullup.game.domain;
 
+import com.pullup.common.exception.ErrorMessage;
+import com.pullup.common.exception.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.Builder;
@@ -34,6 +36,17 @@ public class GameRoom {
 
     private void updateStatusToPlaying() {
         this.status = GameStatus.PLAYING;
+    }
+
+    // ✅ playerId로 플레이어 찾기
+    public Player getPlayerById(Long playerId) {
+        if (player1.getId().equals(playerId)) {
+            return player1;
+        } else if (player2.getId().equals(playerId)) {
+            return player2;
+        } else {
+            throw new NotFoundException(ErrorMessage.ERR_PLAYER_NOT_FOUND);
+        }
     }
 
 }

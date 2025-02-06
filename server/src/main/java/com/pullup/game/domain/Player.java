@@ -2,7 +2,9 @@ package com.pullup.game.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Builder
 public class Player {
     @JsonProperty("id")
@@ -19,7 +21,7 @@ public class Player {
                 .build();
     }
 
-    public void incrementScore() {
+    public void increaseScore() {
         this.score++;
     }
 }
