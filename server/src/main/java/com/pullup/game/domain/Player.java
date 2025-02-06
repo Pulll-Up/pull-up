@@ -20,7 +20,7 @@ public class Player {
                 .score(0)
                 .build();
     }
-
+    
     public void increaseScore() {
         this.score++;
     }
