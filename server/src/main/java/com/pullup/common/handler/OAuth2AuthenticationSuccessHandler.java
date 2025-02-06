@@ -41,6 +41,7 @@ public class OAuth2AuthenticationSuccessHandler implements
         log.info("Access Token: {}", accessToken);
 
         String authRedirectUri = jwtUtil.getAuthRedirectUri();
+
         log.info("Redirect URI: {}", authRedirectUri);
         response.sendRedirect(authRedirectUri);
         log.info("OAuth2 로그인 성공 리다이렉트 완료");
