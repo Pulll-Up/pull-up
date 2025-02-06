@@ -2,10 +2,13 @@ package com.pullup.interview.controller;
 
 import com.pullup.common.util.SecurityUtil;
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
+import com.pullup.interview.dto.request.PostCommentRequest;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
+import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
-import com.pullup.interview.dto.response.InterviewResponse;
+import com.pullup.interview.dto.response.PostCommentResponse;
+import com.pullup.interview.service.CommentService;
 import com.pullup.interview.service.InterviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class InterviewController implements InterviewApi {
 
     private final InterviewService interviewService;
+    private final CommentService commentService;
 
     @Override
     @GetMapping("/{interviewId}")
@@ -36,10 +40,12 @@ public class InterviewController implements InterviewApi {
 
     @Override
     @PostMapping("/{interviewId}/submit")
-    public ResponseEntity<MyInterviewAnswerResponse> submitInterviewAnswer(@PathVariable("interviewId") Long interviewId,
-                                                                           @Valid @RequestBody MyInterviewAnswerRequest myInterviewAnswerRequest) {
+    public ResponseEntity<MyInterviewAnswerResponse> submitInterviewAnswer(
+            @PathVariable("interviewId") Long interviewId,
+            @Valid @RequestBody MyInterviewAnswerRequest myInterviewAnswerRequest) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-        MyInterviewAnswerResponse myInterviewAnswerResponse = interviewService.submitInterviewAnswer(memberId, interviewId,
+        MyInterviewAnswerResponse myInterviewAnswerResponse = interviewService.submitInterviewAnswer(memberId,
+                interviewId,
                 myInterviewAnswerRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -64,5 +70,16 @@ public class InterviewController implements InterviewApi {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(interviewAnswersResponse);
+    }
+
+    @Override
+    @PostMapping("/{interviewId}/comment")
+    public ResponseEntity<PostCommentResponse> postComment(@PathVariable("interviewId") Long interviewId,
+                                                           @RequestBody PostCommentRequest postCommentRequest) {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        PostCommentResponse postCommentResponse = commentService.postComment(memberId, interviewId, postCommentRequest);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(postCommentResponse);
     }
 }

@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,4 +35,19 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interview_answer_id", nullable = false)
     private InterviewAnswer interviewAnswer;
+
+    @Builder
+    public Comment(String content, Member member, InterviewAnswer interviewAnswer) {
+        this.content = content;
+        this.member = member;
+        this.interviewAnswer = interviewAnswer;
+    }
+
+    public static Comment createComment(String content, Member member, InterviewAnswer interviewAnswer) {
+        return Comment.builder()
+                .content(content)
+                .member(member)
+                .interviewAnswer(interviewAnswer)
+                .build();
+    }
 }

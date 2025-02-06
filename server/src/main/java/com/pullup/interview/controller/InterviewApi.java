@@ -1,10 +1,12 @@
 package com.pullup.interview.controller;
 
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
+import com.pullup.interview.dto.request.PostCommentRequest;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
+import com.pullup.interview.dto.response.PostCommentResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -110,4 +112,33 @@ public interface InterviewApi {
             }
     )
     public ResponseEntity<InterviewAnswersResponse> getInterviewAnswers(@PathVariable Long interviewId);
+
+    @Operation(
+            summary = "오늘의 문제에 대한 댓글 작성",
+            description = "오늘의 문제에 대한 댓글을 작성합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "댓글 작성 성공",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "댓글 내용은 필수입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "면접 답변을 찾을 수 없습니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<PostCommentResponse> postComment(@PathVariable Long interviewId,
+                                                           PostCommentRequest postCommentRequest);
 }

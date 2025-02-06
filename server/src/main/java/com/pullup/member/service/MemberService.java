@@ -8,7 +8,6 @@ import com.pullup.member.domain.Member;
 import com.pullup.member.domain.MemberExamStatistic;
 import com.pullup.member.dto.response.MemberProfileResponse;
 import com.pullup.member.repository.InterestSubjectRepository;
-import com.pullup.member.repository.LikeRepository;
 import com.pullup.member.repository.MemberExamStatisticRepository;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Subject;
