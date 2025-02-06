@@ -15,9 +15,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
@@ -54,6 +52,10 @@ public class JwtUtil {
         storeRefreshTokenInRedis(memberId, refreshToken);
 
         return new JwtToken(accessToken, refreshToken);
+    }
+
+    public String getAuthRedirectUri() {
+        return jwtProperties.getAuthRedirectUri();
     }
 
     private String generateAccessToken(Long memberId) {

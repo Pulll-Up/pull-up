@@ -29,6 +29,7 @@ spring:
     secret: ${SECRET_KEY}
     accessTokenExpiration: ${ACCESS_TOKEN_EXPIRATION}
     refreshTokenExpiration: ${REFRESH_TOKEN_EXPIRATION}
+    authRedirectUri: ${AUTH_REDIRECT_URI}
 
   data:
     redis:
@@ -72,8 +73,4 @@ spring:
               - name
               - email
               - profile_image
-
-app:
-  auth:
-    redirectUri: ${APP_AUTH_REDIRECT_URI}
 
