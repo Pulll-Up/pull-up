@@ -150,17 +150,17 @@ public interface InterviewApi {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "댓글을 찾을 수 없습니다.",
-                            content = @Content(schema = @Schema(hidden = true))
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
                             description = "댓글 내용은 필수입니다.",
                             content = @Content(schema = @Schema(hidden = true))
                     ),
                     @ApiResponse(
                             responseCode = "401",
                             description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "댓글을 찾을 수 없습니다.",
                             content = @Content(schema = @Schema(hidden = true))
                     )
             }
