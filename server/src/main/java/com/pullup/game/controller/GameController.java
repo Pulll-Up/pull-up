@@ -5,6 +5,7 @@ import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.dto.request.JoinRoomRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
 import com.pullup.game.dto.response.GetPlayerNumberResponse;
+import com.pullup.game.dto.response.GetRandomMatchTypeResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
 import com.pullup.game.service.GameService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,15 @@ public class GameController {
                 .body(createRoomResponse);
     }
 
+    @PostMapping("/room/random")
+    public ResponseEntity<CreateRoomResponse> createRoomForRandomMatching() {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        CreateRoomResponse createRoomResponse = gameService.createRoomForRandomMatching(memberId);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(createRoomResponse);
+    }
+
     @PostMapping("/room/join")
     public ResponseEntity<JoinRoomResponse> joinRoom(@RequestBody JoinRoomRequest JoinRoomRequest) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
@@ -52,6 +62,14 @@ public class GameController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getPlayerNumberResponse);
+    }
+
+    @GetMapping("/random/type")
+    public ResponseEntity<GetRandomMatchTypeResponse> getRandomMatchType() {
+        GetRandomMatchTypeResponse getRandomMatchTypeResponse = gameService.getRandomMatchType();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getRandomMatchTypeResponse);
     }
 
 }

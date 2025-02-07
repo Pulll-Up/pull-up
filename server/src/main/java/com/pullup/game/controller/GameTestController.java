@@ -16,6 +16,6 @@ public class GameTestController {
 
     @GetMapping("/all")
     public Collection<GameRoom> getAllRooms() {
-        return gameRoomRepository.getAllRooms();
+        return gameRoomRepository.findAll();
     }
 }
