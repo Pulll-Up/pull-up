@@ -25,6 +25,7 @@ public class OAuthController implements OAuthApi {
     @PostMapping("/signin")
     public ResponseEntity<LoginResponse> signIn(HttpServletRequest request, HttpServletResponse response) {
         LoginResponse loginResponse = oAuthService.signIn(request, response);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(loginResponse);
     }
@@ -34,6 +35,7 @@ public class OAuthController implements OAuthApi {
     public ResponseEntity<Void> signUp(@RequestBody SignUpRequest singUpRequest) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
         oAuthService.signUp(memberId, singUpRequest);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .build();
     }
