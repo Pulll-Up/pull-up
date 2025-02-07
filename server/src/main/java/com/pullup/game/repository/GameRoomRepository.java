@@ -33,7 +33,7 @@ public class GameRoomRepository {
         return gameRooms.containsKey(roomId);
     }
 
-    public Collection<GameRoom> getAllRooms() {
+    public Collection<GameRoom> findAll() {
         return gameRooms.values();
     }
 

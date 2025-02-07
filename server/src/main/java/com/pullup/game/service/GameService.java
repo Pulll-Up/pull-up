@@ -8,16 +8,19 @@ import com.pullup.game.domain.GameRoomStatus;
 import com.pullup.game.domain.Player;
 import com.pullup.game.dto.PlayerInfo;
 import com.pullup.game.dto.ProblemCard;
+import com.pullup.game.dto.RandomMatchType;
 import com.pullup.game.dto.request.CardSubmitRequest;
 import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
 import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
 import com.pullup.game.dto.response.GetPlayerNumberResponse;
+import com.pullup.game.dto.response.GetRandomMatchTypeResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
 import com.pullup.game.repository.GameRoomRepository;
 import com.pullup.member.domain.Member;
 import com.pullup.member.service.MemberService;
 import com.pullup.problem.service.ProblemService;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -172,6 +175,17 @@ public class GameService {
         );
 
 
+    }
+
+    public GetRandomMatchTypeResponse getRandomMatchType() {
+        List<GameRoom> gameRooms = new ArrayList<>(gameRoomRepository.findAll());
+
+        if (gameRooms.isEmpty()) {
+            return GetRandomMatchTypeResponse.createForCreateType(RandomMatchType.CREATE);
+        } else {
+            String roomId = gameRooms.get(0).getRoomId();
+            return GetRandomMatchTypeResponse.createForJoinType(RandomMatchType.JOIN, roomId);
+        }
     }
 
 
