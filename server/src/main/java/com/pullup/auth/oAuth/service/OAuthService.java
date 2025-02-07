@@ -1,9 +1,9 @@
 package com.pullup.auth.oAuth.service;
 
-import com.pullup.auth.oAuth.dto.request.SignUpRequest;
-import com.pullup.auth.oAuth.dto.response.LoginResponse;
 import com.pullup.auth.jwt.util.CookieUtil;
 import com.pullup.auth.jwt.util.JwtUtil;
+import com.pullup.auth.oAuth.dto.request.SignUpRequest;
+import com.pullup.auth.oAuth.dto.response.LoginResponse;
 import com.pullup.common.exception.BadRequestException;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.util.SecurityUtil;
@@ -11,7 +11,6 @@ import com.pullup.member.service.MemberHistoryService;
 import com.pullup.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,7 +46,7 @@ public class OAuthService {
         return LoginResponse.isNotFirstLoginAndSolvedToday();
     }
 
-    public void signUp(Long memberId, @Valid SignUpRequest singUpRequest) {
-        memberService.saveInterestSubjects(memberId, singUpRequest);
+    public void signUp(Long memberId, SignUpRequest singUpRequest) {
+        memberService.saveInterestSubjects(memberId, singUpRequest.subjectNames());
     }
 }

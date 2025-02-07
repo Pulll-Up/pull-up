@@ -1,11 +1,11 @@
 package com.pullup.member.service;
 
-import com.pullup.auth.oAuth.dto.request.SignUpRequest;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.member.domain.InterestSubject;
 import com.pullup.member.domain.Member;
 import com.pullup.member.domain.MemberExamStatistic;
+import com.pullup.member.dto.request.InterestSubjectsRequest;
 import com.pullup.member.dto.response.MemberProfileResponse;
 import com.pullup.member.repository.InterestSubjectRepository;
 import com.pullup.member.repository.MemberExamStatisticRepository;
@@ -41,11 +41,10 @@ public class MemberService {
     }
 
     @Transactional
-    public void saveInterestSubjects(Long memberId, SignUpRequest signUpRequest) {
+    public void saveInterestSubjects(Long memberId, List<String> subjectNames) {
         Member member = findMemberById(memberId);
-        List<String> subjectNames = signUpRequest.subjectNames();
 
-        if(interestSubjectRepository.existsByMemberId(memberId)) {
+        if (interestSubjectRepository.existsByMemberId(memberId)) {
             interestSubjectRepository.deleteAllByMemberId(memberId);
         }
 
@@ -71,6 +70,11 @@ public class MemberService {
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
+    }
+
+    @Transactional
+    public void updateInterestSubject(Long memberId, InterestSubjectsRequest interestSubjectsRequest) {
+        saveInterestSubjects(memberId, interestSubjectsRequest.subjectNames());
     }
 
     private List<InterestSubject> findInterestSubjectsByMemberId(Long memberId) {
