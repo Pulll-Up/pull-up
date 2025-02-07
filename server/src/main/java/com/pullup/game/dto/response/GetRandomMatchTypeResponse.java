@@ -14,4 +14,4 @@ public record GetRandomMatchTypeResponse(
         return new GetRandomMatchTypeResponse(randomMatchType, roomId);
     }
 }
-}
+
