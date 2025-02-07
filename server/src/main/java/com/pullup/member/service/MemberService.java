@@ -52,6 +52,10 @@ public class MemberService {
         interestSubjectRepository.saveAll(interestSubjects);
     }
 
+    public Boolean isExistInterestSubjects(Long memberId) {
+        return interestSubjectRepository.existsByMemberId(memberId);
+    }
+
     public MemberProfileResponse getMemberProfile(Long memberId) {
         Member member = findMemberById(memberId);
         List<String> interestSubjects = findInterestSubjectsByMemberId(memberId).stream()

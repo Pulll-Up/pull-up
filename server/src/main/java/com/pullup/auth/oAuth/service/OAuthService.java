@@ -37,7 +37,7 @@ public class OAuthService {
     }
 
     private LoginResponse getLoginResponse(Long memberId) {
-        if (!memberHistoryService.isExistMemberHistory(memberId)) {
+        if (!memberService.isExistInterestSubjects(memberId)) {
             return LoginResponse.isFirstLogin();
         }
         if (!memberHistoryService.isSolvedToday(memberId)) {

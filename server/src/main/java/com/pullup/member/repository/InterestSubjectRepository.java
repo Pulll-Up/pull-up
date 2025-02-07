@@ -6,4 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface InterestSubjectRepository extends CrudRepository<InterestSubject, Long> {
     List<InterestSubject> findByMemberId(Long memberId);
+
+    Boolean existsByMemberId(Long memberId);
 }
