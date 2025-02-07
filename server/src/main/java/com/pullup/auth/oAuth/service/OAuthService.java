@@ -11,6 +11,7 @@ import com.pullup.member.service.MemberHistoryService;
 import com.pullup.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class OAuthService {
         return LoginResponse.isNotFirstLoginAndSolvedToday();
     }
 
-    public void signUp(Long memberId, SignUpRequest singUpRequest) {
+    public void signUp(Long memberId, @Valid SignUpRequest singUpRequest) {
         memberService.saveInterestSubjects(memberId, singUpRequest);
     }
 }

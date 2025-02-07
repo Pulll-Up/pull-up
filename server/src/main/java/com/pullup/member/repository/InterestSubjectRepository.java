@@ -8,4 +8,6 @@ public interface InterestSubjectRepository extends CrudRepository<InterestSubjec
     List<InterestSubject> findByMemberId(Long memberId);
 
     Boolean existsByMemberId(Long memberId);
+
+    void deleteAllByMemberId(Long memberId);
 }

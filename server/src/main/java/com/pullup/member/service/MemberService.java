@@ -45,6 +45,10 @@ public class MemberService {
         Member member = findMemberById(memberId);
         List<String> subjectNames = signUpRequest.subjectNames();
 
+        if(interestSubjectRepository.existsByMemberId(memberId)) {
+            interestSubjectRepository.deleteAllByMemberId(memberId);
+        }
+
         List<InterestSubject> interestSubjects = subjectNames.stream()
                 .map(interestSubject -> new InterestSubject(interestSubject, member))
                 .toList();
