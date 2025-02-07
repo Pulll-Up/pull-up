@@ -8,6 +8,7 @@ import com.pullup.game.domain.GameRoomStatus;
 import com.pullup.game.domain.Player;
 import com.pullup.game.dto.PlayerInfo;
 import com.pullup.game.dto.ProblemCard;
+import com.pullup.game.dto.ProblemCardWithoutCardId;
 import com.pullup.game.dto.RandomMatchType;
 import com.pullup.game.dto.request.CardSubmitRequest;
 import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
@@ -22,6 +23,7 @@ import com.pullup.member.service.MemberService;
 import com.pullup.problem.service.ProblemService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -105,10 +107,19 @@ public class GameService {
 
         List<ProblemCard> problemCards = getProblemsByRoomId(cardSubmitRequest.roomId());
 
-        int problemNumber = cardSubmitRequest.problemNumber();
+        List<String> contents = cardSubmitRequest.contents();
+        Long problemId1 = getProblemCardIdByContent(problemCards, contents.get(0));
+        Long problemId2 = getProblemCardIdByContent(problemCards, contents.get(0));
+
+        // 틀림
+        if (problemId1 != problemId2) {
+            throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_SUBMIT_WRONG);
+        }
+
+        // 정답
         for (ProblemCard problemCard : problemCards) {
-            if (problemNumber == problemCard.getCardId()) {
-                problemCard.disableCard();
+            if (problemCard.getCardId() == problemId1) {
+                problemCard.disableCard(); // 정답 처리
             }
         }
 
@@ -136,7 +147,9 @@ public class GameService {
                         gameRoom.getPlayer2().getId(),
                         gameRoom.getPlayer2().getName(),
                         gameRoom.getPlayer2().getScore()),
-                problemCards
+                problemCards.stream()
+                        .map(ProblemCardWithoutCardId::from)
+                        .collect(Collectors.toList())
         );
     }
 
@@ -188,5 +201,13 @@ public class GameService {
         }
     }
 
+    private Long getProblemCardIdByContent(List<ProblemCard> problemCards, String content) {
+        for (ProblemCard problemCard : problemCards) {
+            if (problemCard.getContent().equals(content)) {
+                return problemCard.getCardId();
+            }
+        }
+        throw new NotFoundException(ErrorMessage.ERR_CONTENT_NOT_FOUND);
+    }
 
 }
