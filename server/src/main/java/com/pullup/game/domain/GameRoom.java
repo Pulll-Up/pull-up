@@ -13,16 +13,29 @@ public class GameRoom {
     private String roomId;
     private Player player1;
     private Player player2;
-    private GameRoomStatus status;
+    private GameRoomStatus gameRoomStatus;
+    private GameRoomType gameRoomType;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
 
-    public static GameRoom craeteGameRoomWithHost(Long id, String name) {
+    public static GameRoom createGameRoomByInvitationWithHost(Long id, String name) {
         return GameRoom.builder()
                 .roomId(generateUniqueRoomCode())
                 .player1(Player.createNewPlayer(id, name))
-                .status(GameRoomStatus.WAITING)
+                .gameRoomStatus(GameRoomStatus.WAITING)
+                .gameRoomType(GameRoomType.INVITATION)
+                .createdAt(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static GameRoom createGameRoomByRandomMatchingWithHost(Long id, String name) {
+        return GameRoom.builder()
+                .roomId(generateUniqueRoomCode())
+                .player1(Player.createNewPlayer(id, name))
+                .gameRoomStatus(GameRoomStatus.WAITING)
+                .gameRoomType(GameRoomType.RANDOM_MATCHING)
                 .createdAt(LocalDateTime.now())
                 .modifiedAt(LocalDateTime.now())
                 .build();
@@ -38,11 +51,11 @@ public class GameRoom {
     }
 
     private void updateStatusToPlaying() {
-        this.status = GameRoomStatus.PLAYING;
+        this.gameRoomStatus = GameRoomStatus.PLAYING;
     }
 
     public void updateStatusToFinished() {
-        this.status = GameRoomStatus.FINISHED;
+        this.gameRoomStatus = GameRoomStatus.FINISHED;
     }
 
     public Player getPlayerByPlayerId(Long playerId) {

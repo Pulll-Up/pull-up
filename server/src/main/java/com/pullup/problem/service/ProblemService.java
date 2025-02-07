@@ -35,6 +35,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class ProblemService {
+
+    private static final int NUMBER_OF_PROBLEMS = 8;
+
     private final ProblemRepository problemRepository;
     private final BookmarkRepository bookmarkRepository;
     private final MemberRepository memberRepository;
@@ -128,8 +131,8 @@ public class ProblemService {
     public void generateProblems(String roomId, CreateRoomWithSubjectsRequest request) {
         List<Subject> selectedSubjects = getSelectedSubjects(request);
         int numSubjects = selectedSubjects.size();
-        int numQuestionsPerSubject = 8 / numSubjects; // 각 과목별 기본 문제 개수
-        int remainingQuestions = 8 % numSubjects;     // 나누어떨어지지 않을 때 추가해야 하는 문제 개수
+        int numQuestionsPerSubject = NUMBER_OF_PROBLEMS / numSubjects; // 각 과목별 기본 문제 개수
+        int remainingQuestions = NUMBER_OF_PROBLEMS % numSubjects;     // 나누어떨어지지 않을 때 추가해야 하는 문제 개수
 
         List<ProblemCard> finalProblems = new ArrayList<>();
         Set<Long> selectedProblemIds = new HashSet<>(); // 중복 방지를 위한 ID 저장
@@ -179,6 +182,31 @@ public class ProblemService {
                     }
                 }
             }
+
+        }
+
+//        if (finalProblems.size() < 16) {
+//            throw new IllegalStatementException(ErrorMessage.ERR_GAME_PROBLEM_LACK);
+//        }
+
+        gameRoomRepository.saveProblems(roomId, finalProblems);
+    }
+
+    public void generateProblemsForRandomMatching(String roomId) {
+        List<ProblemCard> finalProblems = new ArrayList<>();
+
+        List<Problem> randomProblems = problemRepository.findRandomProblems(NUMBER_OF_PROBLEMS);
+        for (Problem problem : randomProblems) {
+            finalProblems.add(
+                    ProblemCard.createNewProblemCard(
+                            problem.getId(),
+                            CardType.QUESTION,
+                            problem.getQuestion()));
+            finalProblems.add(
+                    ProblemCard.createNewProblemCard(
+                            problem.getId(),
+                            CardType.ANSWER,
+                            problem.getAnswer()));
 
         }
 

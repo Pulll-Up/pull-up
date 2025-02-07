@@ -33,6 +33,15 @@ public class GameController {
                 .body(createRoomResponse);
     }
 
+    @PostMapping("/room/random")
+    public ResponseEntity<CreateRoomResponse> createRoomForRandomMatching() {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        CreateRoomResponse createRoomResponse = gameService.createRoomForRandomMatching(memberId);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(createRoomResponse);
+    }
+
     @PostMapping("/room/join")
     public ResponseEntity<JoinRoomResponse> joinRoom(@RequestBody JoinRoomRequest JoinRoomRequest) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();

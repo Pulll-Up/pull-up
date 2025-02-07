@@ -46,5 +46,7 @@ public interface ProblemRepository extends CrudRepository<Problem, Long> {
             nativeQuery = true)
     List<Problem> findRandomProblemsBySubject(@Param("subject") String subject, @Param("limit") int limit);
 
+    @Query(value = "SELECT p FROM Problem p ORDER BY RAND() LIMIT :limit")
+    List<Problem> findRandomProblems(@Param("limit") int limit);
 
 }

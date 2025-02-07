@@ -65,7 +65,7 @@ public class GameRoomRepository {
 
             // 30분 이상 된 방이거나 게임이 끝난 방 삭제
             return (currentTimeMillis - createdAtMillis > 30 * 60 * 1000)
-                    || room.getStatus() == GameRoomStatus.FINISHED;
+                    || room.getGameRoomStatus() == GameRoomStatus.FINISHED;
         });
     }
 }

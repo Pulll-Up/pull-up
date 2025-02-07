@@ -1,7 +1,7 @@
 package com.pullup.game.service;
 
+import com.pullup.common.exception.BadRequestException;
 import com.pullup.common.exception.ErrorMessage;
-import com.pullup.common.exception.IllegalStatementException;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
 import com.pullup.game.domain.GameRoomStatus;
@@ -21,7 +21,6 @@ import com.pullup.problem.service.ProblemService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +29,11 @@ public class GameService {
     private final GameRoomRepository gameRoomRepository;
     private final ProblemService problemService;
     private final MemberService memberService;
-    
+
     public CreateRoomResponse createRoom(Long memberId, CreateRoomWithSubjectsRequest request) {
         Member member = memberService.findMemberById(memberId);
 
-        GameRoom gameRoom = GameRoom.craeteGameRoomWithHost(
+        GameRoom gameRoom = GameRoom.createGameRoomByInvitationWithHost(
                 memberId,
                 member.getName()
         );
@@ -48,16 +47,32 @@ public class GameService {
         );
     }
 
-    @Transactional
+    public CreateRoomResponse createRoomForRandomMatching(Long memberId) {
+        Member member = memberService.findMemberById(memberId);
+
+        GameRoom gameRoom = GameRoom.createGameRoomByRandomMatchingWithHost(
+                memberId,
+                member.getName()
+        );
+
+        gameRoomRepository.save(gameRoom);
+
+        problemService.generateProblemsForRandomMatching(gameRoom.getRoomId());
+
+        return CreateRoomResponse.of(
+                gameRoom.getRoomId()
+        );
+    }
+
     public JoinRoomResponse join(String roomId, Long memberId) {
         GameRoom gameRoom = findByRoomId(roomId);
-        // 방 상태가 waiting이 아니면, 방에 참가할 수 없다
-        if (!gameRoom.getStatus().equals(GameRoomStatus.WAITING)) {
-            throw new IllegalStatementException(ErrorMessage.ERR_GAME_ROOM_NOT_WAITING);
+
+        if (!gameRoom.getGameRoomStatus().equals(GameRoomStatus.WAITING)) {
+            throw new BadRequestException(ErrorMessage.ERR_GAME_ROOM_NOT_WAITING);
         }
 
         if (gameRoom.getPlayer1().getId() == memberId) {
-            throw new IllegalStatementException(ErrorMessage.ERR_GAME_ROOM_MEMBER_DUPLICATED);
+            throw new BadRequestException(ErrorMessage.ERR_GAME_ROOM_MEMBER_DUPLICATED);
         }
 
         Member member = memberService.findMemberById(memberId);
@@ -70,8 +85,9 @@ public class GameService {
 
     }
 
+
     public GameRoomStatus getGameRoomStatus(String roomId) {
-        return findByRoomId(roomId).getStatus();
+        return findByRoomId(roomId).getGameRoomStatus();
     }
 
     private GameRoom findByRoomId(String roomId) {
