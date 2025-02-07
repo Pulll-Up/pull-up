@@ -147,9 +147,7 @@ public class GameService {
                         gameRoom.getPlayer2().getId(),
                         gameRoom.getPlayer2().getName(),
                         gameRoom.getPlayer2().getScore()),
-                problemCards.stream()
-                        .map(ProblemCardWithoutCardId::from)
-                        .collect(Collectors.toList())
+                convertToProblemCardWithoutCardIds(problemCards)
         );
     }
 
@@ -184,7 +182,7 @@ public class GameService {
                 roomId,
                 PlayerInfo.from(gameRoom.getPlayer1()),
                 PlayerInfo.from(gameRoom.getPlayer2()),
-                problemCards
+                convertToProblemCardWithoutCardIds(problemCards)
         );
 
 
@@ -209,5 +207,12 @@ public class GameService {
         }
         throw new NotFoundException(ErrorMessage.ERR_CONTENT_NOT_FOUND);
     }
+
+    private List<ProblemCardWithoutCardId> convertToProblemCardWithoutCardIds(List<ProblemCard> problemCards) {
+        return problemCards.stream()
+                .map(ProblemCardWithoutCardId::from)
+                .collect(Collectors.toList());
+    }
+
 
 }
