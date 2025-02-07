@@ -1,7 +1,7 @@
 package com.pullup.game.controller;
 
 import com.pullup.game.domain.GameRoomStatus;
-import com.pullup.game.dto.request.CardSubmitRequest;
+import com.pullup.game.dto.request.SubmitCardRequest;
 import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
 import com.pullup.game.dto.response.GetGameRoomStatusResponse;
 import com.pullup.game.service.GameService;
@@ -29,12 +29,12 @@ public class GameWebSocketController {
     }
 
     @MessageMapping("/card/submit")
-    public void submitCard(@Payload CardSubmitRequest cardSubmitRequest) {
+    public void submitCard(@Payload SubmitCardRequest submitCardRequest) {
         GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = gameService.processCardSubmission(
-                cardSubmitRequest);
+                submitCardRequest);
 
         // 동적으로 해당 방의 구독 경로에 메시지 전송
-        String destination = "/topic/game/" + cardSubmitRequest.roomId();
+        String destination = "/topic/game/" + submitCardRequest.roomId();
         messagingTemplate.convertAndSend(destination, gameRoomInfoWithProblemsResponse);
     }
 

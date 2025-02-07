@@ -10,8 +10,8 @@ import com.pullup.game.dto.PlayerInfo;
 import com.pullup.game.dto.ProblemCard;
 import com.pullup.game.dto.ProblemCardWithoutCardId;
 import com.pullup.game.dto.RandomMatchType;
-import com.pullup.game.dto.request.CardSubmitRequest;
 import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
+import com.pullup.game.dto.request.SubmitCardRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
 import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
 import com.pullup.game.dto.response.GetPlayerNumberResponse;
@@ -101,13 +101,13 @@ public class GameService {
     }
 
     // 카드 선택 요청 처리
-    public GameRoomInfoWithProblemsResponse processCardSubmission(CardSubmitRequest cardSubmitRequest) {
+    public GameRoomInfoWithProblemsResponse processCardSubmission(SubmitCardRequest submitCardRequest) {
 
-        GameRoom gameRoom = findByRoomId(cardSubmitRequest.roomId());
+        GameRoom gameRoom = findByRoomId(submitCardRequest.roomId());
 
-        List<ProblemCard> problemCards = getProblemsByRoomId(cardSubmitRequest.roomId());
+        List<ProblemCard> problemCards = getProblemsByRoomId(submitCardRequest.roomId());
 
-        List<String> contents = cardSubmitRequest.contents();
+        List<String> contents = submitCardRequest.contents();
         Long problemId1 = getProblemCardIdByContent(problemCards, contents.get(0));
         Long problemId2 = getProblemCardIdByContent(problemCards, contents.get(0));
 
@@ -126,7 +126,7 @@ public class GameService {
         gameRoomRepository.saveProblems(gameRoom.getRoomId(), problemCards);
 
         // 플레이어 점수 업데이트
-        Player player = gameRoom.getPlayerByPlayerId(cardSubmitRequest.playerId());
+        Player player = gameRoom.getPlayerByPlayerId(submitCardRequest.playerId());
         player.increaseScore();
 
         gameRoomRepository.save(gameRoom);

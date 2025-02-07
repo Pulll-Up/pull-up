@@ -1,5 +1,7 @@
 package com.pullup.common.handler;
 
+import static com.pullup.common.exception.ErrorMessage.ERR_FAILURE_OAUTH2_AUTHENTICATION;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,7 +21,7 @@ public class OAuth2AuthenticationFailureHandler implements AuthenticationFailure
             AuthenticationException exception
     ) throws IOException {
         log.error("OAuth2 로그인 실패: {}", exception.getMessage());
-//        response.sendError(HttpServletResp onse.SC_UNAUTHORIZED, ERR_FAILURE_OAUTH2_AUTHENTICATION.getMessage());
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ERR_FAILURE_OAUTH2_AUTHENTICATION.getMessage());
         response.sendRedirect("http://localhost:5173");
     }
 }

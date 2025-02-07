@@ -185,10 +185,6 @@ public class ProblemService {
 
         }
 
-//        if (finalProblems.size() < 16) {
-//            throw new IllegalStatementException(ErrorMessage.ERR_GAME_PROBLEM_LACK);
-//        }
-
         gameRoomRepository.saveProblems(roomId, finalProblems);
     }
 
@@ -209,10 +205,6 @@ public class ProblemService {
                             problem.getAnswer()));
 
         }
-
-//        if (finalProblems.size() < 16) {
-//            throw new IllegalStatementException(ErrorMessage.ERR_GAME_PROBLEM_LACK);
-//        }
 
         gameRoomRepository.saveProblems(roomId, finalProblems);
     }

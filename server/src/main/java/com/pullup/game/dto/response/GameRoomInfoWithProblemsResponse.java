@@ -12,8 +12,12 @@ public record GameRoomInfoWithProblemsResponse(
         PlayerInfo player2P,
         List<ProblemCardWithoutCardId> problemCardWithoutCardIds
 ) {
-    public static GameRoomInfoWithProblemsResponse of(String roomId, PlayerInfo player1P, PlayerInfo player2P,
-                                                      List<ProblemCardWithoutCardId> problemCardWithoutCardIds) {
+    public static GameRoomInfoWithProblemsResponse of(
+            String roomId,
+            PlayerInfo player1P,
+            PlayerInfo player2P,
+            List<ProblemCardWithoutCardId> problemCardWithoutCardIds
+    ) {
         return GameRoomInfoWithProblemsResponse.builder()
                 .roomId(roomId)
                 .player1P(player1P)

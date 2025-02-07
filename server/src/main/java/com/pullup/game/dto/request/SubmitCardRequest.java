@@ -2,7 +2,7 @@ package com.pullup.game.dto.request;
 
 import java.util.List;
 
-public record CardSubmitRequest(
+public record SubmitCardRequest(
         String roomId,
         Long playerId,
         int problemNumber,
