@@ -12,8 +12,7 @@ import com.pullup.interview.repository.CommentRepository;
 import com.pullup.interview.repository.InterviewAnswerRepository;
 import com.pullup.member.domain.Member;
 import com.pullup.member.service.MemberService;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,17 +71,17 @@ public class CommentService {
     }
 
     public CommentsResponse getComments(Long interviewAnswerId) {
-        List<CommentsDto> comments = new ArrayList<>();
-        commentRepository.findByInterviewAnswerId(interviewAnswerId).forEach(
-                comment -> {
-                    comments.add(new CommentsDto(comment.getId(),
-                            comment.getMember().getName(),
-                            comment.getMember().getEmail(),
-                            comment.getContent(),
-                            comment.getCreatedAt()
-                    ));
-                }
-        );
-        return CommentsResponse.of(comments);
+        return CommentsResponse.of(commentRepository.findByInterviewAnswerId(interviewAnswerId)
+                .stream()
+                .map(
+                        comment -> new CommentsDto(
+                                comment.getId(),
+                                comment.getMember().getName(),
+                                comment.getMember().getEmail(),
+                                comment.getContent(),
+                                comment.getCreatedAt()
+                        )
+                )
+                .collect(Collectors.toList()));
     }
 }
