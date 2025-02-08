@@ -48,7 +48,6 @@ public class GameController {
     public ResponseEntity<JoinRoomResponse> joinRoom(@RequestBody JoinRoomRequest JoinRoomRequest) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
 
-        // 게임방에 사용자 추가
         JoinRoomResponse joinRoomResponse = gameService.join(JoinRoomRequest.roomId(), memberId);
 
         return ResponseEntity.status(HttpStatus.CREATED)

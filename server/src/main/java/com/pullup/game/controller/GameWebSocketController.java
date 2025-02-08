@@ -33,7 +33,6 @@ public class GameWebSocketController {
         GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = gameService.processCardSubmission(
                 submitCardRequest);
 
-        // 동적으로 해당 방의 구독 경로에 메시지 전송
         String destination = "/topic/game/" + submitCardRequest.roomId();
         messagingTemplate.convertAndSend(destination, gameRoomInfoWithProblemsResponse);
     }

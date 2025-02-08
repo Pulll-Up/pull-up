@@ -24,15 +24,12 @@ public class SubscriptionEventListener {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String destination = accessor.getDestination();
 
-        // 특정 토픽(/topic/game/{roomId})에 대한 구독인지 확인
         if (destination != null && destination.startsWith("/topic/game/")) {
             String roomId = destination.substring("/topic/game/".length());
 
-            // 초기 게임 데이터 가져오기
             GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = gameService.getInitialGameRoomInfo(
                     roomId);
 
-            // 해당 토픽으로 초기 데이터 전송
             messagingTemplate.convertAndSend(destination, gameRoomInfoWithProblemsResponse);
         }
     }

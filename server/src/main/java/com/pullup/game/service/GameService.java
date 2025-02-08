@@ -100,7 +100,6 @@ public class GameService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_GAME_ROOM_NOT_FOUND));
     }
 
-    // 카드 선택 요청 처리
     public GameRoomInfoWithProblemsResponse processCardSubmission(SubmitCardRequest submitCardRequest) {
 
         GameRoom gameRoom = findByRoomId(submitCardRequest.roomId());
@@ -136,7 +135,6 @@ public class GameService {
             gameRoom.updateStatusToFinished();
         }
 
-        // 응답 객체 생성
         return GameRoomInfoWithProblemsResponse.of(
                 gameRoom.getRoomId(),
                 PlayerInfo.of(
