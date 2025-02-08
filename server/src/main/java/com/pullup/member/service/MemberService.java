@@ -43,10 +43,7 @@ public class MemberService {
     @Transactional
     public void saveInterestSubjects(Long memberId, List<String> subjectNames) {
         Member member = findMemberById(memberId);
-
-        if (interestSubjectRepository.existsByMemberId(memberId)) {
-            interestSubjectRepository.deleteAllByMemberId(memberId);
-        }
+        interestSubjectRepository.deleteAllByMemberId(memberId);
 
         List<InterestSubject> interestSubjects = subjectNames.stream()
                 .map(interestSubject -> InterestSubject.createInterestSubject(interestSubject, member))
