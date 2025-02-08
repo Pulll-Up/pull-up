@@ -49,7 +49,7 @@ public class MemberService {
         }
 
         List<InterestSubject> interestSubjects = subjectNames.stream()
-                .map(interestSubject -> new InterestSubject(interestSubject, member))
+                .map(interestSubject -> InterestSubject.createInterestSubject(interestSubject, member))
                 .toList();
 
         interestSubjectRepository.saveAll(interestSubjects);
