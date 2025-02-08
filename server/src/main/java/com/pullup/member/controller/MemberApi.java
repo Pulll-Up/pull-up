@@ -1,5 +1,6 @@
 package com.pullup.member.controller;
 
+import com.pullup.member.dto.request.InterestSubjectsRequest;
 import com.pullup.member.dto.response.MemberProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,4 +29,31 @@ public interface MemberApi {
             }
     )
     public ResponseEntity<MemberProfileResponse> getMemberProfile();
+
+    @Operation(
+            summary = "관심 과목 수정",
+            description = "회원의 관심 과목을 수정합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "관심 과목 수정 성공"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "과목 리스트는 null일 수 없습니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "최소 한 개 이상의 과목을 입력해야 합니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<Void> updateInterestSubject(InterestSubjectsRequest interestSubjectsRequest);
 }

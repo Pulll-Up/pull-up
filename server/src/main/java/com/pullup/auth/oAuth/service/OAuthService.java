@@ -1,9 +1,9 @@
 package com.pullup.auth.oAuth.service;
 
-import com.pullup.auth.oAuth.dto.request.SignUpRequest;
-import com.pullup.auth.oAuth.dto.response.LoginResponse;
 import com.pullup.auth.jwt.util.CookieUtil;
 import com.pullup.auth.jwt.util.JwtUtil;
+import com.pullup.auth.oAuth.dto.request.SignUpRequest;
+import com.pullup.auth.oAuth.dto.response.LoginResponse;
 import com.pullup.common.exception.BadRequestException;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.util.SecurityUtil;
@@ -47,6 +47,6 @@ public class OAuthService {
     }
 
     public void signUp(Long memberId, SignUpRequest singUpRequest) {
-        memberService.saveInterestSubjects(memberId, singUpRequest);
+        memberService.saveInterestSubjects(memberId, singUpRequest.subjectNames());
     }
 }

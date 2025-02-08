@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +31,9 @@ public class OAuthController implements OAuthApi {
 
     @Override
     @PostMapping("/signup")
-    public ResponseEntity<Void> signUp(@RequestBody SignUpRequest singUpRequest) {
+    public ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-        oAuthService.signUp(memberId, singUpRequest);
+        oAuthService.signUp(memberId, signUpRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .build();

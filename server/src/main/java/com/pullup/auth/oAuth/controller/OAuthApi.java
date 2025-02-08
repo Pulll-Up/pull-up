@@ -64,6 +64,21 @@ public interface OAuthApi {
                             responseCode = "400",
                             description = "회원가입 실패",
                             content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "과목 리스트는 null일 수 없습니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "최소 한 개 이상의 과목을 입력해야 합니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
                     )
             }
     )

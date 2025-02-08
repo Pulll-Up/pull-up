@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,8 +31,16 @@ public class InterestSubject extends BaseTimeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @Builder
     public InterestSubject(String subject, Member member) {
         this.subject = subject;
         this.member = member;
+    }
+
+    public static InterestSubject createInterestSubject(String subject, Member member) {
+        return InterestSubject.builder()
+                .subject(subject)
+                .member(member)
+                .build();
     }
 }
