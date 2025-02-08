@@ -11,6 +11,7 @@ import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
+import com.pullup.interview.dto.response.MyInterviewAnswerResultResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.repository.InterviewAnswerRepository;
 import com.pullup.interview.repository.InterviewHintRepository;
@@ -38,8 +39,7 @@ public class InterviewService {
         Interview interview = interviewRepository.findInterviewById(interviewId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
 
-        List<InterviewHint> interviewHints = interviewHintRepository.findByInterviewId(interviewId);
-        List<String> keywords = interviewHints.stream().map(InterviewHint::getKeyword).toList();
+        List<String> keywords = getKeywords(interviewId);
 
         return InterviewResponse.of(interview.getId(), interview.getQuestion(), keywords);
     }
@@ -54,6 +54,8 @@ public class InterviewService {
         Interview interview = interviewRepository.findInterviewById(interviewId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
 
+        //TODO : GPT API 연동 후, 강점, 약점 분석 로직 추가
+
         InterviewAnswer interviewAnswer = interviewAnswerRepository.save(InterviewAnswer.createInterviewAnswer(
                 member,
                 interview,
@@ -61,6 +63,22 @@ public class InterviewService {
         ));
 
         return MyInterviewAnswerResponse.of(interviewId, interviewAnswer.getId());
+    }
+
+    public MyInterviewAnswerResultResponse getMyInterviewAnswerResult(Long interviewAnswerId) {
+        InterviewAnswer interviewAnswer = interviewAnswerRepository.findByIdWithInterview(interviewAnswerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
+
+        return MyInterviewAnswerResultResponse.of(
+                interviewAnswerId,
+                interviewAnswer.getInterview().getQuestion(),
+                interviewAnswer.getAnswer(),
+                getKeywords(interviewAnswer.getInterview().getId()),
+                interviewAnswer.getCreatedAt(),
+                interviewAnswer.getStrength(),
+                interviewAnswer.getWeakness(),
+                interviewAnswer.getInterview().getAnswer()
+        );
     }
 
     public MyInterviewAnswersResponse getMyInterviewAnswers(Long memberId) {
@@ -106,5 +124,10 @@ public class InterviewService {
                 .toList();
 
         return InterviewAnswersResponse.of(interviewAnswerDtos);
+    }
+
+    private List<String> getKeywords(Long interviewId) {
+        List<InterviewHint> interviewHints = interviewHintRepository.findByInterviewId(interviewId);
+        return interviewHints.stream().map(InterviewHint::getKeyword).toList();
     }
 }
