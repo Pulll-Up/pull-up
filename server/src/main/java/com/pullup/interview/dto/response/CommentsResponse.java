@@ -5,7 +5,7 @@ import java.util.List;
 
 
 public record CommentsResponse(
-        List<CommentsDto> commentsDto
+        List<CommentsDto> comments
 ) {
     public static CommentsResponse of(List<CommentsDto> commentsDto) {
         return new CommentsResponse(commentsDto);
