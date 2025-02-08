@@ -11,6 +11,7 @@ import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.dto.response.PostCommentResponse;
 import com.pullup.interview.service.CommentService;
 import com.pullup.interview.service.InterviewService;
+import com.pullup.interview.service.LikeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ public class InterviewController implements InterviewApi {
 
     private final InterviewService interviewService;
     private final CommentService commentService;
+    private final LikeService likeService;
 
     @Override
     @GetMapping("/{interviewId}")
@@ -112,5 +114,15 @@ public class InterviewController implements InterviewApi {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(commentsResponse);
+    }
+
+    @Override
+    @PostMapping("/{interviewAnswerId}/like")
+    public ResponseEntity<Void> toggleLike(@PathVariable("interviewAnswerId") Long interviewAnswerId) {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        likeService.toggleLike(memberId, interviewAnswerId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .build();
     }
 }

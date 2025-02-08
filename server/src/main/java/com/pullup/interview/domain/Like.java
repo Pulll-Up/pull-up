@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,4 +35,22 @@ public class Like extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interview_answer_id", nullable = false)
     private InterviewAnswer interviewAnswer;
+
+    @Builder
+    private Like(Member member, InterviewAnswer interviewAnswer) {
+        this.member = member;
+        this.interviewAnswer = interviewAnswer;
+        this.isLiked = true;
+    }
+
+    public static Like createLike(Member member, InterviewAnswer interviewAnswer) {
+        return Like.builder()
+                .member(member)
+                .interviewAnswer(interviewAnswer)
+                .build();
+    }
+
+    public void toggleLike() {
+        this.isLiked = !this.isLiked;
+    }
 }
