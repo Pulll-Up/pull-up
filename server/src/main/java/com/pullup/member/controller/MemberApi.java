@@ -1,5 +1,6 @@
 package com.pullup.member.controller;
 
+import com.pullup.member.dto.request.DeviceTokenRequest;
 import com.pullup.member.dto.request.InterestSubjectsRequest;
 import com.pullup.member.dto.response.MemberProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,4 +57,26 @@ public interface MemberApi {
             }
     )
     public ResponseEntity<Void> updateInterestSubject(InterestSubjectsRequest interestSubjectsRequest);
+
+    @Operation(
+            summary = "Device Token 저장",
+            description = "Device Token을 저장합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Device Token 저장 성공"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Device Token은 null일 수 없습니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<Void> registerDeviceToken(DeviceTokenRequest deviceTokenRequest);
 }
