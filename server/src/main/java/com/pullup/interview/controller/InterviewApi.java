@@ -170,8 +170,8 @@ public interface InterviewApi {
                                               PostCommentRequest postCommentRequest);
 
     @Operation(
-            summary = "오늘의 문제 댓글 삭제",
-            description = "오늘의 문제 댓글을 삭제합니다.",
+            summary = "오늘의 문제 답변에 대한 댓글 삭제",
+            description = "오늘의 문제 답변에 대한 댓글을 삭제합니다.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -193,8 +193,8 @@ public interface InterviewApi {
     public ResponseEntity<Void> deleteComment(Long commentId);
 
     @Operation(
-            summary = "오늘의 문제 댓글 전체 조회",
-            description = "오늘의 문제 댓글 전체를 조회합니다.",
+            summary = "오늘의 문제 답변에 대한 댓글 전체 조회",
+            description = "오늘의 문제 답변에 대한 댓글 전체를 조회합니다.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -209,4 +209,27 @@ public interface InterviewApi {
             }
     )
     public ResponseEntity<CommentsResponse> getComments(Long interviewAnswerId);
+
+    @Operation(
+            summary = "오늘의 문제 답변에 대한 댓글 좋아요 토글",
+            description = "오늘의 문제 댓글 좋아요를 토글합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "오늘의 문제 답변에 대한 댓글 좋아요 토글 성공",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "면접 답변을 찾을 수 없습니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<Void> toggleLike(Long interviewAnswerId);
 }
