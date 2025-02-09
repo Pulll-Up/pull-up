@@ -4,6 +4,7 @@ import com.pullup.common.util.SecurityUtil;
 import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.dto.request.JoinRoomRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
+import com.pullup.game.dto.response.GameRoomResultResponse;
 import com.pullup.game.dto.response.GetPlayerNumberResponse;
 import com.pullup.game.dto.response.GetRandomMatchTypeResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
@@ -80,5 +81,12 @@ public class GameController {
                 .build();
     }
 
+    @GetMapping("/room/{roomId}/result")
+    public ResponseEntity<GameRoomResultResponse> getGameRoomResult(@PathVariable String roomId) {
 
+        GameRoomResultResponse gameRoomResultResponse = gameService.getGameRoomResult(roomId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(gameRoomResultResponse);
+    }
 }
