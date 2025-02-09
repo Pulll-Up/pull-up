@@ -6,6 +6,7 @@ import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
 import com.pullup.game.domain.GameRoomStatus;
 import com.pullup.game.domain.Player;
+import com.pullup.game.dto.GameRoomResultStatus;
 import com.pullup.game.dto.PlayerInfo;
 import com.pullup.game.dto.ProblemCard;
 import com.pullup.game.dto.ProblemCardWithoutCardId;
@@ -14,6 +15,7 @@ import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.dto.request.SubmitCardRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
 import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
+import com.pullup.game.dto.response.GameRoomResultResponse;
 import com.pullup.game.dto.response.GetPlayerNumberResponse;
 import com.pullup.game.dto.response.GetRandomMatchTypeResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
@@ -216,4 +218,24 @@ public class GameService {
         gameRoomRepository.deleteGameRoomAndProblems(roomId);
     }
 
+    public GameRoomResultResponse getGameRoomResult(String roomId) {
+        GameRoom gameRoom = findByRoomId(roomId);
+        if (gameRoom.getPlayer1().getScore() == gameRoom.getPlayer2().getScore()) {
+            return GameRoomResultResponse.of(
+                    GameRoomResultStatus.DRAW,
+                    null
+            );
+        }
+
+        if (gameRoom.getPlayer1().getScore() > gameRoom.getPlayer2().getScore()) {
+            return GameRoomResultResponse.of(
+                    GameRoomResultStatus.WIN,
+                    gameRoom.getPlayer1().getName()
+            );
+        }
+        return GameRoomResultResponse.of(
+                GameRoomResultStatus.WIN,
+                gameRoom.getPlayer2().getName()
+        );
+    }
 }
