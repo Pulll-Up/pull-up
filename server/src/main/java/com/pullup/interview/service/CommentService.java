@@ -4,12 +4,15 @@ import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.interview.domain.Comment;
 import com.pullup.interview.domain.InterviewAnswer;
+import com.pullup.interview.dto.CommentsDto;
 import com.pullup.interview.dto.request.PostCommentRequest;
+import com.pullup.interview.dto.response.CommentsResponse;
 import com.pullup.interview.dto.response.PostCommentResponse;
 import com.pullup.interview.repository.CommentRepository;
 import com.pullup.interview.repository.InterviewAnswerRepository;
 import com.pullup.member.domain.Member;
 import com.pullup.member.service.MemberService;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,5 +68,20 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
+    }
+
+    public CommentsResponse getComments(Long interviewAnswerId) {
+        return CommentsResponse.of(commentRepository.findByInterviewAnswerId(interviewAnswerId)
+                .stream()
+                .map(
+                        comment -> new CommentsDto(
+                                comment.getId(),
+                                comment.getMember().getName(),
+                                comment.getMember().getEmail(),
+                                comment.getContent(),
+                                comment.getCreatedAt()
+                        )
+                )
+                .collect(Collectors.toList()));
     }
 }

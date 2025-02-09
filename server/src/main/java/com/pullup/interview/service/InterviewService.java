@@ -88,12 +88,17 @@ public class InterviewService {
             throw new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND);
         }
 
+        List<InterviewHint> interviewHints = interviewHintRepository.findByInterviewId(interviewId);
+        List<String> keywords = interviewHints.stream().map(InterviewHint::getKeyword).toList();
+
         List<InterviewAnswerDto> interviewAnswerDtos = interviewAnswers.stream()
                 .map(interviewAnswer -> InterviewAnswerDto.of(
                         interviewAnswer.getId(),
+                        interviewAnswer.getInterview().getQuestion(),
+                        keywords,
                         interviewAnswer.getMember().getName(),
-                        interviewAnswer.getCreatedAt(),
                         interviewAnswer.getAnswer(),
+                        interviewAnswer.getCreatedAt(),
                         likeService.isLikedInterviewAnswerByMember(memberId, interviewAnswer.getId()),
                         likeService.getLikesCount(interviewAnswer.getId()),
                         commentService.getCommentsCount(interviewAnswer.getId())

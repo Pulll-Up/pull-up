@@ -4,6 +4,7 @@ import com.pullup.interview.domain.InterviewAnswer;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface InterviewAnswerRepository extends JpaRepository<InterviewAnswer, Long> {
 
@@ -12,5 +13,9 @@ public interface InterviewAnswerRepository extends JpaRepository<InterviewAnswer
             "WHERE ia.member.id = :memberId")
     List<InterviewAnswer> findAllByMemberIdAndInterview(Long memberId);
 
-    List<InterviewAnswer> findAllByInterviewId(Long interviewId);
+    @Query("SELECT ia FROM InterviewAnswer ia " +
+            "JOIN FETCH ia.interview i " +
+            "JOIN FETCH ia.member m " +
+            "WHERE ia.interview.id = :interviewId")
+    List<InterviewAnswer> findAllByInterviewId(@Param("interviewId") Long interviewId);
 }

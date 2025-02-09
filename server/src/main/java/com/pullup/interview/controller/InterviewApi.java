@@ -2,6 +2,7 @@ package com.pullup.interview.controller;
 
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
 import com.pullup.interview.dto.request.PostCommentRequest;
+import com.pullup.interview.dto.response.CommentsResponse;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
@@ -190,4 +191,22 @@ public interface InterviewApi {
             }
     )
     public ResponseEntity<Void> deleteComment(Long commentId);
+
+    @Operation(
+            summary = "오늘의 문제 댓글 전체 조회",
+            description = "오늘의 문제 댓글 전체를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "오늘의 문제 댓글 전체 조회 성공",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<CommentsResponse> getComments(Long interviewAnswerId);
 }
