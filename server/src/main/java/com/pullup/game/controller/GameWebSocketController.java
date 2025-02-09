@@ -25,7 +25,7 @@ public class GameWebSocketController {
     @SendTo("/topic/game/{roomId}/status")
     public GetGameRoomStatusResponse handleRoomStatus(@DestinationVariable String roomId,
                                                       @Payload(required = false) GameRoomStatusRequest gameRoomStatusRequest) {
-        GameRoomStatus status = gameService.handleGameRoomStatus(roomId, request);
+        GameRoomStatus status = gameService.handleGameRoomStatus(roomId, gameRoomStatusRequest);
         return GetGameRoomStatusResponse.of(status.name());
     }
 
