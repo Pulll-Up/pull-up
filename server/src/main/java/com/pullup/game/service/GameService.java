@@ -108,17 +108,17 @@ public class GameService {
         List<ProblemCard> problemCards = getProblemsByRoomId(submitCardRequest.roomId());
 
         List<String> contents = submitCardRequest.contents();
-        Long problemId1 = getProblemCardIdByContent(problemCards, contents.get(0));
-        Long problemId2 = getProblemCardIdByContent(problemCards, contents.get(0));
+        Long problemCardId1 = getProblemCardIdByContent(problemCards, contents.get(0));
+        Long problemCardId2 = getProblemCardIdByContent(problemCards, contents.get(1));
 
         // 틀림
-        if (problemId1 != problemId2) {
+        if (problemCardId1 != problemCardId2) {
             throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_SUBMIT_WRONG);
         }
 
         // 정답
         for (ProblemCard problemCard : problemCards) {
-            if (problemCard.getCardId() == problemId1) {
+            if (problemCard.getCardId() == problemCardId1) {
                 problemCard.disableCard(); // 정답 처리
             }
         }
