@@ -2,7 +2,10 @@ package com.pullup.common.handler;
 
 import static com.pullup.common.exception.ErrorMessage.ERR_FAILURE_OAUTH2_AUTHENTICATION;
 
+<<<<<<< HEAD
 import com.pullup.auth.jwt.util.JwtUtil;
+=======
+>>>>>>> b2c2e04 (feat: 방 삭제 API 개발)
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
