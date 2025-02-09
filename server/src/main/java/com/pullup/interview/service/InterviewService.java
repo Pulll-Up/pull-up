@@ -131,4 +131,9 @@ public class InterviewService {
         List<InterviewHint> interviewHints = interviewHintRepository.findByInterviewId(interviewId);
         return interviewHints.stream().map(InterviewHint::getKeyword).toList();
     }
+
+    public Interview getRandomeUnansweredInterview(Long memberId) {
+        return interviewRepository.findRandomUnansweredInterview(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
+    }
 }
