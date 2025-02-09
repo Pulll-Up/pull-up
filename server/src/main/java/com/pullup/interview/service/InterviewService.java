@@ -10,11 +10,14 @@ import com.pullup.interview.domain.InterviewAnswer;
 import com.pullup.interview.domain.InterviewHint;
 import com.pullup.interview.dto.InterviewAnswerDto;
 import com.pullup.interview.dto.MyInterviewAnswerDto;
+import com.pullup.interview.dto.SearchedInterviewQuestionDto;
+import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
 import com.pullup.interview.dto.response.InterviewAnswerResponse;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResultResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
+import com.pullup.interview.dto.response.SearchedInterviewQuestionsResponse;
 import com.pullup.interview.repository.DailyQuizRepository;
 import com.pullup.interview.repository.InterviewAnswerRepository;
 import com.pullup.interview.repository.InterviewHintRepository;
@@ -189,5 +192,21 @@ public class InterviewService {
     private List<String> getKeywords(Long interviewId) {
         List<InterviewHint> interviewHints = interviewHintRepository.findByInterviewId(interviewId);
         return interviewHints.stream().map(InterviewHint::getKeyword).toList();
+    }
+
+    public SearchedInterviewQuestionsResponse getSearchedInterviewQuestions(String keyword) {
+        List<Interview> interviews = interviewRepository.findByQuestionContaining(keyword);
+
+        return SearchedInterviewQuestionsResponse.of((interviews.stream()
+                .map(interview -> SearchedInterviewQuestionDto.of(
+                        findInterviewAnswerById(interview.getId()).getId(),
+                        interview.getQuestion()
+                )).toList()
+        ));
+    }
+
+    private InterviewAnswer findInterviewAnswerById(Long interviewAnswerId) {
+        return interviewAnswerRepository.findById(interviewAnswerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
     }
 }

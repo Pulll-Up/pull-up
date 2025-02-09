@@ -1,6 +1,7 @@
 package com.pullup.interview.repository;
 
 import com.pullup.interview.domain.Interview;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,6 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
             +
             "ORDER BY FUNCTION('RAND') LIMIT 1")
     Optional<Interview> findRandomUnansweredInterview(@Param("memberId") Long memberId);
+
+    List<Interview> findByQuestionContaining(@Param("keyword") String keyword);
 }
