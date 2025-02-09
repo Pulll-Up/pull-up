@@ -214,5 +214,8 @@ public class GameService {
                 .collect(Collectors.toList());
     }
 
+    public void deleteGameRoom(String roomId) {
+        gameRoomRepository.deleteGameRoomAndProblems(roomId);
+    }
 
 }

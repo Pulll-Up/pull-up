@@ -48,9 +48,11 @@ public class GameRoomRepository {
     }
 
     // 방 삭제 시 문제 리스트 제거
-    public void deleteRoom(String roomId) {
+    public void deleteGameRoomAndProblems(String roomId) {
+        gameRooms.remove(roomId);
         gameProblems.remove(roomId);
     }
+
 
     // 미사용 방 정리를 위한 메서드
     @Scheduled(fixedDelay = 60000) // 1분마다 실행
