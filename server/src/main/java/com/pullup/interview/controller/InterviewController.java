@@ -7,6 +7,7 @@ import com.pullup.interview.dto.response.CommentsResponse;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
+import com.pullup.interview.dto.response.MyInterviewAnswerResultResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.dto.response.PostCommentResponse;
 import com.pullup.interview.service.CommentService;
@@ -47,7 +48,8 @@ public class InterviewController implements InterviewApi {
     @PostMapping("/{interviewId}/submit")
     public ResponseEntity<MyInterviewAnswerResponse> submitInterviewAnswer(
             @PathVariable("interviewId") Long interviewId,
-            @Valid @RequestBody MyInterviewAnswerRequest myInterviewAnswerRequest) {
+            @Valid @RequestBody MyInterviewAnswerRequest myInterviewAnswerRequest
+    ) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
         MyInterviewAnswerResponse myInterviewAnswerResponse = interviewService.submitInterviewAnswer(memberId,
                 interviewId,
@@ -55,6 +57,18 @@ public class InterviewController implements InterviewApi {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(myInterviewAnswerResponse);
+    }
+
+    @Override
+    @GetMapping("/{interviewAnswerId}/result")
+    public ResponseEntity<MyInterviewAnswerResultResponse> getMyInterviewAnswerResult(
+            @PathVariable("interviewAnswerId") Long interviewAnswerId
+    ) {
+        MyInterviewAnswerResultResponse myInterviewAnswerResultResponse = interviewService.getMyInterviewAnswerResult(
+                interviewAnswerId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(myInterviewAnswerResultResponse);
     }
 
     @Override

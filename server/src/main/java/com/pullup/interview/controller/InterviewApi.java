@@ -6,6 +6,7 @@ import com.pullup.interview.dto.response.CommentsResponse;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
+import com.pullup.interview.dto.response.MyInterviewAnswerResultResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.dto.response.PostCommentResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,6 +65,29 @@ public interface InterviewApi {
     )
     public ResponseEntity<MyInterviewAnswerResponse> submitInterviewAnswer(Long interviewId,
                                                                            MyInterviewAnswerRequest myInterviewAnswerRequest);
+
+    @Operation(
+            summary = "오늘의 문제 답변에 대한 결과 조회",
+            description = "오늘의 문제 답변에 대한 결과를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "오늘의 문제 답변에 대한 결과 조회 성공",
+                            content = @Content(schema = @Schema(implementation = MyInterviewAnswerResultResponse.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "면접 답변을 찾을 수 없습니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<MyInterviewAnswerResultResponse> getMyInterviewAnswerResult(Long interviewAnswerId);
 
     @Operation(
             summary = "멤버가 풀었던 오늘의 문제 전체 조회",
