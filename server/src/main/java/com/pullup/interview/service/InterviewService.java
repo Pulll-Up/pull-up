@@ -194,13 +194,13 @@ public class InterviewService {
         return interviewHints.stream().map(InterviewHint::getKeyword).toList();
     }
 
-    public SearchedInterviewQuestionsResponse getSearchedInterviewQuestions(String keyword) {
-        List<Interview> interviews = interviewRepository.findByQuestionContaining(keyword);
+    public SearchedInterviewQuestionsResponse getSearchedInterviewQuestions(Long memberId, String keyword) {
+        List<InterviewAnswer> interviewAnswers = interviewAnswerRepository.searchByKeyword(memberId, keyword);
 
-        return SearchedInterviewQuestionsResponse.of((interviews.stream()
-                .map(interview -> SearchedInterviewQuestionDto.of(
-                        findInterviewAnswerById(interview.getId()).getId(),
-                        interview.getQuestion()
+        return SearchedInterviewQuestionsResponse.of((interviewAnswers.stream()
+                .map(interviewAnswer -> SearchedInterviewQuestionDto.of(
+                        interviewAnswer.getId(),
+                        interviewAnswer.getInterview().getQuestion()
                 )).toList()
         ));
     }

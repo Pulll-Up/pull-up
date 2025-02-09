@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface InterviewAnswerRepository extends JpaRepository<InterviewAnswer, Long> {
+public interface InterviewAnswerRepository extends JpaRepository<InterviewAnswer, Long>,
+        InterviewAnswerSearchRepository {
 
     @Query("SELECT ia FROM InterviewAnswer ia " +
             "JOIN FETCH ia.interview " +

@@ -111,10 +111,13 @@ public class InterviewController implements InterviewApi {
                 .body(interviewAnswersResponse);
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<SearchedInterviewQuestionsResponse> getSearchedInterviewQuestions(
             @RequestParam("keyword") String keyword) {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
         SearchedInterviewQuestionsResponse searchedInterviewQuestionsResponse = interviewService.getSearchedInterviewQuestions(
+                memberId,
                 keyword);
 
         return ResponseEntity.status(HttpStatus.OK)
