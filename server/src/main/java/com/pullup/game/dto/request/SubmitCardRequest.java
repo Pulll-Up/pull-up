@@ -4,7 +4,7 @@ import java.util.List;
 
 public record SubmitCardRequest(
         String roomId,
-        Long playerId,
+        Long playerNumber,
         int problemNumber,
         List<String> contents,
         CheckType checkType
