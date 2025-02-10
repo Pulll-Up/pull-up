@@ -89,4 +89,8 @@ public class MemberService {
 
         deviceTokenRepository.save(deviceToken);
     }
+
+    public List<Member> findAllMembers() {
+        return memberRepository.findAll();
+    }
 }

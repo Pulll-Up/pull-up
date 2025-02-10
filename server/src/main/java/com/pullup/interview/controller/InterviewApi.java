@@ -40,7 +40,7 @@ public interface InterviewApi {
                     )
             }
     )
-    public ResponseEntity<InterviewResponse> getTodayInterview(Long interviewId);
+    public ResponseEntity<InterviewResponse> getTodayInterview();
 
     @Operation(
             summary = "오늘의 문제 제출",

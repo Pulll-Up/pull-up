@@ -36,9 +36,10 @@ public class InterviewController implements InterviewApi {
     private final LikeService likeService;
 
     @Override
-    @GetMapping("/{interviewId}")
-    public ResponseEntity<InterviewResponse> getTodayInterview(@PathVariable("interviewId") Long interviewId) {
-        InterviewResponse todayInterviewResponse = interviewService.getTodayInterview(interviewId);
+    @GetMapping
+    public ResponseEntity<InterviewResponse> getTodayInterview() {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        InterviewResponse todayInterviewResponse = interviewService.getTodayInterview(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(todayInterviewResponse);
