@@ -2,11 +2,14 @@ package com.pullup.member.service;
 
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
+import com.pullup.member.domain.DeviceToken;
 import com.pullup.member.domain.InterestSubject;
 import com.pullup.member.domain.Member;
 import com.pullup.member.domain.MemberExamStatistic;
+import com.pullup.member.dto.request.DeviceTokenRequest;
 import com.pullup.member.dto.request.InterestSubjectsRequest;
 import com.pullup.member.dto.response.MemberProfileResponse;
+import com.pullup.member.repository.DeviceTokenRepository;
 import com.pullup.member.repository.InterestSubjectRepository;
 import com.pullup.member.repository.MemberExamStatisticRepository;
 import com.pullup.member.repository.MemberRepository;
@@ -26,6 +29,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final InterestSubjectRepository interestSubjectRepository;
     private final MemberExamStatisticRepository memberExamStatisticRepository;
+    private final DeviceTokenRepository deviceTokenRepository;
 
     @Transactional
     public void saveMemberExamStatistic(Long memberId) {
@@ -76,5 +80,13 @@ public class MemberService {
 
     private List<InterestSubject> findInterestSubjectsByMemberId(Long memberId) {
         return interestSubjectRepository.findByMemberId(memberId);
+    }
+
+    @Transactional
+    public void registerDeviceToken(Long memberId, DeviceTokenRequest deviceTokenRequest) {
+        Member member = findMemberById(memberId);
+        DeviceToken deviceToken = DeviceToken.createDeviceToken(deviceTokenRequest.deviceToken(), member);
+
+        deviceTokenRepository.save(deviceToken);
     }
 }
