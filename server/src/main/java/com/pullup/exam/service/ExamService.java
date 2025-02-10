@@ -263,8 +263,11 @@ public class ExamService {
         examProblemRepository.saveAll(examProblems);
     }
 
-    private void validateProblemCount(List<Subject> subjects, CorrectRateRange correctRateRange,
-                                      Long minValidSubejectCount) {
+    private void validateProblemCount(
+            List<Subject> subjects,
+            CorrectRateRange correctRateRange,
+            int minValidSubejectCount
+    ) {
         for (Subject subject : subjects) {
             long problemCount = problemRepository.countBySubjectAndCorrectRateBetween(
                     subject,
