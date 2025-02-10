@@ -87,6 +87,7 @@ public class InterviewService {
         dailyQuizRepository.saveAll(dailyQuizzes);
     }
 
+    @Transactional
     public MyInterviewAnswerResponse submitInterviewAnswer(
             Long memberId,
             Long interviewId,
