@@ -114,16 +114,18 @@ public class GameService {
 
         // 틀림
         if (problemId1 != problemId2) {
+            System.out.println("wrong");
+
             throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_SUBMIT_WRONG);
         }
-
+        System.out.println("right");
         // 정답
         for (ProblemCard problemCard : problemCards) {
             if (problemCard.getCardId() == problemId1) {
                 problemCard.disableCard(); // 정답 처리
             }
         }
-
+        System.out.println(problemCards);
         gameRoomRepository.saveProblems(gameRoom.getRoomId(), problemCards);
 
         // 플레이어 점수 업데이트
@@ -184,8 +186,6 @@ public class GameService {
                 PlayerInfo.from(gameRoom.getPlayer2()),
                 convertToProblemCardWithoutCardIds(problemCards)
         );
-
-
     }
 
     public GetRandomMatchTypeResponse getRandomMatchType() {
