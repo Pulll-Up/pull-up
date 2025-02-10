@@ -148,7 +148,11 @@ public class InterviewService {
 
         List<String> keywords = getKeywords(interviewAnswer.getInterview().getId());
 
-        InterviewAnswerDto interviewAnswerDto = makeInterviewAnswerDto(interviewAnswer, keywords, memberId);
+        InterviewAnswerDto interviewAnswerDto = makeInterviewAnswerDto(
+                interviewAnswer,
+                keywords,
+                memberId
+        );
 
         return InterviewAnswerResponse.of(interviewAnswerDto);
     }

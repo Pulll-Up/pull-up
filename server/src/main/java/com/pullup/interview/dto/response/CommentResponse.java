@@ -14,7 +14,12 @@ public record CommentResponse(
         @Schema(description = "댓글 내용", example = "덕분에 쉽게 이해했습니다 !")
         String content
 ) {
-    public static CommentResponse of(Long commentId, String writer, String email, String content) {
+    public static CommentResponse of(
+            Long commentId,
+            String writer,
+            String email,
+            String content
+    ) {
         return CommentResponse.builder()
                 .commentId(commentId)
                 .writer(writer)
