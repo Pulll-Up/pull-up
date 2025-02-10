@@ -13,7 +13,14 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
     @Query("SELECT i FROM Interview i " +
             "WHERE i.subject IN (SELECT s.subject FROM InterestSubject s WHERE s.member.id = :memberId) " +
-            "AND NOT EXISTS (SELECT 1 FROM InterviewAnswer ia WHERE ia.interview.id = i.id AND ia.member.id = :memberId) " +
+            "AND NOT EXISTS (SELECT 1 FROM InterviewAnswer ia WHERE ia.interview.id = i.id AND ia.member.id = :memberId) "
+            +
+            "ORDER BY FUNCTION('RAND') LIMIT 1")
+    Optional<Interview> findRandomUnansweredInterviewBySubject(@Param("memberId") Long memberId);
+
+    @Query("SELECT i FROM Interview i " +
+            "WHERE NOT EXISTS (SELECT 1 FROM InterviewAnswer ia WHERE ia.interview.id = i.id AND ia.member.id = :memberId) "
+            +
             "ORDER BY FUNCTION('RAND') LIMIT 1")
     Optional<Interview> findRandomUnansweredInterview(@Param("memberId") Long memberId);
 }

@@ -1,7 +1,10 @@
 package com.pullup.interview.service;
 
+import static com.pullup.interview.domain.DailyQuiz.createDailyQuiz;
+
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
+import com.pullup.interview.domain.DailyQuiz;
 import com.pullup.interview.domain.Interview;
 import com.pullup.interview.domain.InterviewAnswer;
 import com.pullup.interview.domain.InterviewHint;
@@ -13,6 +16,7 @@ import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResultResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
+import com.pullup.interview.repository.DailyQuizRepository;
 import com.pullup.interview.repository.InterviewAnswerRepository;
 import com.pullup.interview.repository.InterviewHintRepository;
 import com.pullup.interview.repository.InterviewRepository;
@@ -28,14 +32,23 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class InterviewService {
+
     private final MemberService memberService;
     private final LikeService likeService;
     private final CommentService commentService;
     private final InterviewRepository interviewRepository;
     private final InterviewHintRepository interviewHintRepository;
     private final InterviewAnswerRepository interviewAnswerRepository;
+    private final DailyQuizRepository dailyQuizRepository;
 
-    public InterviewResponse getTodayInterview(Long interviewId) {
+    @Transactional
+    public InterviewResponse getTodayInterview(Long memberId) {
+        return dailyQuizRepository.findInterviewIdByMemberId(memberId)
+                .map(this::getInterviewResponse)
+                .orElseGet(() -> createNewDailyQuiz(memberId));
+    }
+
+    private InterviewResponse getInterviewResponse(Long interviewId) {
         Interview interview = interviewRepository.findInterviewById(interviewId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
 
@@ -44,7 +57,34 @@ public class InterviewService {
         return InterviewResponse.of(interview.getId(), interview.getQuestion(), keywords);
     }
 
+    private InterviewResponse createNewDailyQuiz(Long memberId) {
+        Member member = memberService.findMemberById(memberId);
+
+        Interview interview = getRandomUnansweredInterview(memberId);
+        saveDailyQuiz(member, interview);
+
+        List<String> keywords = getKeywords(interview.getId());
+        return InterviewResponse.of(interview.getId(), interview.getQuestion(), keywords);
+    }
+
+    public Interview getRandomUnansweredInterview(Long memberId) {
+        //TODO : 관심 주제를 모두 입력 받은 후에는, 해당 로직 분기 처리 수정 필요
+        return memberService.isExistInterestSubjects(memberId)
+                ? interviewRepository.findRandomUnansweredInterviewBySubject(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND))
+                : interviewRepository.findRandomUnansweredInterview(memberId)
+                        .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
+    }
+
+    public void saveDailyQuiz(Member member, Interview interview) {
+        dailyQuizRepository.save(createDailyQuiz(interview, member));
+    }
+
     @Transactional
+    public void saveAllDailyQuiz(List<DailyQuiz> dailyQuizzes) {
+        dailyQuizRepository.saveAll(dailyQuizzes);
+    }
+
     public MyInterviewAnswerResponse submitInterviewAnswer(
             Long memberId,
             Long interviewId,
@@ -130,10 +170,5 @@ public class InterviewService {
     private List<String> getKeywords(Long interviewId) {
         List<InterviewHint> interviewHints = interviewHintRepository.findByInterviewId(interviewId);
         return interviewHints.stream().map(InterviewHint::getKeyword).toList();
-    }
-
-    public Interview getRandomeUnansweredInterview(Long memberId) {
-        return interviewRepository.findRandomUnansweredInterview(memberId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
     }
 }

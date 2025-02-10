@@ -1,5 +1,7 @@
 package com.pullup.common.config;
 
+import static com.pullup.auth.jwt.config.JwtConstants.AUTHORIZATION_HEADER;
+
 import com.pullup.auth.jwt.domain.JwtTokenValidator;
 import com.pullup.auth.jwt.exception.CustomAuthenticationEntryPoint;
 import com.pullup.auth.jwt.util.JwtUtil;
@@ -56,8 +58,6 @@ public class SecurityConfig {
             "/game-websocket/info/**",  // SockJS handshake
             "/ws/**"                    // 기본 WebSocket 엔드포인트
     };
-
-    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
