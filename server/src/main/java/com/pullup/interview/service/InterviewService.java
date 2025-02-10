@@ -44,6 +44,7 @@ public class InterviewService {
         return InterviewResponse.of(interview.getId(), interview.getQuestion(), keywords);
     }
 
+    @Transactional
     public MyInterviewAnswerResponse submitInterviewAnswer(
             Long memberId,
             Long interviewId,
