@@ -43,19 +43,15 @@ public class GameRoom {
 
     public void addGuest(Long id, String name) {
         this.player2 = Player.createNewPlayer(id, name);
-        updateStatusToPlaying();
+        updateStatus(GameRoomStatus.PLAYING);
     }
 
     private static String generateUniqueRoomCode() {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
     }
 
-    private void updateStatusToPlaying() {
-        this.gameRoomStatus = GameRoomStatus.PLAYING;
-    }
-
-    public void updateStatusToFinished() {
-        this.gameRoomStatus = GameRoomStatus.FINISHED;
+    public void updateStatus(GameRoomStatus gameRoomStatus) {
+        this.gameRoomStatus = gameRoomStatus;
     }
 
     public Player getPlayerByPlayerId(Long playerId) {

@@ -7,6 +7,7 @@ import com.pullup.game.domain.GameRoom;
 import com.pullup.game.domain.GameRoomStatus;
 import com.pullup.game.domain.Player;
 import com.pullup.game.dto.GameRoomResultStatus;
+import com.pullup.game.dto.GameRoomStatusRequest;
 import com.pullup.game.dto.PlayerInfo;
 import com.pullup.game.dto.ProblemCard;
 import com.pullup.game.dto.ProblemCardWithoutCardId;
@@ -92,8 +93,21 @@ public class GameService {
 
     }
 
+    public GameRoomStatus handleGameRoomStatus(String roomId, GameRoomStatusRequest request) {
+        if (request != null && request.gameRoomStatus() != null) {
+            updateGameRoomStatus(roomId, request.gameRoomStatus());
+        }
+        return getGameRoomStatus(roomId);
+    }
 
-    public GameRoomStatus getGameRoomStatus(String roomId) {
+    private void updateGameRoomStatus(String roomId, GameRoomStatus gameRoomStatus) {
+        GameRoom gameRoom = findByRoomId(roomId);
+        if (gameRoom.getGameRoomStatus() != gameRoomStatus) {
+            gameRoom.updateStatus(gameRoomStatus);
+        }
+    }
+
+    private GameRoomStatus getGameRoomStatus(String roomId) {
         return findByRoomId(roomId).getGameRoomStatus();
     }
 
@@ -114,11 +128,9 @@ public class GameService {
 
         // 틀림
         if (problemId1 != problemId2) {
-            System.out.println("wrong");
 
             throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_SUBMIT_WRONG);
         }
-        System.out.println("right");
         // 정답
         for (ProblemCard problemCard : problemCards) {
             if (problemCard.getCardId() == problemId1) {
@@ -136,7 +148,7 @@ public class GameService {
 
         // 게임룸 정보 (상태) 업데이트
         if (isGameEnd(gameRoom.getPlayer1().getScore(), gameRoom.getPlayer2().getScore())) {
-            gameRoom.updateStatusToFinished();
+            gameRoom.updateStatus(GameRoomStatus.FINISHED);
         }
 
         return GameRoomInfoWithProblemsResponse.of(

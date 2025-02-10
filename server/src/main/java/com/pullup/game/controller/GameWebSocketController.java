@@ -1,6 +1,7 @@
 package com.pullup.game.controller;
 
 import com.pullup.game.domain.GameRoomStatus;
+import com.pullup.game.dto.GameRoomStatusRequest;
 import com.pullup.game.dto.request.SubmitCardRequest;
 import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
 import com.pullup.game.dto.response.GetGameRoomStatusResponse;
@@ -22,10 +23,10 @@ public class GameWebSocketController {
 
     @MessageMapping("/game/{roomId}/status")
     @SendTo("/topic/game/{roomId}/status")
-    public GetGameRoomStatusResponse getRoomStatus(@DestinationVariable String roomId) {
-        GameRoomStatus gameRoomStatus = gameService.getGameRoomStatus(roomId);
-
-        return GetGameRoomStatusResponse.of(gameRoomStatus.name());
+    public GetGameRoomStatusResponse handleRoomStatus(@DestinationVariable String roomId,
+                                                      @Payload(required = false) GameRoomStatusRequest gameRoomStatusRequest) {
+        GameRoomStatus status = gameService.handleGameRoomStatus(roomId, request);
+        return GetGameRoomStatusResponse.of(status.name());
     }
 
     @MessageMapping("/card/submit")
