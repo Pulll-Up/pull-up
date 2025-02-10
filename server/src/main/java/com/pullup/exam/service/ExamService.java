@@ -11,15 +11,16 @@ import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
 import com.pullup.exam.dto.ExamResultDetailDto;
 import com.pullup.exam.dto.ExamScoreDto;
 import com.pullup.exam.dto.ExamStrengthDto;
-import com.pullup.exam.dto.GetExamDetailsResponse;
-import com.pullup.exam.dto.GetExamPageResponse;
-import com.pullup.exam.dto.GetExamResponse;
-import com.pullup.exam.dto.GetExamResultResponse;
-import com.pullup.exam.dto.GetExamScoresResponse;
-import com.pullup.exam.dto.GetExamStrengthResponse;
-import com.pullup.exam.dto.PostExamRequest;
-import com.pullup.exam.dto.PostExamWithAnswerReqeust;
 import com.pullup.exam.dto.ProblemAndChosenAnswer;
+import com.pullup.exam.dto.request.PostExamRequest;
+import com.pullup.exam.dto.request.PostExamWithAnswerReqeust;
+import com.pullup.exam.dto.response.GetExamDetailsResponse;
+import com.pullup.exam.dto.response.GetExamPageResponse;
+import com.pullup.exam.dto.response.GetExamResponse;
+import com.pullup.exam.dto.response.GetExamResultResponse;
+import com.pullup.exam.dto.response.GetExamScoresResponse;
+import com.pullup.exam.dto.response.GetExamStrengthResponse;
+import com.pullup.exam.dto.response.PostExamResponse;
 import com.pullup.exam.repository.ExamProblemRepository;
 import com.pullup.exam.repository.ExamRepository;
 import com.pullup.member.domain.Member;
@@ -85,7 +86,7 @@ public class ExamService {
     }
 
     @Transactional
-    public Long postExam(PostExamRequest postExamRequest, Long memberId) {
+    public PostExamResponse postExam(PostExamRequest postExamRequest, Long memberId) {
         List<String> subjects = postExamRequest.subjects();
         // 과목 리스트를 Enum으로 변환
         List<Subject> enumSubjects = subjects.stream()
@@ -103,7 +104,7 @@ public class ExamService {
         CorrectRateRange correctRateRange = getDifficultyRange(difficultyLevel);
 
         // 각 과목별로 문제 수 충분한지 먼저 확인
-        validateProblemCount(enumSubjects, correctRateRange);
+        validateProblemCount(enumSubjects, correctRateRange, baseCount + 1);
 
         // 각 과목별로 문제 선택
         for (int i = 0; i < enumSubjects.size(); i++) {
@@ -138,7 +139,7 @@ public class ExamService {
         Exam savedExam = examRepository.save(exam);
         saveExamProblems(savedExam, selectedProblems);
 
-        return savedExam.getId();
+        return PostExamResponse.of(savedExam.getId());
     }
 
     @Transactional
@@ -262,7 +263,11 @@ public class ExamService {
         examProblemRepository.saveAll(examProblems);
     }
 
-    private void validateProblemCount(List<Subject> subjects, CorrectRateRange correctRateRange) {
+    private void validateProblemCount(
+            List<Subject> subjects,
+            CorrectRateRange correctRateRange,
+            int minValidSubejectCount
+    ) {
         for (Subject subject : subjects) {
             long problemCount = problemRepository.countBySubjectAndCorrectRateBetween(
                     subject,
@@ -270,7 +275,7 @@ public class ExamService {
                     correctRateRange.high()
             );
 
-            if (problemCount < PROBLEM_COUNT) {
+            if (problemCount < minValidSubejectCount) {
                 throw new InternalServerException(
                         ErrorMessage.ERR_INSUFFICIENT_PROBLEMS
                 );

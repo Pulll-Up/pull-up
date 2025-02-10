@@ -1,4 +1,4 @@
-package com.pullup.exam.dto;
+package com.pullup.exam.dto.request;
 
 import com.pullup.common.vaildator.ValidDifficultyLevel;
 import com.pullup.common.vaildator.ValidSubject;

@@ -1,13 +1,14 @@
 package com.pullup.exam.controller;
 
-import com.pullup.exam.dto.GetExamDetailsResponse;
-import com.pullup.exam.dto.GetExamPageResponse;
-import com.pullup.exam.dto.GetExamResponse;
-import com.pullup.exam.dto.GetExamResultResponse;
-import com.pullup.exam.dto.GetExamScoresResponse;
-import com.pullup.exam.dto.GetExamStrengthResponse;
-import com.pullup.exam.dto.PostExamRequest;
-import com.pullup.exam.dto.PostExamWithAnswerReqeust;
+import com.pullup.exam.dto.request.PostExamRequest;
+import com.pullup.exam.dto.request.PostExamWithAnswerReqeust;
+import com.pullup.exam.dto.response.GetExamDetailsResponse;
+import com.pullup.exam.dto.response.GetExamPageResponse;
+import com.pullup.exam.dto.response.GetExamResponse;
+import com.pullup.exam.dto.response.GetExamResultResponse;
+import com.pullup.exam.dto.response.GetExamScoresResponse;
+import com.pullup.exam.dto.response.GetExamStrengthResponse;
+import com.pullup.exam.dto.response.PostExamResponse;
 import com.pullup.exam.service.ExamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,12 +40,12 @@ public class ExamController {
     }
 
     @PostMapping("/me")
-    public ResponseEntity<Long> postExam(@Valid @RequestBody PostExamRequest postExamRequest) {
+    public ResponseEntity<PostExamResponse> postExam(@Valid @RequestBody PostExamRequest postExamRequest) {
         Long memberId = TEMP_MEMBER_ID;
-        Long examId = examService.postExam(postExamRequest, memberId);
+        PostExamResponse postExamResponse = examService.postExam(postExamRequest, memberId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(examId);
+                .body(postExamResponse);
     }
 
     @PostMapping("/{examId}")
