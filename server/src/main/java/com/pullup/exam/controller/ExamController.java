@@ -1,5 +1,6 @@
 package com.pullup.exam.controller;
 
+import com.pullup.common.util.SecurityUtil;
 import com.pullup.exam.dto.request.PostExamRequest;
 import com.pullup.exam.dto.request.PostExamWithAnswerReqeust;
 import com.pullup.exam.dto.response.GetExamDetailsResponse;
@@ -29,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExamController {
 
     private final ExamService examService;
-    private static final Long TEMP_MEMBER_ID = 1L;
 
     @GetMapping("/{examId}")
     public ResponseEntity<GetExamDetailsResponse> getExamDetails(@PathVariable("examId") Long id) {
@@ -41,7 +41,8 @@ public class ExamController {
 
     @PostMapping("/me")
     public ResponseEntity<PostExamResponse> postExam(@Valid @RequestBody PostExamRequest postExamRequest) {
-        Long memberId = TEMP_MEMBER_ID;
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
         PostExamResponse postExamResponse = examService.postExam(postExamRequest, memberId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -51,7 +52,8 @@ public class ExamController {
     @PostMapping("/{examId}")
     public ResponseEntity<Void> postExamWithAnswer(@PathVariable("examId") Long id,
                                                    @RequestBody PostExamWithAnswerReqeust postExamWithAnswerReqeust) {
-        Long memberId = TEMP_MEMBER_ID;
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
         examService.postExamWithAnswer(id, postExamWithAnswerReqeust, memberId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -68,7 +70,8 @@ public class ExamController {
 
     @GetMapping("/me/recent")
     public ResponseEntity<GetExamResponse> getRecentExam() {
-        Long memberId = TEMP_MEMBER_ID;
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
         GetExamResponse getExamResponse = examService.getExam(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -78,7 +81,8 @@ public class ExamController {
     @GetMapping("/me")
     public ResponseEntity<GetExamPageResponse> getExamPageOrderByCreatedAt(
             @PageableDefault(size = 10) Pageable pageable) {
-        Long memberId = TEMP_MEMBER_ID;
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
         GetExamPageResponse getExamPageResponse = examService.getExamPageOrderByCreatedAt(pageable, memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -88,7 +92,8 @@ public class ExamController {
 
     @GetMapping("/me/score")
     public ResponseEntity<GetExamScoresResponse> getRecentFiveExamScores() {
-        Long memberId = TEMP_MEMBER_ID;
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
         GetExamScoresResponse getExamScoresResponse = examService.getRecentFiveExamScores(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -97,7 +102,9 @@ public class ExamController {
 
     @GetMapping("/me/correct-rate")
     public ResponseEntity<GetExamStrengthResponse> getExamStrength() {
-        GetExamStrengthResponse getExamStrengthResponse = examService.getExamStrength(TEMP_MEMBER_ID);
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
+        GetExamStrengthResponse getExamStrengthResponse = examService.getExamStrength(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getExamStrengthResponse);
