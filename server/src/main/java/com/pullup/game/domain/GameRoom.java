@@ -13,6 +13,9 @@ public class GameRoom {
     private String roomId;
     private Player player1;
     private Player player2;
+    //    private GameRoomResultStatus gameRoomResultStatus;
+    private Boolean isForfeitGame;
+    private Player winner;
     private GameRoomStatus gameRoomStatus;
     private GameRoomType gameRoomType;
     private LocalDateTime createdAt;
@@ -58,14 +61,22 @@ public class GameRoom {
         this.gameRoomStatus = GameRoomStatus.FINISHED;
     }
 
-    public Player getPlayerByPlayerId(Long playerId) {
-        if (playerId == 1L) {
+    public Player getPlayerByPlayerNumber(Long playerNumber) {
+        if (playerNumber == 1L) {
             return player1;
-        } else if (playerId == 2L) {
+        } else if (playerNumber == 2L) {
             return player2;
         } else {
             throw new NotFoundException(ErrorMessage.ERR_PLAYER_NOT_FOUND);
         }
+    }
+
+    public void updateWinner(Player player) {
+        this.winner = player;
+    }
+
+    public void updateToForfeitGame() {
+        this.isForfeitGame = true;
     }
 
 
