@@ -50,7 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ExamService {
 
-    private static final int PROBLEM_COUNT = 5;
+    private static final int PROBLEM_COUNT = 10;
 
     private final ExamRepository examRepository;
     private final ProblemOptionRepository problemOptionRepository;
