@@ -110,7 +110,7 @@ public class GameService {
 
         List<String> contents = submitCardRequest.contents();
         Long problemId1 = getProblemCardIdByContent(problemCards, contents.get(0));
-        Long problemId2 = getProblemCardIdByContent(problemCards, contents.get(0));
+        Long problemId2 = getProblemCardIdByContent(problemCards, contents.get(1));
 
         // 틀림
         if (problemId1 != problemId2) {
