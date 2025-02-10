@@ -28,9 +28,9 @@ public class GameWebSocketController {
         return GetGameRoomStatusResponse.of(gameRoomStatus.name());
     }
 
-    @MessageMapping("/card/submit")
+    @MessageMapping("/card/check")
     public void submitCard(@Payload SubmitCardRequest submitCardRequest) {
-        GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = gameService.processCardSubmission(
+        GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = gameService.checkTypeAndProcessCardSubmissionOrTimeout(
                 submitCardRequest);
 
         String destination = "/topic/game/" + submitCardRequest.roomId();

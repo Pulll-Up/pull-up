@@ -33,6 +33,7 @@ public enum ErrorMessage {
     ERR_GAME_ROOM_MEMBER_DUPLICATED("게임 방에 이미 존재하는 플레이어입니다"),
     ERR_CONTENT_NOT_FOUND("문제 리스트에서 일치하는 질문이나 정답을 찾을 수 없습니다"),
     ERR_GAME_CARD_SUBMIT_WRONG("제출한 질문과 정답이 일치하지 않습니다"),
+    ERR_GAME_CHECK_TYPE_UNSUPPORTED("게임 체크 타입이 올바르지 않습니다. SUBMIT 또는 TIME_OUT만 허용됩니다"),
 
     //* Comment 관련 Exception
     ERR_COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다"),

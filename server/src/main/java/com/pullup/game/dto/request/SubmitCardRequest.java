@@ -6,6 +6,7 @@ public record SubmitCardRequest(
         String roomId,
         Long playerId,
         int problemNumber,
-        List<String> contents
+        List<String> contents,
+        CheckType checkType
 ) {
 }
