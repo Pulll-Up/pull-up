@@ -14,6 +14,7 @@ import com.pullup.exam.dto.ExamStrengthDto;
 import com.pullup.exam.dto.ProblemAndChosenAnswer;
 import com.pullup.exam.dto.request.PostExamRequest;
 import com.pullup.exam.dto.request.PostExamWithAnswerReqeust;
+import com.pullup.exam.dto.response.GetAllExamResponse;
 import com.pullup.exam.dto.response.GetExamDetailsResponse;
 import com.pullup.exam.dto.response.GetExamPageResponse;
 import com.pullup.exam.dto.response.GetExamResponse;
@@ -354,5 +355,18 @@ public class ExamService {
                 .map(ExamScoreDto::of)
                 .toList();
         return GetExamScoresResponse.of(examScoreDtos);
+    }
+
+    public GetAllExamResponse getAllExam(Long memberId) {
+        List<Exam> exams = examRepository.findAllByMemberIdOrderByCreatedAtDesc(memberId);
+
+        List<GetExamResponse> examResponses = exams.stream()
+                .map(exam -> GetExamResponse.of(
+                        exam,
+                        findSubjectsOfExam(exam.getId()) // 시험의 과목 목록 조회
+                ))
+                .toList();
+
+        return GetAllExamResponse.of(examResponses);
     }
 }

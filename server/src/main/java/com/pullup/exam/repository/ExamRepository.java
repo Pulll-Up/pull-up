@@ -31,4 +31,7 @@ public interface ExamRepository extends CrudRepository<Exam, Long> {
     @Query("SELECT e FROM Exam e WHERE e.member.id = :memberId ORDER BY e.createdAt DESC LIMIT 5")
     List<Exam> findTop5ByMemberIdOrderByCreatedAtDesc(@Param("memberId") Long memberId);
 
+    
+    List<Exam> findAllByMemberIdOrderByCreatedAtDesc(@Param("memberId") Long memberId);
+
 }
