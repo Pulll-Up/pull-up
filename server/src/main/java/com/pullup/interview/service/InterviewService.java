@@ -11,8 +11,7 @@ import com.pullup.interview.domain.InterviewHint;
 import com.pullup.interview.dto.InterviewAnswerDto;
 import com.pullup.interview.dto.MyInterviewAnswerDto;
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
-import com.pullup.interview.dto.response.CommentsResponse;
-import com.pullup.interview.dto.response.InterviewAnswerWithCommentsResponse;
+import com.pullup.interview.dto.response.InterviewAnswerResponse;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
@@ -143,16 +142,15 @@ public class InterviewService {
         return MyInterviewAnswersResponse.of(myInterviewAnswerDtos);
     }
 
-    public InterviewAnswerWithCommentsResponse getInterviewAnswer(Long memberId, Long interviewAnswerId) {
+    public InterviewAnswerResponse getInterviewAnswer(Long memberId, Long interviewAnswerId) {
         InterviewAnswer interviewAnswer = interviewAnswerRepository.findById(interviewAnswerId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
 
         List<String> keywords = getKeywords(interviewAnswer.getInterview().getId());
 
         InterviewAnswerDto interviewAnswerDto = makeInterviewAnswerDto(interviewAnswer, keywords, memberId);
-        CommentsResponse comments = commentService.getComments(interviewAnswerId);
 
-        return InterviewAnswerWithCommentsResponse.of(interviewAnswerDto, comments.comments());
+        return InterviewAnswerResponse.of(interviewAnswerDto);
     }
 
     public InterviewAnswersResponse getInterviewAnswers(Long memberId, Long interviewId) {

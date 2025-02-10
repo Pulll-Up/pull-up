@@ -3,7 +3,7 @@ package com.pullup.interview.controller;
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
 import com.pullup.interview.dto.request.PostCommentRequest;
 import com.pullup.interview.dto.response.CommentsResponse;
-import com.pullup.interview.dto.response.InterviewAnswerWithCommentsResponse;
+import com.pullup.interview.dto.response.InterviewAnswerResponse;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
@@ -120,7 +120,7 @@ public interface InterviewApi {
                     @ApiResponse(
                             responseCode = "200",
                             description = "오늘의 질문에 대한 답변 단건 조회 성공",
-                            content = @Content(schema = @Schema(implementation = InterviewAnswerWithCommentsResponse.class))
+                            content = @Content(schema = @Schema(implementation = InterviewAnswerResponse.class))
                     ),
                     @ApiResponse(
                             responseCode = "401",
@@ -134,7 +134,7 @@ public interface InterviewApi {
                     )
             }
     )
-    public ResponseEntity<InterviewAnswerWithCommentsResponse> getInterviewAnswer(Long interviewAnswerId);
+    public ResponseEntity<InterviewAnswerResponse> getInterviewAnswer(Long interviewAnswerId);
 
     @Operation(
             summary = "오늘의 질문에 대한 답변 전체 조회",
