@@ -1,4 +1,4 @@
-package com.pullup.exam.dto;
+package com.pullup.exam.dto.response;
 
 import java.util.List;
 import lombok.Builder;

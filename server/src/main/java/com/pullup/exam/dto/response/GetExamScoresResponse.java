@@ -1,5 +1,6 @@
-package com.pullup.exam.dto;
+package com.pullup.exam.dto.response;
 
+import com.pullup.exam.dto.ExamScoreDto;
 import java.util.List;
 import lombok.Builder;
 
