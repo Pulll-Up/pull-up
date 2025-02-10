@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 public interface ExamRepository extends CrudRepository<Exam, Long> {
 
     @Query("SELECT new com.pullup.exam.dto.ExamDetailsWithoutOptionsDto("
-            + "p.id, p.question, p.subject) " +
+            + "p.id, p.question, p.subject, p.problemType) " +
             "FROM Exam e " +
             "JOIN ExamProblem ep ON e.id = ep.exam.id " +
             "JOIN Problem p ON ep.problem.id = p.id " +

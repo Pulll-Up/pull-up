@@ -77,8 +77,12 @@ public class ExamService {
                     .map(ProblemOption::getContent)
                     .collect(Collectors.toList());
 
-            examDetailsDtos.add(
-                    new ExamDetailsDto(dto.problemId(), dto.problem(), contents, dto.subject().name()));
+            examDetailsDtos.add(ExamDetailsDto.of(
+                    dto.problemId(),
+                    dto.problem(),
+                    contents,
+                    dto.subject().name(),
+                    dto.problemType()));
         }
 
         return new GetExamDetailsResponse(examDetailsDtos);
