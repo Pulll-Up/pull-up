@@ -3,6 +3,7 @@ package com.pullup.exam.controller;
 import com.pullup.common.util.SecurityUtil;
 import com.pullup.exam.dto.request.PostExamRequest;
 import com.pullup.exam.dto.request.PostExamWithAnswerReqeust;
+import com.pullup.exam.dto.response.GetAllExamResponse;
 import com.pullup.exam.dto.response.GetExamDetailsResponse;
 import com.pullup.exam.dto.response.GetExamPageResponse;
 import com.pullup.exam.dto.response.GetExamResponse;
@@ -49,9 +50,20 @@ public class ExamController {
                 .body(postExamResponse);
     }
 
+    @GetMapping("/me/all")
+    public ResponseEntity<GetAllExamResponse> getAllExam() {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
+        GetAllExamResponse getAllExamResponse = examService.getAllExam(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(getAllExamResponse);
+    }
+
     @PostMapping("/{examId}")
     public ResponseEntity<Void> postExamWithAnswer(@PathVariable("examId") Long id,
                                                    @RequestBody PostExamWithAnswerReqeust postExamWithAnswerReqeust) {
+
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
 
         examService.postExamWithAnswer(id, postExamWithAnswerReqeust, memberId);
