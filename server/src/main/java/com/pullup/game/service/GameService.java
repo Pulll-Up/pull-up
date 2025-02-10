@@ -21,6 +21,7 @@ import com.pullup.game.dto.response.GetPlayerNumberResponse;
 import com.pullup.game.dto.response.GetRandomMatchTypeResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
 import com.pullup.game.repository.GameRoomRepository;
+import com.pullup.game.repository.WebSocketSessionRepository;
 import com.pullup.member.domain.Member;
 import com.pullup.member.service.MemberService;
 import com.pullup.problem.service.ProblemService;
@@ -39,6 +40,8 @@ public class GameService {
     private final GameRoomRepository gameRoomRepository;
     private final ProblemService problemService;
     private final MemberService memberService;
+    private final WebSocketSessionRepository webSocketSessionRepository;
+
 
     public CreateRoomResponse createRoom(Long memberId, CreateRoomWithSubjectsRequest request) {
         Member member = memberService.findMemberById(memberId);
@@ -165,7 +168,7 @@ public class GameService {
         gameRoomRepository.saveProblems(gameRoom.getRoomId(), problemCards);
 
         // 플레이어 점수 업데이트
-        Player player = gameRoom.getPlayerByPlayerId(submitCardRequest.playerId());
+        Player player = gameRoom.getPlayerByPlayerNumber(submitCardRequest.playerId());
         player.increaseScore();
 
         gameRoomRepository.save(gameRoom);
@@ -278,4 +281,54 @@ public class GameService {
                 gameRoom.getPlayer2().getName()
         );
     }
+
+    public GameRoomInfoWithProblemsResponse handleDisconnection(String sessionId, String roomId) {
+        // 1. sessionId로 플레이어 ID 찾기
+        Long disconnectedPlayerId = webSocketSessionRepository.findPlayerIdBySessionId(sessionId);
+
+        // 2. 게임방 찾기
+        GameRoom gameRoom = findByRoomId(roomId);
+
+        // 3. 연결이 끊긴 플레이어를 패자로 설정
+        Player winner;
+        if (gameRoom.getPlayer1().getId().equals(disconnectedPlayerId)) {
+            winner = gameRoom.getPlayer2();
+        } else if (gameRoom.getPlayer2().getId().equals(disconnectedPlayerId)) {
+            winner = gameRoom.getPlayer1();
+        } else {
+            throw new NotFoundException(ErrorMessage.ERR_PLAYER_NOT_FOUND);
+        }
+
+        // 1. 게임방 찾기
+        // 2. 게임 상태를 FINISHED로 업데이트
+        gameRoom.updateStatusToFinished();
+
+        // 3. 연결이 끊긴 플레이어를 패자로 설정
+        gameRoom.updateWinner(winner);
+        gameRoom.updateToForfeitGame();
+
+        // 4. 변경된 게임방 저장
+        gameRoomRepository.save(gameRoom);
+
+        webSocketSessionRepository.deleteBySessionId(sessionId);
+
+        // 5. 응답 생성
+        List<ProblemCard> problemCards = getProblemsByRoomId(gameRoom.getRoomId());
+
+        return GameRoomInfoWithProblemsResponse.of(
+                gameRoom.getRoomId(),
+                GameRoomStatus.FINISHED,
+                PlayerInfo.of(
+                        gameRoom.getPlayer1().getId(),
+                        gameRoom.getPlayer1().getName(),
+                        gameRoom.getPlayer1().getScore()),
+                PlayerInfo.of(
+                        gameRoom.getPlayer2().getId(),
+                        gameRoom.getPlayer2().getName(),
+                        gameRoom.getPlayer2().getScore()),
+                convertToProblemCardWithoutCardIds(problemCards)
+        );
+        
+    }
 }
+
