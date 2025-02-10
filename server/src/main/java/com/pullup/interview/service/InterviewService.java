@@ -11,6 +11,8 @@ import com.pullup.interview.domain.InterviewHint;
 import com.pullup.interview.dto.InterviewAnswerDto;
 import com.pullup.interview.dto.MyInterviewAnswerDto;
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
+import com.pullup.interview.dto.response.CommentsResponse;
+import com.pullup.interview.dto.response.InterviewAnswerResponse;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
@@ -140,6 +142,18 @@ public class InterviewService {
         return MyInterviewAnswersResponse.of(myInterviewAnswerDtos);
     }
 
+    public InterviewAnswerResponse getInterviewAnswer(Long memberId, Long interviewAnswerId) {
+        InterviewAnswer interviewAnswer = interviewAnswerRepository.findById(interviewAnswerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
+
+        List<String> keywords = getKeywords(interviewAnswer.getInterview().getId());
+
+        InterviewAnswerDto interviewAnswerDto = makeInterviewAnswerDto(interviewAnswer, keywords, memberId);
+        CommentsResponse comments = commentService.getComments(interviewAnswerId);
+
+        return InterviewAnswerResponse.of(interviewAnswerDto, comments.comments());
+    }
+
     public InterviewAnswersResponse getInterviewAnswers(Long memberId, Long interviewId) {
         List<InterviewAnswer> interviewAnswers = interviewAnswerRepository.findAllByInterviewId(interviewId);
 
@@ -147,24 +161,32 @@ public class InterviewService {
             throw new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND);
         }
 
-        List<InterviewHint> interviewHints = interviewHintRepository.findByInterviewId(interviewId);
-        List<String> keywords = interviewHints.stream().map(InterviewHint::getKeyword).toList();
+        List<String> keywords = getKeywords(interviewId);
 
         List<InterviewAnswerDto> interviewAnswerDtos = interviewAnswers.stream()
-                .map(interviewAnswer -> InterviewAnswerDto.of(
-                        interviewAnswer.getId(),
-                        interviewAnswer.getInterview().getQuestion(),
+                .map(interviewAnswer -> makeInterviewAnswerDto(
+                        interviewAnswer,
                         keywords,
-                        interviewAnswer.getMember().getName(),
-                        interviewAnswer.getAnswer(),
-                        interviewAnswer.getCreatedAt(),
-                        likeService.isLikedInterviewAnswerByMember(memberId, interviewAnswer.getId()),
-                        likeService.getLikesCount(interviewAnswer.getId()),
-                        commentService.getCommentsCount(interviewAnswer.getId())
+                        memberId
                 ))
                 .toList();
 
         return InterviewAnswersResponse.of(interviewAnswerDtos);
+    }
+
+    private InterviewAnswerDto makeInterviewAnswerDto(InterviewAnswer interviewAnswer, List<String> keywords,
+                                                      Long memberId) {
+        return InterviewAnswerDto.of(
+                interviewAnswer.getId(),
+                interviewAnswer.getInterview().getQuestion(),
+                keywords,
+                interviewAnswer.getMember().getName(),
+                interviewAnswer.getAnswer(),
+                interviewAnswer.getCreatedAt(),
+                likeService.isLikedInterviewAnswerByMember(memberId, interviewAnswer.getId()),
+                likeService.getLikesCount(interviewAnswer.getId()),
+                commentService.getCommentsCount(interviewAnswer.getId())
+        );
     }
 
     private List<String> getKeywords(Long interviewId) {
