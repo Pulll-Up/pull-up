@@ -11,6 +11,7 @@ import com.pullup.game.dto.PlayerInfo;
 import com.pullup.game.dto.ProblemCard;
 import com.pullup.game.dto.ProblemCardWithoutCardId;
 import com.pullup.game.dto.RandomMatchType;
+import com.pullup.game.dto.request.CheckType;
 import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.dto.request.SubmitCardRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
@@ -32,6 +33,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class GameService {
+
+    private static final int TOTAL_SCORE = 8;
 
     private final GameRoomRepository gameRoomRepository;
     private final ProblemService problemService;
@@ -102,7 +105,43 @@ public class GameService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_GAME_ROOM_NOT_FOUND));
     }
 
-    public GameRoomInfoWithProblemsResponse processCardSubmission(SubmitCardRequest submitCardRequest) {
+    public GameRoomInfoWithProblemsResponse checkTypeAndProcessCardSubmissionOrTimeout(
+            SubmitCardRequest submitCardRequest) {
+        // type 체크
+        if (submitCardRequest.checkType().equals(CheckType.SUBMIT)) {
+            GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = processCardSubmission(
+                    submitCardRequest);
+
+            return gameRoomInfoWithProblemsResponse;
+
+
+        } else if (submitCardRequest.checkType().equals(CheckType.TIME_OVER)) {
+            // 1. 방 상태 바꾸기
+            GameRoom gameRoom = findByRoomId(submitCardRequest.roomId());
+            gameRoom.updateStatusToFinished();
+
+            // 2. GameRoomInfoWithProblemsResponse 만들기
+            List<ProblemCard> problemCards = getProblemsByRoomId(submitCardRequest.roomId());
+
+            return GameRoomInfoWithProblemsResponse.of(
+                    gameRoom.getRoomId(),
+                    GameRoomStatus.FINISHED,
+                    PlayerInfo.of(
+                            gameRoom.getPlayer1().getId(),
+                            gameRoom.getPlayer1().getName(),
+                            gameRoom.getPlayer1().getScore()),
+                    PlayerInfo.of(
+                            gameRoom.getPlayer2().getId(),
+                            gameRoom.getPlayer2().getName(),
+                            gameRoom.getPlayer2().getScore()),
+                    convertToProblemCardWithoutCardIds(problemCards)
+            );
+        }
+        throw new BadRequestException(ErrorMessage.ERR_GAME_CHECK_TYPE_UNSUPPORTED);
+
+    }
+
+    private GameRoomInfoWithProblemsResponse processCardSubmission(SubmitCardRequest submitCardRequest) {
 
         GameRoom gameRoom = findByRoomId(submitCardRequest.roomId());
 
@@ -114,18 +153,15 @@ public class GameService {
 
         // 틀림
         if (problemId1 != problemId2) {
-            System.out.println("wrong");
 
             throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_SUBMIT_WRONG);
         }
-        System.out.println("right");
         // 정답
         for (ProblemCard problemCard : problemCards) {
             if (problemCard.getCardId() == problemId1) {
                 problemCard.disableCard(); // 정답 처리
             }
         }
-        System.out.println(problemCards);
         gameRoomRepository.saveProblems(gameRoom.getRoomId(), problemCards);
 
         // 플레이어 점수 업데이트
@@ -135,12 +171,15 @@ public class GameService {
         gameRoomRepository.save(gameRoom);
 
         // 게임룸 정보 (상태) 업데이트
+        GameRoomStatus nowGameRoomState = gameRoom.getGameRoomStatus();
         if (isGameEnd(gameRoom.getPlayer1().getScore(), gameRoom.getPlayer2().getScore())) {
             gameRoom.updateStatusToFinished();
+            nowGameRoomState = GameRoomStatus.FINISHED;
         }
 
         return GameRoomInfoWithProblemsResponse.of(
                 gameRoom.getRoomId(),
+                nowGameRoomState,
                 PlayerInfo.of(
                         gameRoom.getPlayer1().getId(),
                         gameRoom.getPlayer1().getName(),
@@ -158,7 +197,7 @@ public class GameService {
     }
 
     private boolean isGameEnd(int player1Score, int player2Score) {
-        if (player1Score + player2Score == 16) {
+        if (player1Score + player2Score == TOTAL_SCORE) {
             return true;
         } else {
             return false;
@@ -182,6 +221,7 @@ public class GameService {
 
         return GameRoomInfoWithProblemsResponse.of(
                 roomId,
+                gameRoom.getGameRoomStatus(),
                 PlayerInfo.from(gameRoom.getPlayer1()),
                 PlayerInfo.from(gameRoom.getPlayer2()),
                 convertToProblemCardWithoutCardIds(problemCards)
