@@ -99,14 +99,6 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
-    public void updateSolveStatus(Member member) {
-        Long solvedDays = member.getSolvedDays();
-        solvedDays |= 1;
-
-        member.updateSolvedDays(solvedDays);
-        memberRepository.save(member);
-    }
-
     public boolean isSolvedToday(Long memberId) {
         long solvedDays = findSolvedDaysById(memberId);
         return (solvedDays & 1) == 1;
@@ -132,5 +124,22 @@ public class MemberService {
 
     private long findSolvedDaysById(Long memberId) {
         return Optional.ofNullable(memberRepository.findSolvedDaysById(memberId)).orElse(0L);
+    }
+
+    public void updateSolveStatus(Member member) {
+        Long solvedDays = member.getSolvedDays();
+        solvedDays |= 1;
+
+        member.updateSolvedDays(solvedDays);
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public void updateSolvedDaysWithLeftShift(Member member) {
+        Long solvedDays = member.getSolvedDays();
+        long newDaySolvedStatus = solvedDays << 1;
+
+        member.updateSolvedDays(newDaySolvedStatus);
+        memberRepository.save(member);
     }
 }

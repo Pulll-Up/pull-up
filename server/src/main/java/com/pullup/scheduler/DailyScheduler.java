@@ -29,6 +29,7 @@ public class DailyScheduler {
         List<DailyQuiz> dailyQuizzes = new ArrayList<>();
         members.forEach(member -> {
             Interview chosenInterview = interviewService.getRandomUnansweredInterview(member.getId());
+            memberService.updateSolvedDaysWithLeftShift(member);
             dailyQuizzes.add(
                     DailyQuiz.createDailyQuiz(chosenInterview.getQuestion(), member.getId(), chosenInterview.getId()));
         });
