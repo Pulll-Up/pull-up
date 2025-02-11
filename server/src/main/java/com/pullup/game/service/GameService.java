@@ -122,8 +122,15 @@ public class GameService {
 
         } else if (submitCardRequest.checkType().equals(CheckType.TIME_OVER)) {
             // 1. 방 상태 바꾸기
+            // - finished로 바꾸기
+            // - 이긴 사람 처리
             GameRoom gameRoom = findByRoomId(submitCardRequest.roomId());
             gameRoom.updateStatusToFinished();
+            if (gameRoom.getPlayer1().getScore() > gameRoom.getPlayer2().getScore()) {
+                gameRoom.updateWinner(gameRoom.getPlayer1());
+            } else if (gameRoom.getPlayer1().getScore() < gameRoom.getPlayer2().getScore()) {
+                gameRoom.updateWinner(gameRoom.getPlayer2());
+            }
 
             // 2. GameRoomInfoWithProblemsResponse 만들기
             List<ProblemCard> problemCards = getProblemsByRoomId(submitCardRequest.roomId());
@@ -170,7 +177,7 @@ public class GameService {
         gameRoomRepository.saveProblems(gameRoom.getRoomId(), problemCards);
 
         // 플레이어 점수 업데이트
-        Player player = gameRoom.getPlayerByPlayerNumber(submitCardRequest.playerNumber());
+        Player player = gameRoom.getPlayerByPlayerType(submitCardRequest.playerType());
         player.increaseScore();
 
         gameRoomRepository.save(gameRoom);
