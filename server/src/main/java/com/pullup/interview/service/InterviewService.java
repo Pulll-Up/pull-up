@@ -99,6 +99,8 @@ public class InterviewService {
 
         //TODO : GPT API 연동 후, 강점, 약점 분석 로직 추가
 
+        memberService.updateSolveStatus(member);
+
         InterviewAnswer interviewAnswer = interviewAnswerRepository.save(InterviewAnswer.createInterviewAnswer(
                 member,
                 interview,

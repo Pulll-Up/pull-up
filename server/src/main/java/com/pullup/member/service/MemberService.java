@@ -99,21 +99,25 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
+    public void updateSolveStatus(Member member) {
+        Long solvedDays = member.getSolvedDays();
+        solvedDays |= 1;
+
+        member.updateSolvedDays(solvedDays);
+        memberRepository.save(member);
+    }
+
     public boolean isSolvedToday(Long memberId) {
-        long solvedDays = Optional.ofNullable(findSolvedDaysById(memberId)).orElse(0L);
+        long solvedDays = findSolvedDaysById(memberId);
         return (solvedDays & 1) == 1;
     }
 
-    private Long findSolvedDaysById(Long memberId) {
-        return memberRepository.findSolvedDaysById(memberId);
-    }
-
     public DailySolvedHistoryResponse getDailySolvedHistory(Long memberId) {
-        long solvedDays = Optional.ofNullable(findSolvedDaysById(memberId)).orElse(0L);
+        long solvedDays = findSolvedDaysById(memberId);
         LocalDate today = LocalDate.now();
         List<DailySolvedHistoryDto> dailySolvedHistoryDtos = new ArrayList<>();
 
-        for(int i = 0; i < 50; i++){
+        for (int i = 0; i < 50; i++) {
             LocalDate date = today.minusDays(i);
 
             boolean isSolved = (solvedDays & (1L << i)) > 0;
@@ -124,5 +128,9 @@ public class MemberService {
             ));
         }
         return DailySolvedHistoryResponse.of(dailySolvedHistoryDtos);
+    }
+
+    private long findSolvedDaysById(Long memberId) {
+        return Optional.ofNullable(memberRepository.findSolvedDaysById(memberId)).orElse(0L);
     }
 }

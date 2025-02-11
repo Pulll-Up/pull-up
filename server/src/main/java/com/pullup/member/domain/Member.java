@@ -77,4 +77,8 @@ public class Member extends BaseTimeEntity {
                 .profileImageUrl(oAuth2UserInfo.getProfileImageUrl())
                 .build();
     }
+
+    public void updateSolvedDays(Long solvedDays) {
+        this.solvedDays = solvedDays;
+    }
 }
