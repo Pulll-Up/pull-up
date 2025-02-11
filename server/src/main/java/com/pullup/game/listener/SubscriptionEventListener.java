@@ -3,13 +3,17 @@ package com.pullup.game.listener;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
+import com.pullup.game.domain.GameRoomStatus;
 import com.pullup.game.domain.Player;
+import com.pullup.game.dto.PlayerInfo;
 import com.pullup.game.dto.PlayerSessionInfo;
+import com.pullup.game.dto.ProblemCard;
 import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
 import com.pullup.game.dto.response.PlayerType;
 import com.pullup.game.repository.GameRoomRepository;
 import com.pullup.game.repository.WebSocketSessionManager;
 import com.pullup.game.service.GameService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -69,11 +73,26 @@ public class SubscriptionEventListener {
                 gameRoom.updateToForfeitGame();
                 gameRoomRepository.save(gameRoom);
 
-//                // 남은 유저에게 게임 종료 메시지 전송
-//                messagingTemplate.convertAndSend(
-//                        "/topic/game/" + roomId,
-//                        GameStatusResponse.of(roomId, opponent.getId(), "승리 (상대방 이탈)")
-//                );
+                List<ProblemCard> problemCards = gameService.getProblemsByRoomId(gameRoom.getRoomId());
+
+                GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = GameRoomInfoWithProblemsResponse.of(
+                        gameRoom.getRoomId(),
+                        GameRoomStatus.FINISHED,
+                        PlayerInfo.of(
+                                gameRoom.getPlayer1().getId(),
+                                gameRoom.getPlayer1().getName(),
+                                gameRoom.getPlayer1().getScore()),
+                        PlayerInfo.of(
+                                gameRoom.getPlayer2().getId(),
+                                gameRoom.getPlayer2().getName(),
+                                gameRoom.getPlayer2().getScore()),
+                        gameService.convertToProblemCardWithoutCardIds(problemCards)
+                );
+
+                // 남은 유저에게 게임 종료 메시지 전송
+                messagingTemplate.convertAndSend(
+                        "/topic/game/" + roomId,
+                        gameRoomInfoWithProblemsResponse);
             }
         }
     }
