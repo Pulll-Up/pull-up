@@ -272,7 +272,7 @@ public class GameService {
     }
 
     // 안섞은 버전
-    private List<ProblemCardWithoutCardId> convertToProblemCardWithoutCardIds(List<ProblemCard> problemCards) {
+    public List<ProblemCardWithoutCardId> convertToProblemCardWithoutCardIds(List<ProblemCard> problemCards) {
         return problemCards.stream()
                 .map(ProblemCardWithoutCardId::from)
                 .collect(Collectors.toList());
