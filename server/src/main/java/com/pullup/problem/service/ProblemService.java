@@ -184,7 +184,8 @@ public class ProblemService {
             }
 
         }
-
+        // 문제 섞기
+//        Collections.shuffle(finalProblems);
         gameRoomRepository.saveProblems(roomId, finalProblems);
     }
 
