@@ -11,7 +11,6 @@ import com.pullup.interview.domain.InterviewHint;
 import com.pullup.interview.dto.InterviewAnswerDto;
 import com.pullup.interview.dto.MyInterviewAnswerDto;
 import com.pullup.interview.dto.SearchedInterviewQuestionDto;
-import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
 import com.pullup.interview.dto.response.InterviewAnswerResponse;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
@@ -90,7 +89,6 @@ public class InterviewService {
     }
 
     public Interview getRandomUnansweredInterview(Long memberId) {
-        //TODO : 관심 주제를 모두 입력 받은 후에는, 해당 로직 분기 처리 수정 필요
         return interviewRepository.findRandomUnansweredInterview(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
     }

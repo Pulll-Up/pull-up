@@ -112,7 +112,7 @@ public class InterviewController implements InterviewApi {
     }
 
     @Override
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<SearchedInterviewQuestionsResponse> getSearchedInterviewQuestions(
             @RequestParam("keyword") String keyword) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
