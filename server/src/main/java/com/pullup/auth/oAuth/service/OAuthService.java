@@ -7,7 +7,6 @@ import com.pullup.auth.oAuth.dto.response.LoginResponse;
 import com.pullup.common.exception.BadRequestException;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.util.SecurityUtil;
-import com.pullup.member.service.MemberHistoryService;
 import com.pullup.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +21,6 @@ public class OAuthService {
 
     private final JwtUtil jwtUtil;
     private final MemberService memberService;
-    private final MemberHistoryService memberHistoryService;
 
     public LoginResponse signIn(HttpServletRequest request, HttpServletResponse response) {
         String accessToken = CookieUtil.extractTokenFromCookie(request, "access_token")
@@ -40,7 +38,7 @@ public class OAuthService {
         if (!memberService.isExistInterestSubjects(memberId)) {
             return LoginResponse.isFirstLogin();
         }
-        if (!memberHistoryService.isSolvedToday(memberId)) {
+        if (!memberService.isSolvedToday(memberId)) {
             return LoginResponse.isNotFirstLoginAndNotSolvedToday();
         }
         return LoginResponse.isNotFirstLoginAndSolvedToday();

@@ -3,6 +3,7 @@ package com.pullup.member.controller;
 import com.pullup.common.util.SecurityUtil;
 import com.pullup.member.dto.request.DeviceTokenRequest;
 import com.pullup.member.dto.request.InterestSubjectsRequest;
+import com.pullup.member.dto.response.DailySolvedHistoryResponse;
 import com.pullup.member.dto.response.MemberProfileResponse;
 import com.pullup.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -52,5 +53,15 @@ public class MemberController implements MemberApi {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .build();
+    }
+
+    @Override
+    @GetMapping("/me/streak")
+    public ResponseEntity<DailySolvedHistoryResponse> getDailySolvedHistory() {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        DailySolvedHistoryResponse dailySolvedHistoryResponse = memberService.getDailySolvedHistory(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(dailySolvedHistoryResponse);
     }
 }
