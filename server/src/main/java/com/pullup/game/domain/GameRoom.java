@@ -2,6 +2,7 @@ package com.pullup.game.domain;
 
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
+import com.pullup.game.dto.response.PlayerType;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.Builder;
@@ -65,10 +66,10 @@ public class GameRoom {
         this.gameRoomStatus = GameRoomStatus.FINISHED;
     }
 
-    public Player getPlayerByPlayerNumber(Long playerNumber) {
-        if (playerNumber == 1L) {
+    public Player getPlayerByPlayerType(PlayerType playerType) {
+        if (playerType == PlayerType.player1P) {
             return player1;
-        } else if (playerNumber == 2L) {
+        } else if (playerType == PlayerType.player2P) {
             return player2;
         } else {
             throw new NotFoundException(ErrorMessage.ERR_PLAYER_NOT_FOUND);
