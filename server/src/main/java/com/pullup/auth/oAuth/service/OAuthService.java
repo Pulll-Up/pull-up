@@ -8,6 +8,7 @@ import com.pullup.common.exception.BadRequestException;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.util.SecurityUtil;
 import com.pullup.member.service.MemberService;
+import com.pullup.member.service.facade.MemberFacade;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class OAuthService {
 
     private final JwtUtil jwtUtil;
+    private final MemberFacade memberFacade;
     private final MemberService memberService;
 
     public LoginResponse signIn(HttpServletRequest request, HttpServletResponse response) {
@@ -41,7 +43,7 @@ public class OAuthService {
         if (!memberService.isSolvedToday(memberId)) {
             return LoginResponse.isNotFirstLoginAndNotSolvedToday();
         }
-        Long interviewAnswerId = memberService.getInterviewAnswerId(memberId);
+        Long interviewAnswerId = memberFacade.getTodayInterviewAnswerId(memberId);
         return LoginResponse.isNotFirstLoginAndSolvedToday(interviewAnswerId);
     }
 

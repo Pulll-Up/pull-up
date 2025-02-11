@@ -35,11 +35,11 @@ public class DailyQuiz {
         this.interviewId = interviewId;
     }
 
-    public static DailyQuiz createDailyQuiz(Interview interview, Member member) {
+    public static DailyQuiz createDailyQuiz(String question, Long memberId, Long interviewId) {
         return DailyQuiz.builder()
-                .question(interview.getQuestion())
-                .memberId(member.getId())
-                .interviewId(interview.getId())
+                .question(question)
+                .memberId(memberId)
+                .interviewId(interviewId)
                 .build();
     }
 }

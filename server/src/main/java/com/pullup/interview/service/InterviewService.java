@@ -10,11 +10,9 @@ import com.pullup.interview.domain.InterviewAnswer;
 import com.pullup.interview.domain.InterviewHint;
 import com.pullup.interview.dto.InterviewAnswerDto;
 import com.pullup.interview.dto.MyInterviewAnswerDto;
-import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
 import com.pullup.interview.dto.response.InterviewAnswerResponse;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
-import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResultResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.repository.DailyQuizRepository;
@@ -22,7 +20,6 @@ import com.pullup.interview.repository.InterviewAnswerRepository;
 import com.pullup.interview.repository.InterviewHintRepository;
 import com.pullup.interview.repository.InterviewRepository;
 import com.pullup.member.domain.Member;
-import com.pullup.member.service.MemberService;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +31,36 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class InterviewService {
 
-    private final MemberService memberService;
     private final LikeService likeService;
     private final CommentService commentService;
     private final InterviewRepository interviewRepository;
     private final InterviewHintRepository interviewHintRepository;
     private final InterviewAnswerRepository interviewAnswerRepository;
     private final DailyQuizRepository dailyQuizRepository;
+
+    public Interview findInterviewById(Long interviewId) {
+        return interviewRepository.findInterviewById(interviewId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
+    }
+
+    public InterviewAnswer saveInterviewAnswer(Member member, Interview interview, String answer) {
+        return interviewAnswerRepository.save(InterviewAnswer.createInterviewAnswer(
+                member,
+                interview,
+                answer
+        ));
+    }
+
+    public Long getTodayInterviewAnswerId(Long memberId) {
+        Long todayInterviewId = dailyQuizRepository.findInterviewIdByMemberId(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
+
+        InterviewAnswer interviewAnswer = interviewAnswerRepository.findByMemberIdAndInterviewId(memberId,
+                        todayInterviewId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
+
+        return interviewAnswer.getId();
+    }
 
     @Transactional
     public InterviewResponse getTodayInterview(Long memberId) {
@@ -59,10 +79,8 @@ public class InterviewService {
     }
 
     private InterviewResponse createNewDailyQuiz(Long memberId) {
-        Member member = memberService.findMemberById(memberId);
-
         Interview interview = getRandomUnansweredInterview(memberId);
-        saveDailyQuiz(member, interview);
+        saveDailyQuiz(interview.getQuestion(), memberId, interview.getId());
 
         List<String> keywords = getKeywords(interview.getId());
         return InterviewResponse.of(interview.getId(), interview.getQuestion(), keywords);
@@ -74,37 +92,13 @@ public class InterviewService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
     }
 
-    public void saveDailyQuiz(Member member, Interview interview) {
-        dailyQuizRepository.save(createDailyQuiz(interview, member));
+    public void saveDailyQuiz(String question, Long memberId, Long interviewId) {
+        dailyQuizRepository.save(createDailyQuiz(question, memberId, interviewId));
     }
 
     @Transactional
     public void saveAllDailyQuiz(List<DailyQuiz> dailyQuizzes) {
         dailyQuizRepository.saveAll(dailyQuizzes);
-    }
-
-    @Transactional
-    public MyInterviewAnswerResponse submitInterviewAnswer(
-            Long memberId,
-            Long interviewId,
-            MyInterviewAnswerRequest myInterviewAnswerRequest
-    ) {
-        Member member = memberService.findMemberById(memberId);
-
-        Interview interview = interviewRepository.findInterviewById(interviewId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
-
-        //TODO : GPT API 연동 후, 강점, 약점 분석 로직 추가
-
-        memberService.updateSolveStatus(member);
-
-        InterviewAnswer interviewAnswer = interviewAnswerRepository.save(InterviewAnswer.createInterviewAnswer(
-                member,
-                interview,
-                myInterviewAnswerRequest.answer()
-        ));
-
-        return MyInterviewAnswerResponse.of(interviewId, interviewAnswer.getId());
     }
 
     public MyInterviewAnswerResultResponse getMyInterviewAnswerResult(Long interviewAnswerId) {

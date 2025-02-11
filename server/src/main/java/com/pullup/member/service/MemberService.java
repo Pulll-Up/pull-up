@@ -2,9 +2,6 @@ package com.pullup.member.service;
 
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
-import com.pullup.interview.domain.InterviewAnswer;
-import com.pullup.interview.repository.DailyQuizRepository;
-import com.pullup.interview.repository.InterviewAnswerRepository;
 import com.pullup.member.domain.DeviceToken;
 import com.pullup.member.domain.InterestSubject;
 import com.pullup.member.domain.Member;
@@ -38,8 +35,6 @@ public class MemberService {
     private final InterestSubjectRepository interestSubjectRepository;
     private final MemberExamStatisticRepository memberExamStatisticRepository;
     private final DeviceTokenRepository deviceTokenRepository;
-    private final InterviewAnswerRepository interviewAnswerRepository;
-    private final DailyQuizRepository dailyQuizRepository;
 
     @Transactional
     public void saveMemberExamStatistic(Long memberId) {
@@ -137,15 +132,5 @@ public class MemberService {
 
     private long findSolvedDaysById(Long memberId) {
         return Optional.ofNullable(memberRepository.findSolvedDaysById(memberId)).orElse(0L);
-    }
-
-    public Long getInterviewAnswerId(Long memberId) {
-        Long todayInterviewId = dailyQuizRepository.findInterviewIdByMemberId(memberId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
-
-        InterviewAnswer interviewAnswer = interviewAnswerRepository.findByMemberIdAndInterviewId(memberId, todayInterviewId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
-
-        return interviewAnswer.getId();
     }
 }

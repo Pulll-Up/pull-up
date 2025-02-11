@@ -14,6 +14,7 @@ import com.pullup.interview.dto.response.PostCommentResponse;
 import com.pullup.interview.service.CommentService;
 import com.pullup.interview.service.InterviewService;
 import com.pullup.interview.service.LikeService;
+import com.pullup.member.service.facade.MemberFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ public class InterviewController implements InterviewApi {
 
     private final InterviewService interviewService;
     private final CommentService commentService;
+    private final MemberFacade memberFacade;
     private final LikeService likeService;
 
     @Override
@@ -53,9 +55,11 @@ public class InterviewController implements InterviewApi {
             @Valid @RequestBody MyInterviewAnswerRequest myInterviewAnswerRequest
     ) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-        MyInterviewAnswerResponse myInterviewAnswerResponse = interviewService.submitInterviewAnswer(memberId,
+        MyInterviewAnswerResponse myInterviewAnswerResponse = memberFacade.submitInterviewAnswer(
+                memberId,
                 interviewId,
-                myInterviewAnswerRequest);
+                myInterviewAnswerRequest
+        );
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(myInterviewAnswerResponse);
