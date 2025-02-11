@@ -168,7 +168,7 @@ public class GameService {
         gameRoomRepository.saveProblems(gameRoom.getRoomId(), problemCards);
 
         // 플레이어 점수 업데이트
-        Player player = gameRoom.getPlayerByPlayerNumber(submitCardRequest.playerId());
+        Player player = gameRoom.getPlayerByPlayerNumber(submitCardRequest.playerNumber());
         player.increaseScore();
 
         gameRoomRepository.save(gameRoom);
@@ -207,7 +207,7 @@ public class GameService {
         }
     }
 
-    public GetPlayerNumberResponse getPlayerNumber(String roomId, Long memberId) {
+    public GetPlayerNumberResponse getPlayerNumberByMemberId(String roomId, Long memberId) {
         GameRoom gameRoom = findByRoomId(roomId);
         if (gameRoom.getPlayer1().getId() == memberId) {
             return GetPlayerNumberResponse.of(1L);
@@ -261,26 +261,83 @@ public class GameService {
         gameRoomRepository.deleteGameRoomAndProblems(roomId);
     }
 
-    public GameRoomResultResponse getGameRoomResult(String roomId) {
+    public GameRoomResultResponse getGameRoomResult(String roomId, Long memberId) {
         GameRoom gameRoom = findByRoomId(roomId);
-        if (gameRoom.getPlayer1().getScore() == gameRoom.getPlayer2().getScore()) {
+
+        Player winner = gameRoom.getWinner();
+        Player player = findPlayerByMemberId(memberId, gameRoom);
+        Player opponent = findOpponentPlayerByPlayer(player, gameRoom);
+
+        // 1. 방 이탈한 경우
+        if (gameRoom.getIsForfeitGame()) {
+            if (winner.getId() == memberId) { // 내가 승자인 경우
+                return GameRoomResultResponse.of(
+                        GameRoomResultStatus.WIN,
+                        true,
+                        player.getName(),
+                        player.getScore(),
+                        opponent.getName(),
+                        opponent.getScore()
+                );
+            } else {
+                return GameRoomResultResponse.of( // 내가 패자인 경우
+                        GameRoomResultStatus.LOSE,
+                        true,
+                        player.getName(),
+                        player.getScore(),
+                        opponent.getName(),
+                        opponent.getScore()
+                );
+            }
+        }
+
+        // 2. 방 이탈 아닌 경우 - 정상 종료 or 타임 아웃
+        else if (player.getScore() > opponent.getScore()) {
+            return GameRoomResultResponse.of(
+                    GameRoomResultStatus.WIN,
+                    false,
+                    player.getName(),
+                    player.getScore(),
+                    opponent.getName(),
+                    opponent.getScore()
+            );
+        } else if (player.getScore() < opponent.getScore()) {
+            return GameRoomResultResponse.of(
+                    GameRoomResultStatus.LOSE,
+                    false,
+                    player.getName(),
+                    player.getScore(),
+                    opponent.getName(),
+                    opponent.getScore()
+            );
+        } else {
             return GameRoomResultResponse.of(
                     GameRoomResultStatus.DRAW,
-                    null
+                    false,
+                    player.getName(),
+                    player.getScore(),
+                    opponent.getName(),
+                    opponent.getScore()
             );
         }
 
-        if (gameRoom.getPlayer1().getScore() > gameRoom.getPlayer2().getScore()) {
-            return GameRoomResultResponse.of(
-                    GameRoomResultStatus.WIN,
-                    gameRoom.getPlayer1().getName()
-            );
-        }
-        return GameRoomResultResponse.of(
-                GameRoomResultStatus.WIN,
-                gameRoom.getPlayer2().getName()
-        );
     }
+
+    private Player findPlayerByMemberId(Long memberId, GameRoom gameRoom) {
+        if (gameRoom.getPlayer1().getId() == memberId) {
+            return gameRoom.getPlayer1();
+        } else {
+            return gameRoom.getPlayer2();
+        }
+    }
+
+    private Player findOpponentPlayerByPlayer(Player player, GameRoom gameRoom) {
+        if (gameRoom.getPlayer1().getId() == player.getId()) {
+            return gameRoom.getPlayer2();
+        }
+        return gameRoom.getPlayer1();
+    }
+
 
     public GameRoomInfoWithProblemsResponse handleDisconnection(String sessionId, String roomId) {
         // 1. sessionId로 플레이어 ID 찾기
@@ -328,7 +385,7 @@ public class GameService {
                         gameRoom.getPlayer2().getScore()),
                 convertToProblemCardWithoutCardIds(problemCards)
         );
-        
+
     }
 }
 

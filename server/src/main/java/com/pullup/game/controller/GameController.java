@@ -59,7 +59,7 @@ public class GameController {
     public ResponseEntity<GetPlayerNumberResponse> getPlayerType(@PathVariable String roomId) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
 
-        GetPlayerNumberResponse getPlayerNumberResponse = gameService.getPlayerNumber(roomId, memberId);
+        GetPlayerNumberResponse getPlayerNumberResponse = gameService.getPlayerNumberByMemberId(roomId, memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getPlayerNumberResponse);
@@ -83,10 +83,13 @@ public class GameController {
 
     @GetMapping("/room/{roomId}/result")
     public ResponseEntity<GameRoomResultResponse> getGameRoomResult(@PathVariable String roomId) {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
 
-        GameRoomResultResponse gameRoomResultResponse = gameService.getGameRoomResult(roomId);
+        GameRoomResultResponse gameRoomResultResponse = gameService.getGameRoomResult(roomId, memberId);
+        gameService.deleteGameRoom(roomId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(gameRoomResultResponse);
     }
+
 }
