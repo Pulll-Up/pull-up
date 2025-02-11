@@ -5,6 +5,7 @@ import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.dto.request.JoinRoomRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
 import com.pullup.game.dto.response.GameRoomResultResponse;
+import com.pullup.game.dto.response.GetPlayerTypeResponse;
 import com.pullup.game.dto.response.GetRandomMatchTypeResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
 import com.pullup.game.dto.response.PlayerType;
@@ -56,13 +57,13 @@ public class GameController {
     }
 
     @GetMapping("/room/{roomId}/player")
-    public ResponseEntity<PlayerType> getPlayerType(@PathVariable String roomId) {
+    public ResponseEntity<GetPlayerTypeResponse> getPlayerType(@PathVariable String roomId) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
 
         PlayerType playerType = gameService.getPlayerNumberByMemberId(roomId, memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(playerType);
+                .body(GetPlayerTypeResponse.of(playerType));
     }
 
     @GetMapping("/random/type")
@@ -83,9 +84,7 @@ public class GameController {
 
     @GetMapping("/room/{roomId}/result")
     public ResponseEntity<GameRoomResultResponse> getGameRoomResult(@PathVariable String roomId) {
-        Long memberId = SecurityUtil.getAuthenticatedMemberId();
-
-        GameRoomResultResponse gameRoomResultResponse = gameService.getGameRoomResult(roomId, memberId);
+        GameRoomResultResponse gameRoomResultResponse = gameService.getGameRoomResult(roomId);
         gameService.deleteGameRoom(roomId);
 
         return ResponseEntity.status(HttpStatus.OK)

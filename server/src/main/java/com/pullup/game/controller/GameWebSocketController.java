@@ -1,6 +1,5 @@
 package com.pullup.game.controller;
 
-import com.pullup.common.util.SecurityUtil;
 import com.pullup.game.domain.GameRoomStatus;
 import com.pullup.game.dto.request.SubmitCardRequest;
 import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
@@ -51,10 +50,8 @@ public class GameWebSocketController {
 
     @MessageMapping("/game/{roomId}/result")
     public void getGameRoomResult(@DestinationVariable String roomId) {
-        Long memberId = SecurityUtil.getAuthenticatedMemberId();
-
         // 게임 결과 가져오기
-        GameRoomResultResponse gameRoomResultResponse = gameService.getGameRoomResult(roomId, memberId);
+        GameRoomResultResponse gameRoomResultResponse = gameService.getGameRoomResult(roomId);
 
         // 게임 방 삭제
         gameService.deleteGameRoom(roomId);
