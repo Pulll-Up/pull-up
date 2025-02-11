@@ -49,6 +49,9 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String profileImageUrl;
 
+    @Column(nullable = false)
+    private Long solvedDays;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_game_result_id")
     private MemberGameResult memberGameResult;
@@ -61,9 +64,10 @@ public class Member extends BaseTimeEntity {
         this.oAuthProvider = oAuthProvider;
         this.providerId = providerId;
         this.profileImageUrl = profileImageUrl;
+        this.solvedDays = 0L;
     }
 
-    public static Member of(OAuth2UserInfo oAuth2UserInfo){
+    public static Member createMember(OAuth2UserInfo oAuth2UserInfo){
         return Member.builder()
                 .name(oAuth2UserInfo.getName())
                 .email(oAuth2UserInfo.getEmail())
