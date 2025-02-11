@@ -10,6 +10,7 @@ import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResultResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.dto.response.PostCommentResponse;
+import com.pullup.interview.dto.response.SearchedInterviewQuestionsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -158,6 +159,24 @@ public interface InterviewApi {
             }
     )
     public ResponseEntity<InterviewAnswersResponse> getInterviewAnswers(Long interviewId);
+
+    @Operation(
+            summary = "키워드로 오늘의 문제 리스트 검색",
+            description = "키워드로 오늘의 문제 리스트를 검색합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "오늘의 문제 리스트 검색 성공",
+                            content = @Content(schema = @Schema(implementation = SearchedInterviewQuestionsResponse.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<SearchedInterviewQuestionsResponse> getSearchedInterviewQuestions(String keyword);
 
     @Operation(
             summary = "오늘의 문제에 대한 댓글 작성",

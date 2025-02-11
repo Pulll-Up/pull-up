@@ -10,11 +10,13 @@ import com.pullup.interview.domain.InterviewAnswer;
 import com.pullup.interview.domain.InterviewHint;
 import com.pullup.interview.dto.InterviewAnswerDto;
 import com.pullup.interview.dto.MyInterviewAnswerDto;
+import com.pullup.interview.dto.SearchedInterviewQuestionDto;
 import com.pullup.interview.dto.response.InterviewAnswerResponse;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResultResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
+import com.pullup.interview.dto.response.SearchedInterviewQuestionsResponse;
 import com.pullup.interview.repository.DailyQuizRepository;
 import com.pullup.interview.repository.InterviewAnswerRepository;
 import com.pullup.interview.repository.InterviewHintRepository;
@@ -87,7 +89,6 @@ public class InterviewService {
     }
 
     public Interview getRandomUnansweredInterview(Long memberId) {
-        //TODO : 관심 주제를 모두 입력 받은 후에는, 해당 로직 분기 처리 수정 필요
         return interviewRepository.findRandomUnansweredInterview(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
     }
@@ -189,5 +190,21 @@ public class InterviewService {
     private List<String> getKeywords(Long interviewId) {
         List<InterviewHint> interviewHints = interviewHintRepository.findByInterviewId(interviewId);
         return interviewHints.stream().map(InterviewHint::getKeyword).toList();
+    }
+
+    public SearchedInterviewQuestionsResponse getSearchedInterviewQuestions(Long memberId, String keyword) {
+        List<InterviewAnswer> interviewAnswers = interviewAnswerRepository.searchByKeyword(memberId, keyword);
+
+        return SearchedInterviewQuestionsResponse.of((interviewAnswers.stream()
+                .map(interviewAnswer -> SearchedInterviewQuestionDto.of(
+                        interviewAnswer.getId(),
+                        interviewAnswer.getInterview().getQuestion()
+                )).toList()
+        ));
+    }
+
+    private InterviewAnswer findInterviewAnswerById(Long interviewAnswerId) {
+        return interviewAnswerRepository.findById(interviewAnswerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
     }
 }

@@ -11,6 +11,7 @@ import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResultResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.dto.response.PostCommentResponse;
+import com.pullup.interview.dto.response.SearchedInterviewQuestionsResponse;
 import com.pullup.interview.service.CommentService;
 import com.pullup.interview.service.InterviewService;
 import com.pullup.interview.service.LikeService;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -108,6 +110,20 @@ public class InterviewController implements InterviewApi {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(interviewAnswersResponse);
     }
+
+    @Override
+    @GetMapping("/search")
+    public ResponseEntity<SearchedInterviewQuestionsResponse> getSearchedInterviewQuestions(
+            @RequestParam("keyword") String keyword) {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+        SearchedInterviewQuestionsResponse searchedInterviewQuestionsResponse = interviewService.getSearchedInterviewQuestions(
+                memberId,
+                keyword);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(searchedInterviewQuestionsResponse);
+    }
+
 
     @Override
     @PostMapping("/{interviewId}/comment")

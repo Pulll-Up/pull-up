@@ -4,6 +4,7 @@ package com.pullup.common.handler;
 import com.pullup.common.exception.FailResponse;
 import com.pullup.common.exception.FailResponse.ValidationError;
 import com.pullup.common.exception.PullUpException;
+import jakarta.validation.ConstraintViolationException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -54,5 +55,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(FailResponse.fail(HttpStatus.NOT_FOUND.value(), "잘못된 Resource 요청입니다."));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<FailResponse> handleConstraintViolationException(ConstraintViolationException exception) {
+        log.warn("[ConstraintViolationException] {}: {}", exception.getClass().getName(), exception.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(FailResponse.fail(HttpStatus.BAD_REQUEST.value(), exception.getMessage()));
     }
 }
