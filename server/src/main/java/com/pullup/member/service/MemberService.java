@@ -6,14 +6,18 @@ import com.pullup.member.domain.DeviceToken;
 import com.pullup.member.domain.InterestSubject;
 import com.pullup.member.domain.Member;
 import com.pullup.member.domain.MemberExamStatistic;
+import com.pullup.member.dto.DailySolvedHistoryDto;
 import com.pullup.member.dto.request.DeviceTokenRequest;
 import com.pullup.member.dto.request.InterestSubjectsRequest;
+import com.pullup.member.dto.response.DailySolvedHistoryResponse;
 import com.pullup.member.dto.response.MemberProfileResponse;
 import com.pullup.member.repository.DeviceTokenRepository;
 import com.pullup.member.repository.InterestSubjectRepository;
 import com.pullup.member.repository.MemberExamStatisticRepository;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Subject;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -102,5 +106,23 @@ public class MemberService {
 
     private Long findSolvedDaysById(Long memberId) {
         return memberRepository.findSolvedDaysById(memberId);
+    }
+
+    public DailySolvedHistoryResponse getDailySolvedHistory(Long memberId) {
+        long solvedDays = Optional.ofNullable(findSolvedDaysById(memberId)).orElse(0L);
+        LocalDate today = LocalDate.now();
+        List<DailySolvedHistoryDto> dailySolvedHistoryDtos = new ArrayList<>();
+
+        for(int i = 0; i < 50; i++){
+            LocalDate date = today.minusDays(i);
+
+            boolean isSolved = (solvedDays & (1L << i)) > 0;
+            dailySolvedHistoryDtos.add(new DailySolvedHistoryDto(
+                    isSolved ? 1 : 0,
+                    date.toString(),
+                    isSolved ? 1 : 0
+            ));
+        }
+        return DailySolvedHistoryResponse.of(dailySolvedHistoryDtos);
     }
 }

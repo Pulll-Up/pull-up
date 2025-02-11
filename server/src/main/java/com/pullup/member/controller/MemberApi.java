@@ -2,6 +2,7 @@ package com.pullup.member.controller;
 
 import com.pullup.member.dto.request.DeviceTokenRequest;
 import com.pullup.member.dto.request.InterestSubjectsRequest;
+import com.pullup.member.dto.response.DailySolvedHistoryResponse;
 import com.pullup.member.dto.response.MemberProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -79,4 +80,22 @@ public interface MemberApi {
             }
     )
     public ResponseEntity<Void> registerDeviceToken(DeviceTokenRequest deviceTokenRequest);
+
+    @Operation(
+            summary = "일일 문제 풀이 최근 50일 히스토리 조회",
+            description = "일일 문제 풀이 최근 50일 히스토리를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "일일 문제 풀이 최근 50일 히스토리 조회 성공",
+                            content = @Content(schema = @Schema(implementation = DailySolvedHistoryResponse.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "권한이 없는 사용자입니다.",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    public ResponseEntity<DailySolvedHistoryResponse> getDailySolvedHistory();
 }
