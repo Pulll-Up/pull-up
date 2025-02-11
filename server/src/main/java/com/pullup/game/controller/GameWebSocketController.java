@@ -39,7 +39,7 @@ public class GameWebSocketController {
 
         // 세션에 roomId 저장
         headerAccessor.getSessionAttributes().put("roomId", submitCardRequest.roomId());
-        webSocketSessionRepository.save(sessionId, submitCardRequest.playerNumber());
+        //webSocketSessionRepository.save(sessionId, submitCardRequest.playerNumber());
 
         GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse =
                 gameService.checkTypeAndProcessCardSubmissionOrTimeout(submitCardRequest);
