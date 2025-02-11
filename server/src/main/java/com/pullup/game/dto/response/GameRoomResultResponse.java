@@ -1,32 +1,25 @@
 package com.pullup.game.dto.response;
 
-import com.pullup.game.dto.GameRoomResultStatus;
 import lombok.Builder;
 
 @Builder
 public record GameRoomResultResponse(
-        GameRoomResultStatus gameRoomResultStatus,
-        boolean isForfeitGame,
-        String name,
-        int score,
-        String opponentName,
-        int opponentScore
+        boolean isDraw,
+        boolean isForfeit,
+        PlayerResult player1P,
+        PlayerResult player2P
 ) {
     public static GameRoomResultResponse of(
-            GameRoomResultStatus gameRoomResultStatus,
-            boolean isForfeitGame,
-            String name,
-            int score,
-            String opponentName,
-            int opponentScore
+            boolean isDraw,
+            boolean isForfeit,
+            PlayerResult player1P,
+            PlayerResult player2P
     ) {
         return GameRoomResultResponse.builder()
-                .gameRoomResultStatus(gameRoomResultStatus)
-                .isForfeitGame(isForfeitGame)
-                .name(name)
-                .score(score)
-                .opponentName(opponentName)
-                .opponentScore(opponentScore)
+                .isDraw(isDraw)
+                .isForfeit(isForfeit)
+                .player1P(player1P)
+                .player2P(player2P)
                 .build();
     }
 }

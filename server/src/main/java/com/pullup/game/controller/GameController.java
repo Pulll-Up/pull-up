@@ -5,9 +5,9 @@ import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.dto.request.JoinRoomRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
 import com.pullup.game.dto.response.GameRoomResultResponse;
-import com.pullup.game.dto.response.GetPlayerNumberResponse;
 import com.pullup.game.dto.response.GetRandomMatchTypeResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
+import com.pullup.game.dto.response.PlayerType;
 import com.pullup.game.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -56,13 +56,13 @@ public class GameController {
     }
 
     @GetMapping("/room/{roomId}/player")
-    public ResponseEntity<GetPlayerNumberResponse> getPlayerType(@PathVariable String roomId) {
+    public ResponseEntity<PlayerType> getPlayerType(@PathVariable String roomId) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
 
-        GetPlayerNumberResponse getPlayerNumberResponse = gameService.getPlayerNumberByMemberId(roomId, memberId);
+        PlayerType playerType = gameService.getPlayerNumberByMemberId(roomId, memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(getPlayerNumberResponse);
+                .body(playerType);
     }
 
     @GetMapping("/random/type")

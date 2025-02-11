@@ -17,15 +17,16 @@ import com.pullup.game.dto.request.SubmitCardRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
 import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
 import com.pullup.game.dto.response.GameRoomResultResponse;
-import com.pullup.game.dto.response.GetPlayerNumberResponse;
 import com.pullup.game.dto.response.GetRandomMatchTypeResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
+import com.pullup.game.dto.response.PlayerType;
 import com.pullup.game.repository.GameRoomRepository;
 import com.pullup.game.repository.WebSocketSessionRepository;
 import com.pullup.member.domain.Member;
 import com.pullup.member.service.MemberService;
 import com.pullup.problem.service.ProblemService;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -207,12 +208,12 @@ public class GameService {
         }
     }
 
-    public GetPlayerNumberResponse getPlayerNumberByMemberId(String roomId, Long memberId) {
+    public PlayerType getPlayerNumberByMemberId(String roomId, Long memberId) {
         GameRoom gameRoom = findByRoomId(roomId);
         if (gameRoom.getPlayer1().getId() == memberId) {
-            return GetPlayerNumberResponse.of(1L);
+            return PlayerType.player1P;
         } else if (gameRoom.getPlayer2().getId() == memberId) {
-            return GetPlayerNumberResponse.of(2L);
+            return PlayerType.player2P;
         } else {
             throw new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND);
         }
@@ -250,11 +251,21 @@ public class GameService {
         }
         throw new NotFoundException(ErrorMessage.ERR_CONTENT_NOT_FOUND);
     }
+    // 안섞은 버전
+//    private List<ProblemCardWithoutCardId> convertToProblemCardWithoutCardIds(List<ProblemCard> problemCards) {
+//        return problemCards.stream()
+//                .map(ProblemCardWithoutCardId::from)
+//                .collect(Collectors.toList());
+//    }
 
+    // 섞은 버전
     private List<ProblemCardWithoutCardId> convertToProblemCardWithoutCardIds(List<ProblemCard> problemCards) {
         return problemCards.stream()
                 .map(ProblemCardWithoutCardId::from)
-                .collect(Collectors.toList());
+                .collect(Collectors.collectingAndThen(Collectors.toList(), list -> {
+                    Collections.shuffle(list); // 변환 후 리스트를 무작위로 섞음
+                    return list;
+                }));
     }
 
     public void deleteGameRoom(String roomId) {

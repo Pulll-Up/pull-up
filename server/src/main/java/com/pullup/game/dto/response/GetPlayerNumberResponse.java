@@ -1,9 +1,9 @@
 package com.pullup.game.dto.response;
 
 public record GetPlayerNumberResponse(
-        Long playerNumber
+        PlayerType playerType;
 ) {
-    public static GetPlayerNumberResponse of(Long playerNumber) {
-        return new GetPlayerNumberResponse(playerNumber);
+    public static GetPlayerNumberResponse of(Long playerType) {
+        return new GetPlayerNumberResponse(playerType);
     }
 }
