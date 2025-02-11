@@ -5,7 +5,8 @@ import com.pullup.game.dto.request.SubmitCardRequest;
 import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
 import com.pullup.game.dto.response.GameRoomResultResponse;
 import com.pullup.game.dto.response.GetGameRoomStatusResponse;
-import com.pullup.game.repository.WebSocketSessionRepository;
+import com.pullup.game.dto.response.PlayerType;
+import com.pullup.game.repository.WebSocketSessionManager;
 import com.pullup.game.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -22,7 +23,7 @@ public class GameWebSocketController {
 
     private final GameService gameService;
     private final SimpMessagingTemplate messagingTemplate;
-    private final WebSocketSessionRepository webSocketSessionRepository;
+    private final WebSocketSessionManager sessionManager;
 
     @MessageMapping("/game/{roomId}/status")
     @SendTo("/topic/game/{roomId}/status")
@@ -35,11 +36,11 @@ public class GameWebSocketController {
     @MessageMapping("/card/check")
     public void submitCard(@Payload SubmitCardRequest submitCardRequest,
                            SimpMessageHeaderAccessor headerAccessor) {
-        String sessionId = headerAccessor.getSessionId();
 
-        // 세션에 roomId 저장
-        headerAccessor.getSessionAttributes().put("roomId", submitCardRequest.roomId());
-        //webSocketSessionRepository.save(sessionId, submitCardRequest.playerNumber());
+        String sessionId = headerAccessor.getSessionId();  // 세션 ID 가져오기
+        String roomId = submitCardRequest.roomId();        // 메시지에서 roomId 가져오기
+        PlayerType playerType = submitCardRequest.playerType(); // 메시지에서 playerType 가져오기
+        sessionManager.addSession(sessionId, roomId, playerType); // 세션 등록
 
         GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse =
                 gameService.checkTypeAndProcessCardSubmissionOrTimeout(submitCardRequest);

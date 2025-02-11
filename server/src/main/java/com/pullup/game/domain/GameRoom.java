@@ -2,6 +2,7 @@ package com.pullup.game.domain;
 
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
+import com.pullup.game.dto.GameRoomResultStatus;
 import com.pullup.game.dto.response.PlayerType;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,7 +15,7 @@ public class GameRoom {
     private String roomId;
     private Player player1;
     private Player player2;
-    //    private GameRoomResultStatus gameRoomResultStatus;
+    private GameRoomResultStatus gameRoomResultStatus;
     private Boolean isForfeitGame;
     private Player winner;
     private GameRoomStatus gameRoomStatus;
@@ -82,6 +83,16 @@ public class GameRoom {
 
     public void updateToForfeitGame() {
         this.isForfeitGame = true;
+    }
+
+    public Player getOpponentPlayerByPlayerType(PlayerType playerType) {
+        if (playerType == PlayerType.player1P) {
+            return player2;
+        } else if (playerType == PlayerType.player2P) {
+            return player1;
+        } else {
+            throw new NotFoundException(ErrorMessage.ERR_PLAYER_NOT_FOUND);
+        }
     }
 
 
