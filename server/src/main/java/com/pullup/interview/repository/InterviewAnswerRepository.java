@@ -12,13 +12,13 @@ public interface InterviewAnswerRepository extends JpaRepository<InterviewAnswer
     @Query("SELECT ia FROM InterviewAnswer ia " +
             "JOIN FETCH ia.interview " +
             "WHERE ia.member.id = :memberId")
-    List<InterviewAnswer> findAllByMemberIdAndInterview(Long memberId);
+    List<InterviewAnswer> findAllByMemberIdWithInterview(Long memberId);
 
     @Query("SELECT ia FROM InterviewAnswer ia " +
             "JOIN FETCH ia.interview i " +
             "JOIN FETCH ia.member m " +
             "WHERE ia.interview.id = :interviewId")
-    List<InterviewAnswer> findAllByInterviewId(@Param("interviewId") Long interviewId);
+    List<InterviewAnswer> findAllByInterviewIdWithMember(@Param("interviewId") Long interviewId);
 
     @Query("SELECT ia FROM InterviewAnswer ia " +
             "JOIN FETCH ia.interview " +
@@ -29,5 +29,5 @@ public interface InterviewAnswerRepository extends JpaRepository<InterviewAnswer
             "JOIN FETCH ia.interview i " +
             "JOIN FETCH ia.member m " +
             "WHERE m.id = :memberId AND i.id = :todayInterviewId")
-    Optional<InterviewAnswer> findByMemberAndInterview(Long memberId, Long todayInterviewId);
+    Optional<InterviewAnswer> findByMemberIdAndInterviewId(Long memberId, Long todayInterviewId);
 }

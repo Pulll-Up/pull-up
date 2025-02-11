@@ -143,7 +143,7 @@ public class MemberService {
         Long todayInterviewId = dailyQuizRepository.findInterviewIdByMemberId(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
 
-        InterviewAnswer interviewAnswer = interviewAnswerRepository.findByMemberAndInterview(memberId, todayInterviewId)
+        InterviewAnswer interviewAnswer = interviewAnswerRepository.findByMemberIdAndInterviewId(memberId, todayInterviewId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
 
         return interviewAnswer.getId();
