@@ -1,6 +1,8 @@
 package com.pullup.problem.controller;
 
+import com.pullup.common.util.SecurityUtil;
 import com.pullup.problem.dto.GetAllWrongProblemsResponse;
+import com.pullup.problem.dto.GetBookmarkedProblemsResponse;
 import com.pullup.problem.dto.GetProblemResponse;
 import com.pullup.problem.dto.GetRecentWrongProblemsResponse;
 import com.pullup.problem.service.ProblemService;
@@ -17,20 +19,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/problem")
 @RequiredArgsConstructor
 public class ProblemController {
-    private static final Long TEMP_MEMBER_ID = 1L;
     private final ProblemService problemService;
 
     @PostMapping("/{problemId}")
     public ResponseEntity<Void> toggleProblemBookmark(@PathVariable("problemId") Long problemId) {
-        problemService.toggleProblemBookmark(problemId, TEMP_MEMBER_ID);
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
+        problemService.toggleProblemBookmark(problemId, memberId);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/archive/all")
     public ResponseEntity<GetBookmarkedProblemsResponse> getBookmarkedProblems() {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
         GetBookmarkedProblemsResponse getBookmarkedProblemsResponse = problemService.getBookmarkedProblems(
-                TEMP_MEMBER_ID);
+                memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getBookmarkedProblemsResponse);
@@ -46,7 +51,8 @@ public class ProblemController {
 
     @GetMapping("/wrong/recent")
     public ResponseEntity<GetRecentWrongProblemsResponse> getRecentWrongProblems() {
-        Long memberId = TEMP_MEMBER_ID;
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
         GetRecentWrongProblemsResponse getRecentWrongProblems = problemService.getRecentWrongProblems(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -56,8 +62,9 @@ public class ProblemController {
 
     @GetMapping("/me/all")
     public ResponseEntity<GetAllWrongProblemsResponse> getAllWrongProblems() {
-        Long memberId = TEMP_MEMBER_ID;
-        GetAllWrongProblemsResponse getAllWrongProblemsResponse = problemService.getAllWrongProblem(TEMP_MEMBER_ID);
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
+        GetAllWrongProblemsResponse getAllWrongProblemsResponse = problemService.getAllWrongProblem(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getAllWrongProblemsResponse);

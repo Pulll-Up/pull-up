@@ -1,4 +1,4 @@
-package com.pullup.problem.controller;
+package com.pullup.problem.dto;
 
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Subject;

@@ -1,4 +1,4 @@
-package com.pullup.problem.controller;
+package com.pullup.problem.dto;
 
 import java.util.List;
 import lombok.Builder;
