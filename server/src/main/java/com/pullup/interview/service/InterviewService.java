@@ -70,11 +70,8 @@ public class InterviewService {
 
     public Interview getRandomUnansweredInterview(Long memberId) {
         //TODO : 관심 주제를 모두 입력 받은 후에는, 해당 로직 분기 처리 수정 필요
-        return memberService.isExistInterestSubjects(memberId)
-                ? interviewRepository.findRandomUnansweredInterviewBySubject(memberId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND))
-                : interviewRepository.findRandomUnansweredInterview(memberId)
-                        .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
+        return interviewRepository.findRandomUnansweredInterview(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
     }
 
     public void saveDailyQuiz(Member member, Interview interview) {

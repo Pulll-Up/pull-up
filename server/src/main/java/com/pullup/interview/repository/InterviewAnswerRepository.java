@@ -24,4 +24,10 @@ public interface InterviewAnswerRepository extends JpaRepository<InterviewAnswer
             "JOIN FETCH ia.interview " +
             "WHERE ia.id = :id")
     Optional<InterviewAnswer> findByIdWithInterview(Long id);
+
+    @Query("SELECT ia FROM InterviewAnswer ia " +
+            "JOIN FETCH ia.interview i " +
+            "JOIN FETCH ia.member m " +
+            "WHERE m.id = :memberId AND i.id = :todayInterviewId")
+    Optional<InterviewAnswer> findByMemberAndInterview(Long memberId, Long todayInterviewId);
 }

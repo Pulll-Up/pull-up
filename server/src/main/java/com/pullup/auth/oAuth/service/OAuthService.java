@@ -41,7 +41,8 @@ public class OAuthService {
         if (!memberService.isSolvedToday(memberId)) {
             return LoginResponse.isNotFirstLoginAndNotSolvedToday();
         }
-        return LoginResponse.isNotFirstLoginAndSolvedToday();
+        Long interviewAnswerId = memberService.getInterviewAnswerId(memberId);
+        return LoginResponse.isNotFirstLoginAndSolvedToday(interviewAnswerId);
     }
 
     public void signUp(Long memberId, SignUpRequest singUpRequest) {
