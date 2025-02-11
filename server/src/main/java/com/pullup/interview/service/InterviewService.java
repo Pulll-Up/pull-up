@@ -113,6 +113,7 @@ public class InterviewService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
 
         return MyInterviewAnswerResultResponse.of(
+                interviewAnswer.getInterview().getId(),
                 interviewAnswerId,
                 interviewAnswer.getInterview().getQuestion(),
                 interviewAnswer.getAnswer(),
