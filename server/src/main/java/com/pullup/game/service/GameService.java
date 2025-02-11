@@ -26,7 +26,6 @@ import com.pullup.member.domain.Member;
 import com.pullup.member.service.MemberService;
 import com.pullup.problem.service.ProblemService;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -271,22 +270,23 @@ public class GameService {
         }
         throw new NotFoundException(ErrorMessage.ERR_CONTENT_NOT_FOUND);
     }
-    // 안섞은 버전
-//    private List<ProblemCardWithoutCardId> convertToProblemCardWithoutCardIds(List<ProblemCard> problemCards) {
-//        return problemCards.stream()
-//                .map(ProblemCardWithoutCardId::from)
-//                .collect(Collectors.toList());
-//    }
 
-    // 섞은 버전
+    // 안섞은 버전
     private List<ProblemCardWithoutCardId> convertToProblemCardWithoutCardIds(List<ProblemCard> problemCards) {
         return problemCards.stream()
                 .map(ProblemCardWithoutCardId::from)
-                .collect(Collectors.collectingAndThen(Collectors.toList(), list -> {
-                    Collections.shuffle(list); // 변환 후 리스트를 무작위로 섞음
-                    return list;
-                }));
+                .collect(Collectors.toList());
     }
+
+//    // 섞은 버전
+//    private List<ProblemCardWithoutCardId> convertToProblemCardWithoutCardIds(List<ProblemCard> problemCards) {
+//        return problemCards.stream()
+//                .map(ProblemCardWithoutCardId::from)
+//                .collect(Collectors.collectingAndThen(Collectors.toList(), list -> {
+//                    Collections.shuffle(list); // 변환 후 리스트를 무작위로 섞음
+//                    return list;
+//                }));
+//    }
 
     public void deleteGameRoom(String roomId) {
         gameRoomRepository.deleteGameRoomAndProblems(roomId);
