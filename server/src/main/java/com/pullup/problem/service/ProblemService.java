@@ -9,12 +9,12 @@ import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.repository.GameRoomRepository;
 import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
-import com.pullup.problem.controller.BookmarkedProblemDto;
-import com.pullup.problem.controller.GetBookmarkedProblemsResponse;
 import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
 import com.pullup.problem.domain.Subject;
+import com.pullup.problem.dto.BookmarkedProblemDto;
 import com.pullup.problem.dto.GetAllWrongProblemsResponse;
+import com.pullup.problem.dto.GetBookmarkedProblemsResponse;
 import com.pullup.problem.dto.GetProblemResponse;
 import com.pullup.problem.dto.GetRecentWrongProblemsResponse;
 import com.pullup.problem.dto.RecentWrongQuestionDto;
@@ -24,6 +24,7 @@ import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -107,10 +108,18 @@ public class ProblemService {
                         examProblem.getProblem().getQuestion(),
                         examProblem.getProblem().getSubject()
                 ))
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(
+                        RecentWrongQuestionDto::problemId, // 중복 제거 기준 (problemId)
+                        dto -> dto,  // 그대로 유지
+                        (existing, replacement) -> existing  // 중복 발생 시 기존 값 유지
+                ))
+                .values()
+                .stream()
+                .collect(Collectors.toList()); // 중복 제거 후 리스트 변환
 
         return new GetRecentWrongProblemsResponse(wrongProblems);
     }
+
 
     public GetAllWrongProblemsResponse getAllWrongProblem(Long memberId) {
         List<WrongProblemDto> wrongProblemDtos = examProblemRepository.findByExamMemberIdAndAnswerStatusFalseOrderByCreatedAtDesc(
@@ -122,6 +131,14 @@ public class ProblemService {
                         examProblem.getProblem().getSubject(),
                         examProblem.getCreatedAt()
                 ))
+                .collect(Collectors.toMap(
+                        WrongProblemDto::problemId,  // 중복 제거 기준 (problemId)
+                        dto -> dto,                  // 그대로 유지
+                        (existing, replacement) -> existing  // 중복 발생 시 기존 값 유지
+                ))
+                .values()
+                .stream()
+                .sorted(Comparator.comparing(WrongProblemDto::date).reversed()) // 최신순 정렬
                 .collect(Collectors.toList());
 
         return GetAllWrongProblemsResponse.of(wrongProblemDtos);
