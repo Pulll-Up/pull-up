@@ -22,7 +22,9 @@ public class LikeService {
     private final LikeRepository likeRepository;
 
     public Boolean isLikedInterviewAnswerByMember(Long memberId, Long interviewAnswerId) {
-        return likeRepository.existsByMemberIdAndInterviewAnswerId(memberId, interviewAnswerId);
+        return likeRepository.findByMemberIdAndInterviewAnswerId(memberId, interviewAnswerId)
+                .map(Like::getIsLiked)
+                .orElse(false);
     }
 
     public Integer getLikesCount(Long interviewAnswerId) {
