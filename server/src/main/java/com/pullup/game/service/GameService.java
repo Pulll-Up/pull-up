@@ -22,7 +22,6 @@ import com.pullup.game.dto.response.JoinRoomResponse;
 import com.pullup.game.dto.response.PlayerResult;
 import com.pullup.game.dto.response.PlayerType;
 import com.pullup.game.repository.GameRoomRepository;
-import com.pullup.game.repository.WebSocketSessionRepository;
 import com.pullup.member.domain.Member;
 import com.pullup.member.service.MemberService;
 import com.pullup.problem.service.ProblemService;
@@ -31,18 +30,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GameService {
-
     private static final int TOTAL_SCORE = 8;
 
     private final GameRoomRepository gameRoomRepository;
     private final ProblemService problemService;
     private final MemberService memberService;
-    private final WebSocketSessionRepository webSocketSessionRepository;
 
 
     public CreateRoomResponse createRoom(Long memberId, CreateRoomWithSubjectsRequest request) {
@@ -182,11 +181,15 @@ public class GameService {
 
         gameRoomRepository.save(gameRoom);
 
+        // 끝났는지 확인
         // 게임룸 정보 (상태) 업데이트
         GameRoomStatus nowGameRoomState = gameRoom.getGameRoomStatus();
-        if (isGameEnd(gameRoom.getPlayer1().getScore(), gameRoom.getPlayer2().getScore())) {
+        if (isGameEnd(gameRoom.getPlayer1().getScore(), gameRoom.getPlayer2().getScore(), gameRoom.getRoomId())) {
+            // 1. 상태 finish 바꾸기
+            // 2. winner update 하기
             gameRoom.updateStatusToFinished();
             nowGameRoomState = GameRoomStatus.FINISHED;
+            updateGameRoomWinner(gameRoom, gameRoom.getPlayer1(), gameRoom.getPlayer2());
         }
 
         return GameRoomInfoWithProblemsResponse.of(
@@ -204,12 +207,21 @@ public class GameService {
         );
     }
 
+    private void updateGameRoomWinner(GameRoom gameRoom, Player player1, Player player2) {
+        if (player1.getScore() > player2.getScore()) {
+            gameRoom.updateWinner(player1);
+        } else if (player1.getScore() < player2.getScore()) {
+            gameRoom.updateWinner(player2);
+        }
+    }
+
     public List<ProblemCard> getProblemsByRoomId(String roomId) {
         return gameRoomRepository.getProblemsByRoomId(roomId);
     }
 
-    private boolean isGameEnd(int player1Score, int player2Score) {
-        if (player1Score + player2Score == TOTAL_SCORE) {
+    private boolean isGameEnd(int player1Score, int player2Score, String roomId) {
+        log.info("문제 개수: {}", getProblemsByRoomId(roomId).size());
+        if (player1Score + player2Score == (getProblemsByRoomId(roomId).size()) / 2) {
             return true;
         } else {
             return false;
@@ -374,53 +386,5 @@ public class GameService {
     }
 
 
-    public GameRoomInfoWithProblemsResponse handleDisconnection(String sessionId, String roomId) {
-        // 1. sessionId로 플레이어 ID 찾기
-        Long disconnectedPlayerId = webSocketSessionRepository.findPlayerIdBySessionId(sessionId);
-
-        // 2. 게임방 찾기
-        GameRoom gameRoom = findByRoomId(roomId);
-
-        // 3. 연결이 끊긴 플레이어를 패자로 설정
-        Player winner;
-        if (gameRoom.getPlayer1().getId().equals(disconnectedPlayerId)) {
-            winner = gameRoom.getPlayer2();
-        } else if (gameRoom.getPlayer2().getId().equals(disconnectedPlayerId)) {
-            winner = gameRoom.getPlayer1();
-        } else {
-            throw new NotFoundException(ErrorMessage.ERR_PLAYER_NOT_FOUND);
-        }
-
-        // 1. 게임방 찾기
-        // 2. 게임 상태를 FINISHED로 업데이트
-        gameRoom.updateStatusToFinished();
-
-        // 3. 연결이 끊긴 플레이어를 패자로 설정
-        gameRoom.updateWinner(winner);
-        gameRoom.updateToForfeitGame();
-
-        // 4. 변경된 게임방 저장
-        gameRoomRepository.save(gameRoom);
-
-        webSocketSessionRepository.deleteBySessionId(sessionId);
-
-        // 5. 응답 생성
-        List<ProblemCard> problemCards = getProblemsByRoomId(gameRoom.getRoomId());
-
-        return GameRoomInfoWithProblemsResponse.of(
-                gameRoom.getRoomId(),
-                GameRoomStatus.FINISHED,
-                PlayerInfo.of(
-                        gameRoom.getPlayer1().getId(),
-                        gameRoom.getPlayer1().getName(),
-                        gameRoom.getPlayer1().getScore()),
-                PlayerInfo.of(
-                        gameRoom.getPlayer2().getId(),
-                        gameRoom.getPlayer2().getName(),
-                        gameRoom.getPlayer2().getScore()),
-                convertToProblemCardWithoutCardIds(problemCards)
-        );
-
-    }
 }
 
