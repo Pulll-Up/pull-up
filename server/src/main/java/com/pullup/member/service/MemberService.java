@@ -16,6 +16,7 @@ import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Subject;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -92,5 +93,14 @@ public class MemberService {
 
     public List<Member> findAllMembers() {
         return memberRepository.findAll();
+    }
+
+    public boolean isSolvedToday(Long memberId) {
+        long solvedDays = Optional.ofNullable(findSolvedDaysById(memberId)).orElse(0L);
+        return (solvedDays & 1) == 1;
+    }
+
+    private Long findSolvedDaysById(Long memberId) {
+        return memberRepository.findSolvedDaysById(memberId);
     }
 }

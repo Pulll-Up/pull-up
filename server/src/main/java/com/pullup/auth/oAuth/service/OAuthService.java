@@ -40,7 +40,7 @@ public class OAuthService {
         if (!memberService.isExistInterestSubjects(memberId)) {
             return LoginResponse.isFirstLogin();
         }
-        if (!memberHistoryService.isSolvedToday(memberId)) {
+        if (!memberService.isSolvedToday(memberId)) {
             return LoginResponse.isNotFirstLoginAndNotSolvedToday();
         }
         return LoginResponse.isNotFirstLoginAndSolvedToday();
