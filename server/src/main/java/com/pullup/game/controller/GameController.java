@@ -86,6 +86,7 @@ public class GameController {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
 
         GameRoomResultResponse gameRoomResultResponse = gameService.getGameRoomResult(roomId, memberId);
+        gameService.deleteGameRoom(roomId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(gameRoomResultResponse);

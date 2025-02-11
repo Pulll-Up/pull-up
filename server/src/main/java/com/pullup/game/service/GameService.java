@@ -289,8 +289,8 @@ public class GameService {
                         opponent.getScore()
                 );
             }
-
         }
+
         // 2. 방 이탈 아닌 경우 - 정상 종료 or 타임 아웃
         else if (player.getScore() > opponent.getScore()) {
             return GameRoomResultResponse.of(
