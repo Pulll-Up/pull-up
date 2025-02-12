@@ -2,6 +2,7 @@ package com.pullup.game.service;
 
 import com.pullup.common.exception.BadRequestException;
 import com.pullup.common.exception.ErrorMessage;
+import com.pullup.common.exception.InternalServerException;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
 import com.pullup.game.domain.GameRoomStatus;
@@ -313,13 +314,48 @@ public class GameService {
         GameRoom gameRoom = findByRoomId(roomId);
 
         Player winner = gameRoom.getWinner();
+        if (winner != null) {
+            // 1. 방 이탈한 경우
+            if (gameRoom.getIsForfeitGame()) {
+                if (winner.getId() == gameRoom.getPlayer1().getId()) { // 1P가 승자인 경우
+                    return GameRoomResultResponse.of(
+                            false,
+                            true,
+                            PlayerResult.of(
+                                    gameRoom.getPlayer1().getName(),
+                                    gameRoom.getPlayer1().getScore(),
+                                    GameRoomResultStatus.WIN
+                            ),
+                            PlayerResult.of(
+                                    gameRoom.getPlayer2().getName(),
+                                    gameRoom.getPlayer2().getScore(),
+                                    GameRoomResultStatus.LOSE
+                            )
+                    );
+                } else {
+                    return GameRoomResultResponse.of( // 2P가 승자인 경우
+                            false,
+                            true,
+                            PlayerResult.of(
+                                    gameRoom.getPlayer1().getName(),
+                                    gameRoom.getPlayer1().getScore(),
+                                    GameRoomResultStatus.LOSE
+                            ),
+                            PlayerResult.of(
+                                    gameRoom.getPlayer2().getName(),
+                                    gameRoom.getPlayer2().getScore(),
+                                    GameRoomResultStatus.WIN
+                            )
+                    );
+                }
+            }
 
-        // 1. 방 이탈한 경우
-        if (gameRoom.getIsForfeitGame()) {
-            if (winner.getId() == gameRoom.getPlayer1().getId()) { // 1P가 승자인 경우
+            // 2. 방 이탈 아닌 경우 - 정상 종료 or 타임 아웃
+            // 2-1. 1P 승리
+            else if (winner.getId() == gameRoom.getPlayer1().getId()) {
                 return GameRoomResultResponse.of(
                         false,
-                        true,
+                        false,
                         PlayerResult.of(
                                 gameRoom.getPlayer1().getName(),
                                 gameRoom.getPlayer1().getScore(),
@@ -331,10 +367,12 @@ public class GameService {
                                 GameRoomResultStatus.LOSE
                         )
                 );
-            } else {
-                return GameRoomResultResponse.of( // 2P가 승자인 경우
+            }
+            // 2P가 승자인 경우
+            else if (winner.getId() == gameRoom.getPlayer2().getId()) {
+                return GameRoomResultResponse.of(
                         false,
-                        true,
+                        false,
                         PlayerResult.of(
                                 gameRoom.getPlayer1().getName(),
                                 gameRoom.getPlayer1().getScore(),
@@ -348,60 +386,42 @@ public class GameService {
                 );
             }
         }
+        // 무승부인 경우
+        else {
+            if (gameRoom.getIsForfeitGame()) {
+                return GameRoomResultResponse.of(
+                        true,
+                        true,
+                        PlayerResult.of(
+                                gameRoom.getPlayer1().getName(),
+                                gameRoom.getPlayer1().getScore(),
+                                GameRoomResultStatus.DRAW
+                        ),
+                        PlayerResult.of(
+                                gameRoom.getPlayer2().getName(),
+                                gameRoom.getPlayer2().getScore(),
+                                GameRoomResultStatus.DRAW
+                        )
+                );
+            } else {
+                return GameRoomResultResponse.of(
+                        true,
+                        false,
+                        PlayerResult.of(
+                                gameRoom.getPlayer1().getName(),
+                                gameRoom.getPlayer1().getScore(),
+                                GameRoomResultStatus.DRAW
+                        ),
+                        PlayerResult.of(
+                                gameRoom.getPlayer2().getName(),
+                                gameRoom.getPlayer2().getScore(),
+                                GameRoomResultStatus.DRAW
+                        )
+                );
+            }
 
-        // 2. 방 이탈 아닌 경우 - 정상 종료 or 타임 아웃
-        // 2-1. 1P 승리
-        else if (winner.getId() == gameRoom.getPlayer1().getId()) {
-            return GameRoomResultResponse.of(
-                    false,
-                    false,
-                    PlayerResult.of(
-                            gameRoom.getPlayer1().getName(),
-                            gameRoom.getPlayer1().getScore(),
-                            GameRoomResultStatus.WIN
-                    ),
-                    PlayerResult.of(
-                            gameRoom.getPlayer2().getName(),
-                            gameRoom.getPlayer2().getScore(),
-                            GameRoomResultStatus.LOSE
-                    )
-            );
         }
-        // 2P가 승자인 경우
-        else if (winner.getId() == gameRoom.getPlayer2().getId()) {
-            return GameRoomResultResponse.of(
-                    false,
-                    false,
-                    PlayerResult.of(
-                            gameRoom.getPlayer1().getName(),
-                            gameRoom.getPlayer1().getScore(),
-                            GameRoomResultStatus.LOSE
-                    ),
-                    PlayerResult.of(
-                            gameRoom.getPlayer2().getName(),
-                            gameRoom.getPlayer2().getScore(),
-                            GameRoomResultStatus.WIN
-                    )
-            );
-        } else {
-            return GameRoomResultResponse.of(
-                    true,
-                    false,
-                    PlayerResult.of(
-                            gameRoom.getPlayer1().getName(),
-                            gameRoom.getPlayer1().getScore(),
-                            GameRoomResultStatus.DRAW
-                    ),
-                    PlayerResult.of(
-                            gameRoom.getPlayer2().getName(),
-                            gameRoom.getPlayer2().getScore(),
-                            GameRoomResultStatus.DRAW
-                    )
-            );
-        }
-
+        throw new InternalServerException(ErrorMessage.ERR_INTERNAL_SERVER);
     }
-
-
 }
 
