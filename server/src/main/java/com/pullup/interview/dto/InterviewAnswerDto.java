@@ -22,7 +22,7 @@ public record InterviewAnswerDto(
         @Schema(description = "좋아요 여부", example = "true")
         Boolean isLiked,
         @Schema(description = "좋아요 수", example = "10")
-        Integer likeCount,
+        Long likeCount,
         @Schema(description = "댓글 수", example = "5")
         Integer commentCount
 ) {
@@ -34,7 +34,7 @@ public record InterviewAnswerDto(
             String answer,
             LocalDateTime createdAt,
             Boolean isLiked,
-            Integer likeCount,
+            Long likeCount,
             Integer commentCount
     ) {
         return InterviewAnswerDto.builder()
