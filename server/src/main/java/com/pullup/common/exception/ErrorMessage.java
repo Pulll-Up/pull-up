@@ -39,7 +39,10 @@ public enum ErrorMessage {
     ERR_COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다"),
     ERR_GAME_PROBLEM_LACK("해당 과목에 대한 게임 문제 수가 충분하지 않습니다"),
 
-    ERR_PLAYER_NOT_FOUND("플레이어를 찾을 수 없습니다");
+    ERR_PLAYER_NOT_FOUND("플레이어를 찾을 수 없습니다"),
+
+    //* 서버 에러
+    ERR_INTERNAL_SERVER("알 수 없는 서버의 오류입니다");
 
     private final String message;
 }
