@@ -19,6 +19,7 @@ import com.pullup.problem.domain.Subject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -119,6 +120,8 @@ public class MemberService {
                     isSolved ? 1 : 0
             ));
         }
+
+        dailySolvedHistoryDtos.sort(Comparator.comparing(DailySolvedHistoryDto::date));
         return DailySolvedHistoryResponse.of(dailySolvedHistoryDtos);
     }
 
