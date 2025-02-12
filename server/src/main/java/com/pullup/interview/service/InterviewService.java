@@ -24,6 +24,7 @@ import com.pullup.interview.repository.InterviewRepository;
 import com.pullup.member.domain.Member;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -82,15 +83,24 @@ public class InterviewService {
     }
 
     private InterviewResponse createNewDailyQuiz(Long memberId) {
-        Interview interview = getRandomUnansweredInterview(memberId);
+        Interview interview = getRandomInterview(memberId);
         saveDailyQuiz(interview.getQuestion(), memberId, interview.getId());
 
         List<String> keywords = getKeywords(interview.getId());
         return InterviewResponse.of(interview.getId(), interview.getQuestion(), keywords);
     }
 
-    public Interview getRandomUnansweredInterview(Long memberId) {
-        return interviewRepository.findRandomUnansweredInterview(memberId)
+    public Interview getRandomInterview(Long memberId) {
+        return getUnansweredInterviewByRandomAndSubject(memberId)
+                .orElseGet(() -> getUnansweredInterviewByRandom(memberId));
+    }
+
+    public Optional<Interview> getUnansweredInterviewByRandomAndSubject(Long memberId) {
+        return interviewRepository.findUnansweredInterviewByRandomAndSubject(memberId);
+    }
+
+    public Interview getUnansweredInterviewByRandom(Long memberId) {
+        return interviewRepository.findUnansweredInterviewByRandom(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
     }
 
