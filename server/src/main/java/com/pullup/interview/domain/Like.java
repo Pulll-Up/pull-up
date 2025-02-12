@@ -53,4 +53,8 @@ public class Like extends BaseTimeEntity {
     public void toggleLike() {
         this.isLiked = !this.isLiked;
     }
+
+    public Boolean isLiked() {
+        return isLiked;
+    }
 }

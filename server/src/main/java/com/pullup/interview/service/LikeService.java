@@ -27,8 +27,11 @@ public class LikeService {
                 .orElse(false);
     }
 
-    public Integer getLikesCount(Long interviewAnswerId) {
-        return likeRepository.countByInterviewAnswerId(interviewAnswerId);
+    public Long getLikesCount(Long interviewAnswerId) {
+        return likeRepository.findByInterviewAnswerId(interviewAnswerId)
+                .stream()
+                .filter(Like::isLiked)
+                .count();
     }
 
     @Transactional
