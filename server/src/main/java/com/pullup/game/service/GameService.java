@@ -414,7 +414,7 @@ public class GameService {
             } else {
                 return GameRoomResultResponse.of(
                         true,
-                        true,
+                        false,
                         PlayerResult.of(
                                 gameRoom.getPlayer1().getName(),
                                 gameRoom.getPlayer1().getScore(),
