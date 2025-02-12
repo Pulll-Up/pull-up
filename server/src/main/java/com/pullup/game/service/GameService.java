@@ -23,6 +23,7 @@ import com.pullup.game.dto.response.JoinRoomResponse;
 import com.pullup.game.dto.response.PlayerResult;
 import com.pullup.game.dto.response.PlayerType;
 import com.pullup.game.repository.GameRoomRepository;
+import com.pullup.game.repository.WebSocketSessionManager;
 import com.pullup.member.domain.Member;
 import com.pullup.member.service.MemberService;
 import com.pullup.problem.service.ProblemService;
@@ -42,6 +43,7 @@ public class GameService {
     private final GameRoomRepository gameRoomRepository;
     private final ProblemService problemService;
     private final MemberService memberService;
+    private final WebSocketSessionManager sessionManager;
 
 
     public CreateRoomResponse createRoom(Long memberId, CreateRoomWithSubjectsRequest request) {
@@ -110,7 +112,7 @@ public class GameService {
     }
 
     public GameRoomInfoWithProblemsResponse checkTypeAndProcessCardSubmissionOrTimeout(
-            SubmitCardRequest submitCardRequest) {
+            SubmitCardRequest submitCardRequest, String sessionId) {
         // type 체크
         if (submitCardRequest.checkType().equals(CheckType.SUBMIT)) {
             GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = processCardSubmission(
@@ -148,9 +150,15 @@ public class GameService {
                     convertToProblemCardWithoutCardIds(problemCards)
             );
         } else if (submitCardRequest.checkType().equals(CheckType.INIT)) {
+            // 세션 처리
+            String roomId = submitCardRequest.roomId();        // 메시지에서 roomId 가져오기
+            PlayerType playerType = submitCardRequest.playerType(); // 메시지에서 playerType 가져오기
+            sessionManager.addSession(sessionId, roomId, playerType); // 세션 등록
+
             GameRoom gameRoom = findByRoomId(submitCardRequest.roomId());
             List<ProblemCard> problemCards = getProblemsByRoomId(submitCardRequest.roomId());
 
+            log.info("init 처리 되었습니다");
             return GameRoomInfoWithProblemsResponse.of(
                     gameRoom.getRoomId(),
                     GameRoomStatus.PLAYING,
@@ -406,7 +414,7 @@ public class GameService {
             } else {
                 return GameRoomResultResponse.of(
                         true,
-                        false,
+                        true,
                         PlayerResult.of(
                                 gameRoom.getPlayer1().getName(),
                                 gameRoom.getPlayer1().getScore(),
