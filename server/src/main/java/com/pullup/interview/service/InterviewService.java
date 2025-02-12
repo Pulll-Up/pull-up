@@ -101,7 +101,7 @@ public class InterviewService {
 
     public Interview getUnansweredInterviewByRandom(Long memberId) {
         return interviewRepository.findUnansweredInterviewByRandom(memberId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_ENOUGH));
     }
 
     public void saveDailyQuiz(String question, Long memberId, Long interviewId) {
