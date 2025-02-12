@@ -17,13 +17,13 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
             "AND NOT EXISTS (SELECT 1 FROM InterviewAnswer ia WHERE ia.interview.id = i.id AND ia.member.id = :memberId) "
             +
             "ORDER BY FUNCTION('RAND') LIMIT 1")
-    Optional<Interview> findRandomUnansweredInterviewBySubject(@Param("memberId") Long memberId);
+    Optional<Interview> findUnansweredInterviewByRandomAndSubject(@Param("memberId") Long memberId);
 
     @Query("SELECT i FROM Interview i " +
             "WHERE NOT EXISTS (SELECT 1 FROM InterviewAnswer ia WHERE ia.interview.id = i.id AND ia.member.id = :memberId) "
             +
             "ORDER BY FUNCTION('RAND') LIMIT 1")
-    Optional<Interview> findRandomUnansweredInterview(@Param("memberId") Long memberId);
+    Optional<Interview> findUnansweredInterviewByRandom(@Param("memberId") Long memberId);
 
     List<Interview> findByQuestionContaining(@Param("keyword") String keyword);
 }
