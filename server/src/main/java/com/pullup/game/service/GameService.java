@@ -146,6 +146,23 @@ public class GameService {
                             gameRoom.getPlayer2().getScore()),
                     convertToProblemCardWithoutCardIds(problemCards)
             );
+        } else if (submitCardRequest.checkType().equals(CheckType.INIT)) {
+            GameRoom gameRoom = findByRoomId(submitCardRequest.roomId());
+            List<ProblemCard> problemCards = getProblemsByRoomId(submitCardRequest.roomId());
+
+            return GameRoomInfoWithProblemsResponse.of(
+                    gameRoom.getRoomId(),
+                    GameRoomStatus.PLAYING,
+                    PlayerInfo.of(
+                            gameRoom.getPlayer1().getId(),
+                            gameRoom.getPlayer1().getName(),
+                            gameRoom.getPlayer1().getScore()),
+                    PlayerInfo.of(
+                            gameRoom.getPlayer2().getId(),
+                            gameRoom.getPlayer2().getName(),
+                            gameRoom.getPlayer2().getScore()),
+                    convertToProblemCardWithoutCardIds(problemCards)
+            );
         }
         throw new BadRequestException(ErrorMessage.ERR_GAME_CHECK_TYPE_UNSUPPORTED);
 
