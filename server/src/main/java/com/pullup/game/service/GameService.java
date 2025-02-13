@@ -360,7 +360,7 @@ public class GameService {
 
             // 2. 방 이탈 아닌 경우 - 정상 종료 or 타임 아웃
             // 2-1. 1P 승리
-            else if (winner.getId() == gameRoom.getPlayer1().getId()) {
+            else if (!gameRoom.getIsForfeitGame() && winner.getId() == gameRoom.getPlayer1().getId()) {
                 return GameRoomResultResponse.of(
                         false,
                         false,
@@ -377,7 +377,7 @@ public class GameService {
                 );
             }
             // 2P가 승자인 경우
-            else if (winner.getId() == gameRoom.getPlayer2().getId()) {
+            else if (!gameRoom.getIsForfeitGame() && winner.getId() == gameRoom.getPlayer2().getId()) {
                 return GameRoomResultResponse.of(
                         false,
                         false,
