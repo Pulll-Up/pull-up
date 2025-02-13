@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/exam")
 @RequiredArgsConstructor
-public class ExamController {
+public class ExamController implements ExamApi {
 
     private final ExamService examService;
 
