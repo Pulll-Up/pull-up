@@ -183,14 +183,15 @@ public class GameService {
             throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_SUBMIT_WRONG);
         }
         // 정답
-
         List<ProblemCard> selectedCards = new ArrayList<>();
         for (ProblemCard problemCard : problemCards) {
             if (problemCard.getCardId() == problemId1) {
                 selectedCards.add(problemCard);
             }
-            throw new NotFoundException(ErrorMessage.ERR_GAME_CARD_NOT_FOUND);
         }
+
+        if (selectedCards.isEmpty()) {
+            throw new NotFoundException(ErrorMessage.ERR_GAME_CARD_NOT_FOUND);
 
         // 이미 처리된 카드면, 무시하기
         for (ProblemCard problemCard : selectedCards) {

@@ -161,10 +161,16 @@ public class ProblemService {
 
             for (Problem problem : problems) {
                 if (selectedProblemIds.add(problem.getId())) { // 중복되지 않는 경우에만 추가
-                    finalProblems.add(ProblemCard.createNewProblemCard(problem.getId(), CardType.QUESTION,
-                            problem.getQuestion()));
                     finalProblems.add(
-                            ProblemCard.createNewProblemCard(problem.getId(), CardType.ANSWER, problem.getAnswer()));
+                            ProblemCard.createNewProblemCard(
+                                    problem.getId(),
+                                    CardType.QUESTION,
+                                    problem.getQuestion()));
+                    finalProblems.add(
+                            ProblemCard.createNewProblemCard(
+                                    problem.getId(),
+                                    CardType.ANSWER,
+                                    problem.getAnswer()));
                 }
             }
         }
