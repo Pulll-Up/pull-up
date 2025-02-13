@@ -38,7 +38,7 @@ public class DailyScheduler {
         interviewService.saveAllDailyQuiz(dailyQuizzes);
     }
 
-    @Scheduled(cron = "0 20 13 * * *")
+    @Scheduled(cron = "0 0 15 * * *")
     public void sendMessage(){
         fcmService.sendNotifications();
     }

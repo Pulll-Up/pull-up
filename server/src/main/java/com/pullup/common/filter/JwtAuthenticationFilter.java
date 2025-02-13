@@ -67,6 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             if (isReissueRequest(request)) {
                 handleRefreshToken(request, response);
+                return;
             } else if (isLogoutRequest(request)) {
                 handleLogout(request, response);
                 return;
