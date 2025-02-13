@@ -93,10 +93,12 @@ public class MemberService {
         Member member = findMemberById(memberId);
         String token = deviceTokenRequest.deviceToken();
 
-        if (!deviceTokenRepository.existsDeviceTokenByToken(token)) {
-            DeviceToken deviceToken = DeviceToken.createDeviceToken(token, member);
-            deviceTokenRepository.save(deviceToken);
-        }
+        deviceTokenRepository.countDeviceTokenByToken(token)
+                .filter(count -> count == 0)
+                .ifPresent(count -> {
+                    DeviceToken deviceToken = DeviceToken.createDeviceToken(token, member);
+                    deviceTokenRepository.save(deviceToken);
+                });
     }
 
     public List<Member> findAllMembers() {
