@@ -7,7 +7,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface ExamProblemRepository extends CrudRepository<ExamProblem, Long> {
-    List<ExamProblem> findAllByExamId(Long examId);
+    @Query("SELECT ep FROM ExamProblem ep " +
+            "JOIN FETCH ep.exam e " +
+            "JOIN FETCH ep.problem p " +
+            "WHERE e.id = :examId")
+    List<ExamProblem> findAllByExamId(@Param("examId") Long examId);
 
     @Query("SELECT ep FROM ExamProblem ep JOIN FETCH ep.problem WHERE ep.exam.id = :examId")
     List<ExamProblem> findByExamId(Long examId);

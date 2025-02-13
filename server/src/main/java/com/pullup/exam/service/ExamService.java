@@ -7,7 +7,6 @@ import com.pullup.exam.domain.DifficultyLevel;
 import com.pullup.exam.domain.Exam;
 import com.pullup.exam.domain.ExamProblem;
 import com.pullup.exam.dto.ExamDetailsDto;
-import com.pullup.exam.dto.ExamDetailsWithoutOptionsDto;
 import com.pullup.exam.dto.ExamResultDetailDto;
 import com.pullup.exam.dto.ExamScoreDto;
 import com.pullup.exam.dto.ExamStrengthDto;
@@ -37,6 +36,7 @@ import com.pullup.problem.repository.BookmarkRepository;
 import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -63,31 +63,29 @@ public class ExamService {
     private final MemberExamStatisticRepository examStatisticRepository;
     private final MemberExamStatisticRepository memberExamStatisticRepository;
 
-    public GetExamDetailsResponse getExamDetails(Long id) {
-        List<ExamDetailsWithoutOptionsDto> examDetailsWithoutOptionsDtos = examRepository.findExamDetailsWithoutOptionsById(
-                id);
+    public GetExamDetailsResponse getExamDetails(Long examId) {
+        Exam exam = findExamById(examId);
 
-        if (examDetailsWithoutOptionsDtos == null || examDetailsWithoutOptionsDtos.isEmpty()) {
-            throw new NotFoundException(ErrorMessage.ERR_EXAM_NOT_FOUND);
-        }
+        List<ExamProblem> examProblems = findAllExamProblemByExamId(examId);
+        List<Long> problemIds = examProblems.stream()
+                .map(ep -> ep.getProblem().getId())
+                .toList();
 
-        List<ExamDetailsDto> examDetailsDtos = new ArrayList<>();
-        for (ExamDetailsWithoutOptionsDto dto : examDetailsWithoutOptionsDtos) {
-            List<ProblemOption> problemOptions = problemOptionRepository.findAllByProblemId(dto.problemId());
-            List<String> contents = problemOptions.stream()
-                    .map(ProblemOption::getContent)
-                    .collect(Collectors.toList());
+        Map<Long, Boolean> bookmarkStatusMap = getBookmarkStatusMap(problemIds, exam.getMember().getId());
+        Map<Long, List<String>> problemOptionsMap = getProblemOptionsMap(problemIds);
 
-            examDetailsDtos.add(ExamDetailsDto.of(
-                    dto.problemId(),
-                    dto.problem(),
-                    contents,
-                    dto.subject().name(),
-                    dto.problemType()));
-        }
+        List<ExamDetailsDto> examDetailsDtos = examProblems.stream()
+                .map(examProblem -> ExamDetailsDto.of(
+                        examProblem.getProblem().getId(),
+                        examProblem.getProblem().getQuestion(),
+                        problemOptionsMap.getOrDefault(examProblem.getProblem().getId(), Collections.emptyList()),
+                        examProblem.getProblem().getSubject().name(),
+                        examProblem.getProblem().getProblemType(),
+                        bookmarkStatusMap.getOrDefault(examProblem.getProblem().getId(), false)
+                ))
+                .toList();
 
-        return new GetExamDetailsResponse(examDetailsDtos);
-
+        return GetExamDetailsResponse.of(examDetailsDtos);
     }
 
     @Transactional
@@ -182,7 +180,7 @@ public class ExamService {
         // 시험 조회
         Exam exam = findExamById(examId);
         // 시험 문제 조회
-        List<ExamProblem> examProblems = examProblemRepository.findAllByExamId(examId);
+        List<ExamProblem> examProblems = findAllExamProblemByExamId(examId);
         List<Long> problemIds = examProblems.stream()
                 .map(ep -> ep.getProblem().getId())
                 .toList();
@@ -368,5 +366,9 @@ public class ExamService {
                 .toList();
 
         return GetAllExamResponse.of(examResponses);
+    }
+
+    private List<ExamProblem> findAllExamProblemByExamId(Long examId) {
+        return examProblemRepository.findAllByExamId(examId);
     }
 }

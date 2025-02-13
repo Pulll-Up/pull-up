@@ -10,14 +10,16 @@ public record ExamDetailsDto(
         String problem,
         List<String> options,
         String subject,
-        ProblemType problemType
+        ProblemType problemType,
+        Boolean bookmarkStatus
 ) {
     public static ExamDetailsDto of(
             Long problemId,
             String problem,
             List<String> options,
             String subject,
-            ProblemType problemType
+            ProblemType problemType,
+            Boolean bookmarkStatus
     ) {
         return ExamDetailsDto.builder()
                 .problemId(problemId)
@@ -25,6 +27,7 @@ public record ExamDetailsDto(
                 .options(options)
                 .subject(subject)
                 .problemType(problemType)
+                .bookmarkStatus(bookmarkStatus)
                 .build();
     }
 
