@@ -253,7 +253,6 @@ public class GameService {
     }
 
     private boolean isGameEnd(int player1Score, int player2Score, String roomId) {
-        log.info("문제 개수: {}", getProblemsByRoomId(roomId).size());
         if (player1Score + player2Score == (getProblemsByRoomId(roomId).size()) / 2) {
             return true;
         } else {
