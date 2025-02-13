@@ -7,9 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface DeviceTokenRepository extends JpaRepository<DeviceToken, Long> {
 
-    @Query("SELECT COUNT(d) > 0 FROM DeviceToken d WHERE d.token = :token")
-    Boolean existsDeviceTokenByToken(String token);
-
+    @Query("SELECT COUNT(d) FROM DeviceToken d WHERE d.token = :token")
+    Optional<Long> countDeviceTokenByToken(String token);
 
     Optional<DeviceToken> findByToken(String token);
 }
