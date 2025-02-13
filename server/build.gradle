@@ -65,6 +65,10 @@ dependencies {
 
     //* Firebase
     implementation 'com.google.firebase:firebase-admin:8.0.0'
+
+    //* Retry
+    implementation("org.springframework.retry:spring-retry")
+
 }
 
 tasks.named('test') {
