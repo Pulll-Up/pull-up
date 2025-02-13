@@ -25,6 +25,7 @@ public class DailyScheduler {
     @Scheduled(cron = "0 0 0 * * *")
     public void dailyScheduler() {
         List<Member> members = memberService.findAllMembers();
+
         dailyQuizRepository.deleteAllInBatch();
 
         List<DailyQuiz> dailyQuizzes = new ArrayList<>();
