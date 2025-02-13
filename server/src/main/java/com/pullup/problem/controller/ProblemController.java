@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/problem")
 @RequiredArgsConstructor
-public class ProblemController {
+public class ProblemController implements ProblemApi {
     private final ProblemService problemService;
 
     @PostMapping("/{problemId}")
