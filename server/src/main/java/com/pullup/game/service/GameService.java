@@ -113,14 +113,18 @@ public class GameService {
 
     public GameRoomInfoWithProblemsResponse checkTypeAndProcessCardSubmissionOrTimeout(
             SubmitCardRequest submitCardRequest, String sessionId) {
-        // type 체크
-        synchronized (getLockForRoom(submitCardRequest.roomId())) {
-            return processRequestSafely(submitCardRequest, sessionId);
-        }
-    }
+        GameRoom gameRoom = findByRoomId(submitCardRequest.roomId());
 
-    private Object getLockForRoom(String roomId) {
-        return roomId.intern(); // roomId를 기반으로 동기화 객체 생성
+        // 이미 처리 중이면 무시
+        if (!gameRoom.tryProcessing()) {
+            throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_ALREADY_SUBMITTED);
+        }
+
+        try {
+            return processRequestSafely(submitCardRequest, sessionId);
+        } finally {
+            gameRoom.resetProcessing(); // 처리 완료 후 다시 가능하도록 설정
+        }
     }
 
     private GameRoomInfoWithProblemsResponse processRequestSafely(SubmitCardRequest submitCardRequest,
