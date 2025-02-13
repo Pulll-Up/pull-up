@@ -42,6 +42,9 @@ public enum ErrorMessage {
 
     ERR_PLAYER_NOT_FOUND("플레이어를 찾을 수 없습니다"),
 
+    //* FCM 관련 Exception
+    ERR_FCM_FAILED_TO_SEND("FCM 메시지 전송에 실패하였습니다"),
+
     // TODO : 명확한 네이밍으로 수정 필요
     //* Server 내부 Exception
     ERR_INTERNAL_SERVER("알 수 없는 서버의 오류입니다");

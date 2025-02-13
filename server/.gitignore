@@ -42,3 +42,5 @@ out/
 env
 
 redis-data
+
+src/main/resources/pullup-firebase-admin-sdk.json
