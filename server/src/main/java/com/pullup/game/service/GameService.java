@@ -192,6 +192,7 @@ public class GameService {
 
         if (selectedCards.isEmpty()) {
             throw new NotFoundException(ErrorMessage.ERR_GAME_CARD_NOT_FOUND);
+        }
 
         // 이미 처리된 카드면, 무시하기
         for (ProblemCard problemCard : selectedCards) {
