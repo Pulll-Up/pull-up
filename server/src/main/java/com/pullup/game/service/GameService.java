@@ -114,17 +114,20 @@ public class GameService {
     public GameRoomInfoWithProblemsResponse checkTypeAndProcessCardSubmissionOrTimeout(
             SubmitCardRequest submitCardRequest, String sessionId) {
         // type 체크
+        synchronized (getLockForRoom(submitCardRequest.roomId())) {
+            return processRequestSafely(submitCardRequest, sessionId);
+        }
+    }
+
+    private Object getLockForRoom(String roomId) {
+        return roomId.intern(); // roomId를 기반으로 동기화 객체 생성
+    }
+
+    private GameRoomInfoWithProblemsResponse processRequestSafely(SubmitCardRequest submitCardRequest,
+                                                                  String sessionId) {
         if (submitCardRequest.checkType().equals(CheckType.SUBMIT)) {
-            GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = processCardSubmission(
-                    submitCardRequest);
-
-            return gameRoomInfoWithProblemsResponse;
-
-
+            return processCardSubmission(submitCardRequest);
         } else if (submitCardRequest.checkType().equals(CheckType.TIME_OVER)) {
-            // 1. 방 상태 바꾸기
-            // - finished로 바꾸기
-            // - 이긴 사람 처리
             GameRoom gameRoom = findByRoomId(submitCardRequest.roomId());
             gameRoom.updateStatusToFinished();
             if (gameRoom.getPlayer1().getScore() > gameRoom.getPlayer2().getScore()) {
@@ -133,19 +136,14 @@ public class GameService {
                 gameRoom.updateWinner(gameRoom.getPlayer2());
             }
 
-            // 2. GameRoomInfoWithProblemsResponse 만들기
             List<ProblemCard> problemCards = getProblemsByRoomId(submitCardRequest.roomId());
 
             return GameRoomInfoWithProblemsResponse.of(
                     gameRoom.getRoomId(),
                     GameRoomStatus.FINISHED,
-                    PlayerInfo.of(
-                            gameRoom.getPlayer1().getId(),
-                            gameRoom.getPlayer1().getName(),
+                    PlayerInfo.of(gameRoom.getPlayer1().getId(), gameRoom.getPlayer1().getName(),
                             gameRoom.getPlayer1().getScore()),
-                    PlayerInfo.of(
-                            gameRoom.getPlayer2().getId(),
-                            gameRoom.getPlayer2().getName(),
+                    PlayerInfo.of(gameRoom.getPlayer2().getId(), gameRoom.getPlayer2().getName(),
                             gameRoom.getPlayer2().getScore()),
                     convertToProblemCardWithoutCardIds(problemCards)
             );
@@ -174,8 +172,8 @@ public class GameService {
             );
         }
         throw new BadRequestException(ErrorMessage.ERR_GAME_CHECK_TYPE_UNSUPPORTED);
-
     }
+
 
     private GameRoomInfoWithProblemsResponse processCardSubmission(SubmitCardRequest submitCardRequest) {
 
@@ -303,16 +301,6 @@ public class GameService {
                 .map(ProblemCardWithoutCardId::from)
                 .collect(Collectors.toList());
     }
-
-//    // 섞은 버전
-//    private List<ProblemCardWithoutCardId> convertToProblemCardWithoutCardIds(List<ProblemCard> problemCards) {
-//        return problemCards.stream()
-//                .map(ProblemCardWithoutCardId::from)
-//                .collect(Collectors.collectingAndThen(Collectors.toList(), list -> {
-//                    Collections.shuffle(list); // 변환 후 리스트를 무작위로 섞음
-//                    return list;
-//                }));
-//    }
 
     public void deleteGameRoom(String roomId) {
         gameRoomRepository.deleteGameRoomAndProblems(roomId);
