@@ -6,6 +6,7 @@ import com.pullup.game.dto.GameRoomResultStatus;
 import com.pullup.game.dto.response.PlayerType;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -22,6 +23,8 @@ public class GameRoom {
     private GameRoomType gameRoomType;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+
+    private final AtomicBoolean isProcessing = new AtomicBoolean(false);
 
 
     public static GameRoom createGameRoomByInvitationWithHost(Long id, String name) {
@@ -93,6 +96,14 @@ public class GameRoom {
         } else {
             throw new NotFoundException(ErrorMessage.ERR_PLAYER_NOT_FOUND);
         }
+    }
+
+    public boolean tryProcessing() {
+        return isProcessing.compareAndSet(false, true);
+    }
+
+    public void resetProcessing() {
+        isProcessing.set(false);
     }
 
 }
