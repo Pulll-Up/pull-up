@@ -1,7 +1,7 @@
 package com.pullup.member.repository;
 
 import com.pullup.member.domain.DeviceToken;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DeviceTokenRepository extends CrudRepository<DeviceToken, Long> {
+public interface DeviceTokenRepository extends JpaRepository<DeviceToken, Long> {
 }
