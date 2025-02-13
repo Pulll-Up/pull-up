@@ -80,7 +80,7 @@ public interface ExamApi {
                     )
             }
     )
-    public ResponseEntity<GetAllExamResponse> getAllExam();
+    public ResponseEntity<GetAllExamResponse> getAllExamOrderByCreatedAtDesc();
 
     @Operation(
             summary = "모의고사 제출",
