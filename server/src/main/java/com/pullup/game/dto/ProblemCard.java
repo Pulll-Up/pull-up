@@ -1,6 +1,5 @@
 package com.pullup.game.dto;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,7 +10,6 @@ public class ProblemCard {
     private CardType cardType;
     private Boolean disabled;
     private String content;
-    private final AtomicBoolean isProcessing = new AtomicBoolean(false);
 
     @Builder
     private ProblemCard(Long cardId, CardType cardType, Boolean disabled, String content) {
@@ -28,13 +26,6 @@ public class ProblemCard {
                 .disabled(false) // 기본값 false
                 .content(content)
                 .build();
-    }
-
-    public boolean tryProcessing() {
-        if (disabled) {
-            return false;
-        }
-        return isProcessing.compareAndSet(false, true);
     }
 
 

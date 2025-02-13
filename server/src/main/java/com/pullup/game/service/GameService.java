@@ -116,7 +116,6 @@ public class GameService {
         return processRequestSafely(submitCardRequest, sessionId);
     }
 
-    // TODO : refactor 필
     private GameRoomInfoWithProblemsResponse processRequestSafely(SubmitCardRequest submitCardRequest,
                                                                   String sessionId) {
         if (submitCardRequest.checkType().equals(CheckType.SUBMIT)) {
@@ -183,19 +182,28 @@ public class GameService {
         if (problemId1 != problemId2) {
             throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_SUBMIT_WRONG);
         }
-
         // 정답
-        ProblemCard selectedCard = problemCards.stream()
-                .filter(card -> card.getCardId().equals(problemId1))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_GAME_CARD_NOT_FOUND));
 
-        // 이미 정답 처리된 카드면 예외 발생
-        if (!selectedCard.tryProcessing()) {
-            throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_ALREADY_SUBMITTED);
+        List<ProblemCard> selectedCards = new ArrayList<>();
+        for (ProblemCard problemCard : problemCards) {
+            if (problemCard.getCardId() == problemId1) {
+                selectedCards.add(problemCard);
+            }
+            throw new NotFoundException(ErrorMessage.ERR_GAME_CARD_NOT_FOUND);
         }
 
-        selectedCard.disableCard();
+        // 이미 처리된 카드면, 무시하기
+        for (ProblemCard problemCard : selectedCards) {
+            if (problemCard.getDisabled()) {
+                throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_ALREADY_SUBMITTED);
+            }
+        }
+
+        // 처리되지 않았다면, 처리하기
+        for (ProblemCard problemCard : selectedCards) {
+            problemCard.disableCard();
+        }
+
         gameRoomRepository.saveProblems(gameRoom.getRoomId(), problemCards);
 
         // 플레이어 점수 업데이트
