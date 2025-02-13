@@ -91,9 +91,12 @@ public class MemberService {
     @Transactional
     public void registerDeviceToken(Long memberId, DeviceTokenRequest deviceTokenRequest) {
         Member member = findMemberById(memberId);
-        DeviceToken deviceToken = DeviceToken.createDeviceToken(deviceTokenRequest.deviceToken(), member);
+        String token = deviceTokenRequest.deviceToken();
 
-        deviceTokenRepository.save(deviceToken);
+        if (!deviceTokenRepository.existsDeviceTokenByToken(token)) {
+            DeviceToken deviceToken = DeviceToken.createDeviceToken(token, member);
+            deviceTokenRepository.save(deviceToken);
+        }
     }
 
     public List<Member> findAllMembers() {
