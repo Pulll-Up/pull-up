@@ -16,17 +16,17 @@ public class AnswerUtil {
         // 1. 양 끝 공백 제거, 띄어쓰기 제거
         answer = answer.trim().replaceAll("\\s+", "");
 
-        // 2. 영어라면 소문자로 변환
+        // 2. 영어 소문자로 변환
         if (answer.matches(".*[a-zA-Z].*")) {
             return answer.toLowerCase();
         }
 
-        // 3. 숫자는 변환 없이 그대로 반환
+        // 3. 숫자 변환 없이 그대로 반환
         if (answer.matches("\\d+")) {
             return answer;
         }
 
-        // 4. 한글도 그대로 반환 (초성 비교 X, 변환 X)
+        // 4. 한글 그대로 반환
         return answer;
     }
 
