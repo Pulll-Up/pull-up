@@ -1,5 +1,6 @@
 package com.pullup.problem.dto.response;
 
+import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
 import com.pullup.problem.domain.Subject;
 import java.util.List;
@@ -12,10 +13,11 @@ public record GetProblemResponse(
         String answer,
         String explanation,
         Integer correctRate,
-        Subject subject
+        Subject subject,
+        Boolean bookmarkStatus
 ) {
 
-    public static GetProblemResponse of(Problem problem, List<String> options) {
+    public static GetProblemResponse of(Problem problem, List<String> options, Bookmark bookmark) {
         return GetProblemResponse.builder()
                 .question(problem.getQuestion())
                 .options(options)
@@ -23,6 +25,7 @@ public record GetProblemResponse(
                 .explanation(problem.getExplanation())
                 .correctRate(problem.getCorrectRate())
                 .subject(problem.getSubject())
+                .bookmarkStatus(bookmark.getIsBookmarked())
                 .build();
     }
 }
