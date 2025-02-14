@@ -17,8 +17,6 @@ import com.pullup.member.repository.DeviceTokenRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +29,6 @@ public class FcmService {
     private final FirebaseMessaging firebaseMessaging;
     private final DeviceTokenRepository deviceTokenRepository;
 
-    @Retryable(
-            retryFor = {FirebaseMessagingException.class},
-            backoff = @Backoff(delay = 1000, multiplier = 2)
-    )
     public void sendNotifications() {
         List<DeviceToken> deviceTokens = deviceTokenRepository.findAll();
 
