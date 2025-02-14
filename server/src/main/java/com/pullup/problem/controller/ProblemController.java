@@ -1,10 +1,11 @@
 package com.pullup.problem.controller;
 
 import com.pullup.common.util.SecurityUtil;
-import com.pullup.problem.dto.GetAllWrongProblemsResponse;
-import com.pullup.problem.dto.GetBookmarkedProblemsResponse;
-import com.pullup.problem.dto.GetProblemResponse;
-import com.pullup.problem.dto.GetRecentWrongProblemsResponse;
+import com.pullup.problem.dto.response.GetAllWrongProblemsResponse;
+import com.pullup.problem.dto.response.GetBookmarkedProblemsResponse;
+import com.pullup.problem.dto.response.GetProblemResponse;
+import com.pullup.problem.dto.response.GetRecentWrongProblemsResponse;
+import com.pullup.problem.dto.response.SearchWrongProblemsResponse;
 import com.pullup.problem.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -69,4 +71,17 @@ public class ProblemController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getAllWrongProblemsResponse);
     }
+
+    @GetMapping("/wrong")
+    public ResponseEntity<SearchWrongProblemsResponse> searchWrongProblemsByTitle(
+            @RequestParam(required = false) String title) {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
+        SearchWrongProblemsResponse searchWrongProblemsResponse = problemService.searchWrongProblemsByTitle(memberId,
+                title);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(searchWrongProblemsResponse);
+    }
+
 }

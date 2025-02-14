@@ -1,5 +1,6 @@
-package com.pullup.problem.dto;
+package com.pullup.problem.dto.response;
 
+import com.pullup.problem.dto.BookmarkedProblemDto;
 import java.util.List;
 import lombok.Builder;
 

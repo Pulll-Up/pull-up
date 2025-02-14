@@ -25,4 +25,5 @@ public interface ExamRepository extends CrudRepository<Exam, Long> {
 
     List<Exam> findAllByMemberIdOrderByCreatedAtDesc(@Param("memberId") Long memberId);
 
+    
 }
