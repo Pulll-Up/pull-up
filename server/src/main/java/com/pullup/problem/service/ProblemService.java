@@ -2,6 +2,7 @@ package com.pullup.problem.service;
 
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
+import com.pullup.exam.domain.ExamProblem;
 import com.pullup.exam.repository.ExamProblemRepository;
 import com.pullup.game.dto.CardType;
 import com.pullup.game.dto.ProblemCard;
@@ -13,12 +14,13 @@ import com.pullup.problem.domain.Bookmark;
 import com.pullup.problem.domain.Problem;
 import com.pullup.problem.domain.Subject;
 import com.pullup.problem.dto.BookmarkedProblemDto;
-import com.pullup.problem.dto.GetAllWrongProblemsResponse;
-import com.pullup.problem.dto.GetBookmarkedProblemsResponse;
-import com.pullup.problem.dto.GetProblemResponse;
-import com.pullup.problem.dto.GetRecentWrongProblemsResponse;
 import com.pullup.problem.dto.RecentWrongQuestionDto;
 import com.pullup.problem.dto.WrongProblemDto;
+import com.pullup.problem.dto.response.GetAllWrongProblemsResponse;
+import com.pullup.problem.dto.response.GetBookmarkedProblemsResponse;
+import com.pullup.problem.dto.response.GetProblemResponse;
+import com.pullup.problem.dto.response.GetRecentWrongProblemsResponse;
+import com.pullup.problem.dto.response.SearchWrongProblemsResponse;
 import com.pullup.problem.repository.BookmarkRepository;
 import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
@@ -27,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -258,5 +261,25 @@ public class ProblemService {
         return selectedSubjects;
     }
 
+    public SearchWrongProblemsResponse searchWrongProblemsByTitle(Long memberId, String title) {
+        List<ExamProblem> examProblems = examProblemRepository.searchByMemberIdAndAnswerStatusFalseOrderByCreatedAtDesc(
+                memberId, title);
 
+        // 문제 ID 기준으로 중복 제거
+        Map<Long, WrongProblemDto> uniqueProblemsMap = examProblems.stream()
+                .collect(Collectors.toMap(
+                        ep -> ep.getProblem().getId(),
+                        ep -> WrongProblemDto.of(
+                                ep.getProblem().getId(),
+                                ep.getProblem().getQuestion(),
+                                ep.getProblem().getSubject(),
+                                ep.getCreatedAt()
+                        ),
+                        (existing, replacement) -> existing
+                ));
+
+        List<WrongProblemDto> uniqueWrongProblems = List.copyOf(uniqueProblemsMap.values());
+
+        return SearchWrongProblemsResponse.of(uniqueWrongProblems);
+    }
 }

@@ -1,4 +1,4 @@
-package com.pullup.problem.dto;
+package com.pullup.problem.dto.response;
 
 import com.pullup.problem.domain.Problem;
 import com.pullup.problem.domain.Subject;
