@@ -1,6 +1,6 @@
-package com.pullup.member.repository;
+package com.pullup.external.fcm.repository;
 
-import com.pullup.member.domain.DeviceToken;
+import com.pullup.external.fcm.domain.DeviceToken;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

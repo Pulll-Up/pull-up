@@ -1,6 +1,6 @@
 package com.pullup.scheduler;
 
-import com.pullup.external.fcm.FcmService;
+import com.pullup.external.fcm.service.FcmService;
 import com.pullup.interview.domain.DailyQuiz;
 import com.pullup.interview.domain.Interview;
 import com.pullup.interview.repository.DailyQuizRepository;
@@ -38,7 +38,7 @@ public class DailyScheduler {
         interviewService.saveAllDailyQuiz(dailyQuizzes);
     }
 
-    @Scheduled(cron = "0 46 16 * * *")
+    @Scheduled(cron = "0 30 17 * * *")
     public void sendMessage(){
         fcmService.sendNotifications();
     }

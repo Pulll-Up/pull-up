@@ -2,7 +2,8 @@ package com.pullup.member.service;
 
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
-import com.pullup.member.domain.DeviceToken;
+import com.pullup.external.fcm.domain.DeviceToken;
+import com.pullup.external.fcm.repository.DeviceTokenRepository;
 import com.pullup.member.domain.InterestSubject;
 import com.pullup.member.domain.Member;
 import com.pullup.member.domain.MemberExamStatistic;
@@ -11,7 +12,6 @@ import com.pullup.member.dto.request.DeviceTokenRequest;
 import com.pullup.member.dto.request.InterestSubjectsRequest;
 import com.pullup.member.dto.response.DailySolvedHistoryResponse;
 import com.pullup.member.dto.response.MemberProfileResponse;
-import com.pullup.member.repository.DeviceTokenRepository;
 import com.pullup.member.repository.InterestSubjectRepository;
 import com.pullup.member.repository.MemberExamStatisticRepository;
 import com.pullup.member.repository.MemberRepository;
