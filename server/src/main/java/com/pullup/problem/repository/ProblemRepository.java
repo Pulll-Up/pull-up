@@ -49,6 +49,4 @@ public interface ProblemRepository extends CrudRepository<Problem, Long> {
     @Query(value = "SELECT p FROM Problem p ORDER BY RAND() LIMIT :limit")
     List<Problem> findRandomProblems(@Param("limit") int limit);
 
-    @Query("SELECT p FROM Problem p WHERE LOWER(p.question) LIKE LOWER(CONCAT('%', :title, '%'))")
-    List<Problem> searchByQuestionKeyword(@Param("title") String title);
 }
