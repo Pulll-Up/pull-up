@@ -46,7 +46,9 @@ public class ProblemController {
 
     @GetMapping("/{problemId}")
     public ResponseEntity<GetProblemResponse> getProblem(@PathVariable("problemId") Long problemId) {
-        GetProblemResponse getProblemResponse = problemService.getProblem(problemId);
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
+        GetProblemResponse getProblemResponse = problemService.getProblem(problemId, memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getProblemResponse);

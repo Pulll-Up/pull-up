@@ -91,16 +91,19 @@ public class ProblemService {
         return GetBookmarkedProblemsResponse.of(bookmarkedProblemDtos);
     }
 
-    public GetProblemResponse getProblem(Long problemId) {
+    public GetProblemResponse getProblem(Long problemId, Long memberId) {
         Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_PROBLEM_NOT_FOUND));
+
+        Bookmark bookmark = bookmarkRepository.findByProblemIdAndMemberId(problemId, memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_BOOKMARK_NOT_FOUND));
 
         List<String> options = problemOptionRepository.findAllByProblemId(problemId)
                 .stream()
                 .map(problemOption -> problemOption.getContent())
                 .collect(Collectors.toList());
 
-        return GetProblemResponse.of(problem, options);
+        return GetProblemResponse.of(problem, options, bookmark);
     }
 
     public GetRecentWrongProblemsResponse getRecentWrongProblems(Long memberId) {

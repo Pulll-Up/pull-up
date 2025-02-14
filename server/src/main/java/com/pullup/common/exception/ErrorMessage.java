@@ -16,6 +16,9 @@ public enum ErrorMessage {
     ERR_MEMBER_EXAM_STATISTIC_NOT_FOUND("회원 문제 통계를 찾을 수 없습니다"),
     ERR_EXAM_PROBLEM_NOT_FOUND("해당 시험에 대한 해당 문제가 존재하지 않습니다"),
 
+    //* Bookmark 관련 Exception
+    ERR_BOOKMARK_NOT_FOUND("북마크 결과를 찾을 수 없습니다"),
+
     //* Interview 관련 Exception
     ERR_INTERVIEW_NOT_FOUND("면접 질문을 찾을 수 없습니다."),
     ERR_INTERVIEW_ANSWER_NOT_FOUND("면접 답변을 찾을 수 없습니다."),
