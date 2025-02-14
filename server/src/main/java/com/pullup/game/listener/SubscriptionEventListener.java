@@ -25,6 +25,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 @Slf4j
 @Component
@@ -114,6 +115,40 @@ public class SubscriptionEventListener {
                         gameRoomInfoWithProblemsResponse);
             }
         }
+
+    }
+
+    @EventListener
+    public void handleUnsubscribe(SessionUnsubscribeEvent event) {
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String destination = headerAccessor.getDestination(); // 구독 해제된 Topic
+        String sessionId = headerAccessor.getSessionId(); // 세션 ID
+
+        if (destination == null) {
+            return;
+        }
+
+        log.info("구독 해제 이벤트 감지 - 세션 ID: {}, 구독 해제된 토픽: {}", sessionId, destination);
+
+        // 특정 게임 방의 상태를 확인하는 토픽인지 검사
+        if (destination.startsWith("/topic/game/") && destination.endsWith("/status")) {
+            String roomId = extractRoomId(destination);
+
+            // 방의 상태가 `WAITING`이면 삭제
+            GameRoomStatus gameRoomStatus = gameService.getGameRoomStatus(roomId);
+            if (gameRoomStatus == GameRoomStatus.WAITING) {
+                log.info("구독 해제 후 방 상태가 WAITING이므로 방 삭제 - Room ID: {}", roomId);
+                gameService.deleteGameRoom(roomId);
+            } else {
+                log.info("구독 해제되었지만 방 상태가 WAITING이 아님 - Room ID: {}, Status: {}", roomId, gameRoomStatus);
+            }
+        }
+    }
+
+    // 토픽에서 Room ID 추출
+    private String extractRoomId(String topic) {
+        String[] parts = topic.split("/");
+        return parts[parts.length - 2]; // "/topic/game/{roomId}/status" → roomId 추출
     }
 
 
