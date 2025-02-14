@@ -20,6 +20,7 @@ import com.pullup.problem.dto.response.GetAllWrongProblemsResponse;
 import com.pullup.problem.dto.response.GetBookmarkedProblemsResponse;
 import com.pullup.problem.dto.response.GetProblemResponse;
 import com.pullup.problem.dto.response.GetRecentWrongProblemsResponse;
+import com.pullup.problem.dto.response.SearchBookmarkedProblemsResponse;
 import com.pullup.problem.dto.response.SearchWrongProblemsResponse;
 import com.pullup.problem.repository.BookmarkRepository;
 import com.pullup.problem.repository.ProblemOptionRepository;
@@ -264,7 +265,6 @@ public class ProblemService {
     public SearchWrongProblemsResponse searchWrongProblemsByTitle(Long memberId, String title) {
         List<ExamProblem> examProblems = examProblemRepository.searchByMemberIdAndAnswerStatusFalseOrderByCreatedAtDesc(
                 memberId, title);
-
         // 문제 ID 기준으로 중복 제거
         Map<Long, WrongProblemDto> uniqueProblemsMap = examProblems.stream()
                 .collect(Collectors.toMap(
@@ -282,4 +282,17 @@ public class ProblemService {
 
         return SearchWrongProblemsResponse.of(uniqueWrongProblems);
     }
+
+    public SearchBookmarkedProblemsResponse searchBookmarkedProblemsByTitle(Long memberId, String title) {
+        List<Bookmark> bookmarks = bookmarkRepository.searchBookmarkedProblemsByMemberIdOrderByModifiedAtDesc(memberId,
+                title);
+
+        List<BookmarkedProblemDto> bookmarkedProblemDtos = bookmarks.stream()
+                .map(BookmarkedProblemDto::of)
+                .collect(Collectors.toList());
+
+        return SearchBookmarkedProblemsResponse.of(bookmarkedProblemDtos);
+
+    }
+
 }

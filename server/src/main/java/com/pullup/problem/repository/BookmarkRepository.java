@@ -23,4 +23,13 @@ public interface BookmarkRepository extends CrudRepository<Bookmark, Long> {
             + "AND b.isBookmarked = true "
             + "ORDER BY b.modifiedAt DESC")
     List<Bookmark> findBookmarkedProblemsByMemberIdWithProblemOrderByModifiedAtDesc(@Param("memberId") Long memberId);
+
+    @Query("SELECT b FROM Bookmark b "
+            + "JOIN FETCH b.problem "
+            + "WHERE b.member.id = :memberId "
+            + "AND b.isBookmarked = true "
+            + "AND (:title IS NULL OR b.problem.question LIKE %:title%) "
+            + "ORDER BY b.modifiedAt DESC")
+    List<Bookmark> searchBookmarkedProblemsByMemberIdOrderByModifiedAtDesc(@Param("memberId") Long memberId,
+                                                                           @Param("title") String title);
 }
