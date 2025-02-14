@@ -5,6 +5,7 @@ import com.pullup.problem.dto.response.GetAllWrongProblemsResponse;
 import com.pullup.problem.dto.response.GetBookmarkedProblemsResponse;
 import com.pullup.problem.dto.response.GetProblemResponse;
 import com.pullup.problem.dto.response.GetRecentWrongProblemsResponse;
+import com.pullup.problem.dto.response.SearchBookmarkedProblemsResponse;
 import com.pullup.problem.dto.response.SearchWrongProblemsResponse;
 import com.pullup.problem.service.ProblemService;
 import lombok.RequiredArgsConstructor;
@@ -84,4 +85,15 @@ public class ProblemController {
                 .body(searchWrongProblemsResponse);
     }
 
+    @GetMapping("/bookmark")
+    public ResponseEntity<SearchBookmarkedProblemsResponse> searchBookmarkedProblemsByTitle(
+            @RequestParam(required = false) String title) {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
+        SearchBookmarkedProblemsResponse searchBookmarkedProblemsResponse = problemService.searchBookmarkedProblemsByTitle(
+                memberId, title);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(searchBookmarkedProblemsResponse);
+    }
 }
