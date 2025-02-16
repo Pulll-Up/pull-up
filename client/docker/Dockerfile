@@ -10,4 +10,6 @@ COPY ../ ./
 
 RUN npm run build
 
-CMD cp -r /app/dist/* /var/www/html/
+CMD rm -rf /var/www/html/* && \
+    cp -r /app/dist/* /var/www/html/ && \
+    chown -R www-data:www-data /var/www/html

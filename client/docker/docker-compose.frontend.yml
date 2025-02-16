@@ -8,14 +8,10 @@ services:
       dockerfile: docker/Dockerfile
     container_name: frontend
     volumes:
-      - frontend_build:/app/dist
+      - /var/www/html:/var/www/html
     networks:
       - frontend
     restart: "no"
-
-volumes:
-  frontend_build:
-    external: true
 
 networks:
   frontend:
