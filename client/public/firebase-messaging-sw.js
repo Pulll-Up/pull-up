@@ -1,61 +1,65 @@
 self.importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js');
 self.importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
 
-self.addEventListener('message', function (event) {
-  if (event.data && event.data.type === 'FIREBASE_CONFIG') {
-    self.firebase.initializeApp(event.data.config);
-    const messaging = self.firebase.messaging();
+self.addEventListener(
+  'message',
+  function (event) {
+    if (event.data && event.data.type === 'FIREBASE_CONFIG') {
+      self.firebase.initializeApp(event.data.config);
+      const messaging = self.firebase.messaging();
 
-    // 백그라운드 메시지
-    messaging.onBackgroundMessage(function (payload) {
-      const notificationTitle = payload.notification.title;
-      const notificationOptions = {
-        body: payload.notification.body,
-        icon: payload.notification.image || '/favicon.png',
-        badge: '/favicon.png',
-        tag: payload.notification.tag,
-        data: payload.data,
-        requireInteraction: true,
-        vibrate: [200, 100, 200],
-        actions: payload.notification.actions || [],
-        renotify: true,
-        click_action: payload.notification.click_action || 'FLUTTER_NOTIFICATION_CLICK',
-      };
+      // 백그라운드 메시지
+      messaging.onBackgroundMessage(function (payload) {
+        const notificationTitle = payload.notification.title;
+        const notificationOptions = {
+          body: payload.notification.body,
+          icon: payload.notification.image || '/favicon.png',
+          badge: '/favicon.png',
+          tag: payload.notification.tag,
+          data: payload.data,
+          requireInteraction: true,
+          vibrate: [200, 100, 200],
+          actions: payload.notification.actions || [],
+          renotify: true,
+          click_action: payload.notification.click_action || 'FLUTTER_NOTIFICATION_CLICK',
+        };
 
-      return self.registration.showNotification(notificationTitle, notificationOptions);
-    });
-  }
-});
+        return self.registration.showNotification(notificationTitle, notificationOptions);
+      });
+    }
+  },
+  { once: false },
+);
 
-self.addEventListener('install', function (e) {
-  console.log('fcm sw install..');
-  self.skipWaiting();
-});
+self.addEventListener('install', { once: false });
 
-self.addEventListener('activate', function (e) {
-  console.log('fcm sw activate..');
-});
+self.addEventListener('activate', { once: false });
 
-self.addEventListener('push', function (e) {
-  if (!e.data.json()) return;
+self.addEventListener(
+  'push',
+  function (e) {
+    if (!e.data.json()) return;
 
-  const resultData = e.data.json().notification;
-  const notificationTitle = resultData.title;
-  const notificationOptions = {
-    body: resultData.body,
-    icon: resultData.image,
-    tag: resultData.tag,
-    ...resultData,
-  };
+    const resultData = e.data.json().notification;
+    const notificationTitle = resultData.title;
+    const notificationOptions = {
+      body: resultData.body,
+      icon: resultData.image,
+      tag: resultData.tag,
+      ...resultData,
+    };
 
-  console.log('push: ', { resultData, notificationTitle, notificationOptions });
+    e.waitUntil(self.registration.showNotification(notificationTitle, notificationOptions));
+  },
+  { once: false },
+);
 
-  e.waitUntil(self.registration.showNotification(notificationTitle, notificationOptions));
-});
-
-self.addEventListener('notificationclick', function (event) {
-  console.log('notification click');
-  const url = 'https://www.pull-up.store/signin';
-  event.notification.close();
-  event.waitUntil(self.clients.openWindow(url));
-});
+self.addEventListener(
+  'notificationclick',
+  function (event) {
+    const url = 'https://www.pull-up.store/signin';
+    event.notification.close();
+    event.waitUntil(self.clients.openWindow(url));
+  },
+  { once: false },
+);

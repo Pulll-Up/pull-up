@@ -16,7 +16,6 @@ const GameLayout = () => {
 
   const { connectWebSocket, disconnectWebSocket } = useWebSocketStore();
   const { isLoggedIn } = memberStore();
-
   useEffect(() => {
     if (!isLoggedIn) {
       toast.error('로그인이 필요합니다.', { position: 'bottom-center', toastId: 'login-required' });
