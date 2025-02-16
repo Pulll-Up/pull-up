@@ -17,6 +17,7 @@ import com.pullup.interview.service.InterviewService;
 import com.pullup.interview.service.LikeService;
 import com.pullup.member.service.facade.MemberFacade;
 import jakarta.validation.Valid;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,12 +53,12 @@ public class InterviewController implements InterviewApi {
 
     @Override
     @PostMapping("/{interviewId}/submit")
-    public ResponseEntity<MyInterviewAnswerResponse> submitInterviewAnswer(
+    public ResponseEntity<CompletableFuture<MyInterviewAnswerResponse>> submitInterviewAnswer(
             @PathVariable("interviewId") Long interviewId,
             @Valid @RequestBody MyInterviewAnswerRequest myInterviewAnswerRequest
     ) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-        MyInterviewAnswerResponse myInterviewAnswerResponse = memberFacade.submitInterviewAnswer(
+        CompletableFuture<MyInterviewAnswerResponse> myInterviewAnswerResponse = memberFacade.submitInterviewAnswer(
                 memberId,
                 interviewId,
                 myInterviewAnswerRequest

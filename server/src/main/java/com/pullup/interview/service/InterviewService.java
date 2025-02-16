@@ -47,12 +47,21 @@ public class InterviewService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_NOT_FOUND));
     }
 
-    public InterviewAnswer saveInterviewAnswer(Member member, Interview interview, String answer) {
-        return interviewAnswerRepository.save(InterviewAnswer.createInterviewAnswer(
-                member,
-                interview,
-                answer
-        ));
+    @Transactional
+    public InterviewAnswer saveInterviewAnswer(
+            Member member,
+            Interview interview,
+            String strength,
+            String weakness,
+            String answer
+    ) {
+        return interviewAnswerRepository.save(
+                InterviewAnswer.createInterviewAnswer(
+                        member,
+                        interview,
+                        strength,
+                        weakness,
+                        answer));
     }
 
     public Long getTodayInterviewAnswerId(Long memberId) {

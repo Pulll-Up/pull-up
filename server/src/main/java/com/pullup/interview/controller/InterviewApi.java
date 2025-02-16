@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.http.ResponseEntity;
 
 @Tag(name = "Interview", description = "오늘의 문제 관련 API")
@@ -65,8 +66,8 @@ public interface InterviewApi {
                     )
             }
     )
-    public ResponseEntity<MyInterviewAnswerResponse> submitInterviewAnswer(Long interviewId,
-                                                                           MyInterviewAnswerRequest myInterviewAnswerRequest);
+    public ResponseEntity<CompletableFuture<MyInterviewAnswerResponse>> submitInterviewAnswer(Long interviewId,
+                                                                                              MyInterviewAnswerRequest myInterviewAnswerRequest);
 
     @Operation(
             summary = "오늘의 문제 답변에 대한 결과 조회",

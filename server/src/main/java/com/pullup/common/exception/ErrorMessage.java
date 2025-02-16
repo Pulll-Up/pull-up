@@ -52,7 +52,8 @@ public enum ErrorMessage {
 
     // TODO : 명확한 네이밍으로 수정 필요
     //* Server 내부 Exception
-    ERR_INTERNAL_SERVER("알 수 없는 서버의 오류입니다");
+    ERR_INTERNAL_SERVER("알 수 없는 서버의 오류입니다"),
+    ERR_PARSING_GPT_RESPONSE_FAIL("GPT 응답을 파싱하던 중 오류가 발생했습니다");
 
     private final String message;
 }
