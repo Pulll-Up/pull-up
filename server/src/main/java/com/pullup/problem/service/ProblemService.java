@@ -237,6 +237,7 @@ public class ProblemService {
 
         }
 
+        Collections.shuffle(finalProblems);
         gameRoomRepository.saveProblems(roomId, finalProblems);
     }
 
