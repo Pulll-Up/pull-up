@@ -35,6 +35,7 @@ import com.pullup.problem.dto.CorrectRateRange;
 import com.pullup.problem.repository.BookmarkRepository;
 import com.pullup.problem.repository.ProblemOptionRepository;
 import com.pullup.problem.repository.ProblemRepository;
+import com.pullup.problem.service.ProblemAnswerService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -62,6 +63,7 @@ public class ExamService {
     private final BookmarkRepository bookmarkRepository;
     private final MemberExamStatisticRepository examStatisticRepository;
     private final MemberExamStatisticRepository memberExamStatisticRepository;
+    private final ProblemAnswerService problemAnswerService;
 
     public GetExamDetailsResponse getExamDetails(Long examId) {
         Exam exam = findExamById(examId);
@@ -159,7 +161,9 @@ public class ExamService {
                 throw new NotFoundException(ErrorMessage.ERR_EXAM_PROBLEM_NOT_FOUND);
             }
 
-            examProblem.updateCheckedAnswerAndAnswerStauts(answer.chosenAnswer());
+            boolean isCorrect = problemAnswerService.isCorrectAnswer(examProblem.getProblem().getId(),
+                    answer.chosenAnswer());
+            examProblem.updateCheckedAnswerAndAnswerStauts(answer.chosenAnswer(), isCorrect);
 
             MemberExamStatistic memberExamStatistic = memberExamStatisticRepository.findByMemberIdAndSubject(memberId,
                             examProblem.getProblem().getSubject())

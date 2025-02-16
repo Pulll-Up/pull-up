@@ -70,7 +70,7 @@ public class ProblemService {
 
     }
 
-    private Problem findProblemById(Long problemId) {
+    public Problem findProblemById(Long problemId) {
         return problemRepository.findById(problemId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_PROBLEM_NOT_FOUND));
     }
