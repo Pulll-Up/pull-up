@@ -13,6 +13,10 @@ services:
       - frontend
     restart: "no"
 
+volumes:
+  frontend_build:
+    name: frontend_build
+
 networks:
   frontend:
     driver: bridge
