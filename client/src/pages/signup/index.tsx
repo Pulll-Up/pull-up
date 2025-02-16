@@ -27,6 +27,15 @@ const SignUpPage = () => {
       return;
     }
 
+    if (member.interestSubjects) {
+      toast.info('이미 가입된 회원입니다.', {
+        position: 'bottom-center',
+        toastId: 'member-checked',
+      });
+
+      return;
+    }
+
     setMember(member);
     setIsLoggedIn(true);
     navigate('/');

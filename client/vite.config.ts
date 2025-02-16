@@ -9,6 +9,15 @@ export default defineConfig(({ mode }) => {
   console.log(isProduction);
 
   return {
+    build: {
+      minify: true,
+      terserOptions: {
+        compress: {
+          drop_console: false, // console.* 구문 유지
+          drop_debugger: true,
+        },
+      },
+    },
     plugins: [
       react(),
       VitePWA({
