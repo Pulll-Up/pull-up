@@ -12,8 +12,8 @@ const RedirectPage = () => {
   const { setMember, setIsLoggedIn, setIsSolvedToday, setInterviewAnswerId } = memberStore();
 
   useEffect(() => {
-    console.log('redirect 페이지');
     const handleRedirect = async () => {
+      console.log('redirect 페이지');
       const auth = await queryClient.fetchQuery({
         queryKey: ['auth'],
         queryFn: login,
