@@ -13,7 +13,6 @@ services:
       - frontend
     restart: "no"
 
-
 networks:
   frontend:
     driver: bridge
