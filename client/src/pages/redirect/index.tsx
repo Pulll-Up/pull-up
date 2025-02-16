@@ -36,6 +36,7 @@ const RedirectPage = () => {
 
       // 비회원가입 시
       if (!auth.isSignedUp) {
+        console.log('비회원');
         navigate('/signup');
         return;
       }
