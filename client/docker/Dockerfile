@@ -9,5 +9,3 @@ RUN npm install
 COPY ../ ./
 
 RUN npm run build
-
-CMD ["cp", "-r", "/app/dist", "/var/www/html/"]

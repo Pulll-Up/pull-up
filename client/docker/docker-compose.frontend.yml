@@ -9,8 +9,6 @@ services:
     container_name: frontend
     volumes:
       - /var/www/html/:/app/dist
-    ports:
-      - "5173:5173"
     networks:
       - frontend
     restart: unless-stopped
