@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { setMember, setIsLoggedIn } = memberStore();
-  console.log('sigunup 페이지');
+  console.log('signup 페이지');
 
   const onConfirmSignUp = async (selectedSubjects: Subject[]) => {
     // 회원가입 완료
