@@ -12,6 +12,7 @@ const RedirectPage = () => {
   const { setMember, setIsLoggedIn, setIsSolvedToday, setInterviewAnswerId } = memberStore();
 
   useEffect(() => {
+    console.log('redirect 페이지');
     const handleRedirect = async () => {
       const auth = await queryClient.fetchQuery({
         queryKey: ['auth'],
@@ -36,6 +37,7 @@ const RedirectPage = () => {
 
       // 비회원가입 시
       if (!auth.isSignedUp) {
+        console.log('비회원 확인');
         navigate('/signup');
         return;
       }
@@ -44,6 +46,7 @@ const RedirectPage = () => {
 
       // 관심과목 미선택 시
       if (!member.interestSubjects) {
+        console.log('관심과목 확인');
         navigate('/signup');
         return;
       }
