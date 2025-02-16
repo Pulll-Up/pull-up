@@ -15,7 +15,7 @@ services:
 
 volumes:
   frontend_build:
-    name: frontend_build
+    external: true
 
 networks:
   frontend:
