@@ -23,6 +23,7 @@ const RedirectPage = () => {
           position: 'bottom-center',
           toastId: 'auth-required',
         });
+        navigate('/');
         return;
       }
 
@@ -35,10 +36,7 @@ const RedirectPage = () => {
 
       // 비회원가입 시
       if (!auth.isSignedUp) {
-        toast.error('회원 정보가 없습니다.', {
-          position: 'bottom-center',
-          toastId: 'signup',
-        });
+        navigate('/signup');
         return;
       }
 
@@ -46,15 +44,13 @@ const RedirectPage = () => {
 
       // 관심과목 미선택 시
       if (!member.interestSubjects) {
-        toast.error('관심과목 정보가 없습니다..', {
-          position: 'bottom-center',
-          toastId: 'interestSubjects',
-        });
+        navigate('/signup');
         return;
       }
 
       setMember(member);
       setIsLoggedIn(true);
+      navigate('/');
     };
 
     handleRedirect();
