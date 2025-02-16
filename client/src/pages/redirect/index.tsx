@@ -10,7 +10,6 @@ import { toast } from 'react-toastify';
 const RedirectPage = () => {
   const navigate = useNavigate();
   const { setMember, setIsLoggedIn, setIsSolvedToday, setInterviewAnswerId } = memberStore();
-  console.log('redirect 페이지');
 
   useEffect(() => {
     const handleRedirect = async () => {
@@ -35,11 +34,8 @@ const RedirectPage = () => {
       setIsSolvedToday(auth.isSolvedToday);
       setInterviewAnswerId(auth.interviewAnswerId);
 
-      console.log('사용자 상태: ', auth.isSignedUp);
-
       // 비회원가입 시
       if (!auth.isSignedUp) {
-        console.log('비회원 확인');
         navigate('/signup');
         return;
       }
@@ -48,7 +44,6 @@ const RedirectPage = () => {
 
       // 관심과목 미선택 시
       if (!member.interestSubjects) {
-        console.log('관심과목 확인');
         navigate('/signup');
         return;
       }

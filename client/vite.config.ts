@@ -9,17 +9,6 @@ export default defineConfig(({ mode }) => {
   console.log(isProduction);
 
   return {
-    build: {
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          drop_console: false,
-          drop_debugger: true,
-          pure_funcs: ['console.debug'],
-        },
-        mangle: true,
-      },
-    },
     plugins: [
       react(),
       VitePWA({
