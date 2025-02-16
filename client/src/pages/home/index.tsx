@@ -10,7 +10,7 @@ const HomePage = () => {
   const { member, isSolvedToday, interviewAnswerId } = memberStore();
 
   useEffect(() => {
-    alert('테스트 메시지입니다!'); // 페이지 진입 시 실행
+    alert('테스트 메시지!'); // 페이지 진입 시 실행
   }, []);
 
   const onClick = () => {
