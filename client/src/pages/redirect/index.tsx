@@ -10,10 +10,10 @@ import { toast } from 'react-toastify';
 const RedirectPage = () => {
   const navigate = useNavigate();
   const { setMember, setIsLoggedIn, setIsSolvedToday, setInterviewAnswerId } = memberStore();
+  console.log('redirect 페이지');
 
   useEffect(() => {
     const handleRedirect = async () => {
-      console.log('redirect 페이지');
       const auth = await queryClient.fetchQuery({
         queryKey: ['auth'],
         queryFn: login,
@@ -34,7 +34,8 @@ const RedirectPage = () => {
       // 사용자 정보 설정
       setIsSolvedToday(auth.isSolvedToday);
       setInterviewAnswerId(auth.interviewAnswerId);
-      setIsLoggedIn(true);
+
+      console.log('사용자 상태: ', auth.isSignedUp);
 
       // 비회원가입 시
       if (!auth.isSignedUp) {
@@ -53,6 +54,7 @@ const RedirectPage = () => {
       }
 
       setMember(member);
+      setIsLoggedIn(true);
       navigate('/');
     };
 
