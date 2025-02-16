@@ -3,10 +3,15 @@ import SubmitButton from '@/components/common/submitButton';
 import { useChipAnimation } from '@/hooks/useChipAnimation';
 import { memberStore } from '@/stores/memberStore';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { member, isSolvedToday, interviewAnswerId } = memberStore();
+
+  useEffect(() => {
+    alert('테스트 메시지입니다!'); // 페이지 진입 시 실행
+  }, []);
 
   const onClick = () => {
     if (member) {
