@@ -10,12 +10,14 @@ export default defineConfig(({ mode }) => {
 
   return {
     build: {
-      minify: true,
+      minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: false, // console.* 구문 유지
+          drop_console: false,
           drop_debugger: true,
+          pure_funcs: ['console.debug'],
         },
+        mangle: true,
       },
     },
     plugins: [
