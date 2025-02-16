@@ -34,6 +34,7 @@ const RedirectPage = () => {
       // 사용자 정보 설정
       setIsSolvedToday(auth.isSolvedToday);
       setInterviewAnswerId(auth.interviewAnswerId);
+      setIsLoggedIn(true);
 
       // 비회원가입 시
       if (!auth.isSignedUp) {
@@ -52,7 +53,6 @@ const RedirectPage = () => {
       }
 
       setMember(member);
-      setIsLoggedIn(true);
       navigate('/');
     };
 
