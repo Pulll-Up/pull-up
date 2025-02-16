@@ -7,12 +7,15 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
     container_name: frontend
-    ports:
-      - "5173:5173"
+    volumes:
+      - frontend_build:/app/dist
     networks:
       - frontend
-    restart: unless-stopped
+    restart: "no"
 
+volumes:
+  frontend_build:
+    name: frontend_build
 
 networks:
   frontend:
