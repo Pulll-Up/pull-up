@@ -25,7 +25,8 @@ const MainLayout = () => {
       location.pathname !== '/' &&
       location.pathname !== '/signin' &&
       location.pathname !== '/signup' &&
-      location.pathname !== '/redirect'
+      location.pathname !== '/redirect' &&
+      !isLoggedIn
     ) {
       toast.error('로그인이 필요합니다.', { position: 'bottom-center', toastId: 'login-required' });
       navigate('/signin');

@@ -23,7 +23,6 @@ const RedirectPage = () => {
           position: 'bottom-center',
           toastId: 'auth-required',
         });
-        navigate('/');
         return;
       }
 
