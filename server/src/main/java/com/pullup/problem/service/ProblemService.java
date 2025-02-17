@@ -163,7 +163,7 @@ public class ProblemService {
 
         // 각 과목별 기본 개수만큼 문제 가져오기
         for (Subject subject : selectedSubjects) {
-            List<Problem> problems = problemRepository.findRandomProblemsBySubject(subject.name(),
+            List<Problem> problems = problemRepository.findRandomShortAnswerProblemsBySubject(subject.name(),
                     numQuestionsPerSubject);
 
             for (Problem problem : problems) {
@@ -191,7 +191,7 @@ public class ProblemService {
                 break; // 남은 문제가 없으면 종료
             }
 
-            List<Problem> extraProblems = problemRepository.findRandomProblemsBySubject(subject.name(),
+            List<Problem> extraProblems = problemRepository.findRandomShortAnswerProblemsBySubject(subject.name(),
                     remainingToFetch);
 
             for (Problem problem : extraProblems) {
@@ -222,7 +222,7 @@ public class ProblemService {
     public void generateProblemsForRandomMatching(String roomId) {
         List<ProblemCard> finalProblems = new ArrayList<>();
 
-        List<Problem> randomProblems = problemRepository.findRandomProblems(NUMBER_OF_PROBLEMS);
+        List<Problem> randomProblems = problemRepository.findRandomShortAnswerProblems(NUMBER_OF_PROBLEMS);
         for (Problem problem : randomProblems) {
             finalProblems.add(
                     ProblemCard.createNewProblemCard(
