@@ -68,62 +68,56 @@ public class SubscriptionEventListener {
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
-        String destination = accessor.getDestination();
-        if (destination != null && destination.startsWith("/topic/game/")
-                && !destination.endsWith("/status")
-                && !destination.endsWith("/result")
-        ) {
-            String sessionId = event.getSessionId();
-            PlayerSessionInfo sessionInfo = sessionManager.removeSession(sessionId); // 세션 삭제 후 roomId, playerType 반환
 
-            if (sessionInfo != null) {
-                String roomId = sessionInfo.roomId();
-                PlayerType playerType = sessionInfo.playerType();
+        String sessionId = event.getSessionId();
+        PlayerSessionInfo sessionInfo = sessionManager.removeSession(sessionId); // 세션 삭제 후 roomId, playerType 반환
 
-                log.info("{}님이 {} 방에서 이탈 (세션 ID: {})", playerType, roomId, sessionId);
+        if (sessionInfo != null) {
+            String roomId = sessionInfo.roomId();
+            PlayerType playerType = sessionInfo.playerType();
 
-                // 구독자 수 감소 처리
-                roomSubscribers.computeIfPresent(roomId, (key, count) -> {
-                    int newCount = count.decrementAndGet();
-                    log.info("⚠[{}번 방] 남은 구독자 수: {}", roomId, newCount);
-                    return newCount > 0 ? count : null; // 구독자가 0명이면 삭제
-                });
+            log.info("{}님이 {} 방에서 이탈 (세션 ID: {})", playerType, roomId, sessionId);
 
-                // 게임 방 찾기
-                GameRoom gameRoom = gameRoomRepository.findByRoomId(sessionInfo.roomId())
-                        .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_GAME_ROOM_NOT_FOUND));
+            // 구독자 수 감소 처리
+            roomSubscribers.computeIfPresent(roomId, (key, count) -> {
+                int newCount = count.decrementAndGet();
+                log.info("⚠[{}번 방] 남은 구독자 수: {}", roomId, newCount);
+                return newCount > 0 ? count : null; // 구독자가 0명이면 삭제
+            });
 
-                if (gameRoom != null) {
-                    // 상대방을 승자로 처리
-                    Player opponent = gameRoom.getOpponentPlayerByPlayerType(playerType);
+            // 게임 방 찾기
+            GameRoom gameRoom = gameRoomRepository.findByRoomId(sessionInfo.roomId())
+                    .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_GAME_ROOM_NOT_FOUND));
 
-                    gameRoom.updateStatusToFinished();
-                    gameRoom.updateWinner(opponent);
-                    gameRoom.updateToForfeitGame();
-                    gameRoomRepository.save(gameRoom);
+            if (gameRoom != null) {
+                // 상대방을 승자로 처리
+                Player opponent = gameRoom.getOpponentPlayerByPlayerType(playerType);
 
-                    List<ProblemCard> problemCards = gameService.getProblemsByRoomId(gameRoom.getRoomId());
+                gameRoom.updateStatusToFinished();
+                gameRoom.updateWinner(opponent);
+                gameRoom.updateToForfeitGame();
+                gameRoomRepository.save(gameRoom);
 
-                    GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = GameRoomInfoWithProblemsResponse.of(
-                            gameRoom.getRoomId(),
-                            GameRoomStatus.FINISHED,
-                            PlayerInfo.of(
-                                    gameRoom.getPlayer1().getId(),
-                                    gameRoom.getPlayer1().getName(),
-                                    gameRoom.getPlayer1().getScore()),
-                            PlayerInfo.of(
-                                    gameRoom.getPlayer2().getId(),
-                                    gameRoom.getPlayer2().getName(),
-                                    gameRoom.getPlayer2().getScore()),
-                            gameService.convertToProblemCardWithoutCardIds(problemCards)
-                    );
+                List<ProblemCard> problemCards = gameService.getProblemsByRoomId(gameRoom.getRoomId());
 
-                    // 남은 유저에게 게임 종료 메시지 전송
-                    messagingTemplate.convertAndSend(
-                            "/topic/game/" + roomId,
-                            gameRoomInfoWithProblemsResponse);
-                }
+                GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = GameRoomInfoWithProblemsResponse.of(
+                        gameRoom.getRoomId(),
+                        GameRoomStatus.FINISHED,
+                        PlayerInfo.of(
+                                gameRoom.getPlayer1().getId(),
+                                gameRoom.getPlayer1().getName(),
+                                gameRoom.getPlayer1().getScore()),
+                        PlayerInfo.of(
+                                gameRoom.getPlayer2().getId(),
+                                gameRoom.getPlayer2().getName(),
+                                gameRoom.getPlayer2().getScore()),
+                        gameService.convertToProblemCardWithoutCardIds(problemCards)
+                );
+
+                // 남은 유저에게 게임 종료 메시지 전송
+                messagingTemplate.convertAndSend(
+                        "/topic/game/" + roomId,
+                        gameRoomInfoWithProblemsResponse);
             }
         }
 
