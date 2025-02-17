@@ -7,8 +7,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 const InterviewAnswersPage = () => {
   const navigate = useNavigate();
   const { interviewId } = useParams();
-  const { data } = useGetInterviewAnswers(Number(interviewId));
-  const likeMutation = useCreateInterviewAnswerLike(Number(interviewId));
+  const { data } = useGetInterviewAnswers(interviewId!);
+  const likeMutation = useCreateInterviewAnswerLike(interviewId!);
 
   if (!data) return null;
 
@@ -18,12 +18,12 @@ const InterviewAnswersPage = () => {
   };
 
   // 답변 상세 보기
-  const onInterviewAnswerClick = (interviewAnswerId: number) => {
+  const onInterviewAnswerClick = (interviewAnswerId: string) => {
     navigate(`/interview/${interviewId}/answers/${interviewAnswerId}`);
   };
 
   // 좋아요 토글
-  const handleLikeClick = (interviewAnswerId: number) => {
+  const handleLikeClick = (interviewAnswerId: string) => {
     likeMutation(interviewAnswerId);
   };
 

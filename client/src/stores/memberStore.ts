@@ -6,11 +6,11 @@ interface MemberState {
   member: Member | null;
   isLoggedIn: boolean;
   isSolvedToday: boolean;
-  interviewAnswerId: number;
+  interviewAnswerId: string;
   setMember: (member: Member) => void;
   setIsSolvedToday: (isSolvedToday: boolean) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
-  setInterviewAnswerId: (interviewAnswerId: number) => void;
+  setInterviewAnswerId: (interviewAnswerId: string) => void;
   logoutMember: () => void;
 }
 
@@ -18,7 +18,7 @@ const initialState = {
   member: null,
   isLoggedIn: false,
   isSolvedToday: false,
-  interviewAnswerId: 0,
+  interviewAnswerId: '0',
 };
 
 export const memberStore = create<MemberState>()(

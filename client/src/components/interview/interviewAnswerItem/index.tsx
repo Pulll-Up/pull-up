@@ -3,7 +3,7 @@ import KeywordList from '../keywordList';
 import SmallChip from '../../common/smallchip';
 
 interface InterviewAnswerItemProps {
-  id: number;
+  id: string;
   userName: string;
   content: string;
   keywords?: string[];
@@ -11,8 +11,8 @@ interface InterviewAnswerItemProps {
   liked: boolean;
   likeCount: number;
   commentCount: number;
-  handleLikeClick: (id: number) => void;
-  onInterviewAnswerClick?: (id: number) => void;
+  handleLikeClick: (id: string) => void;
+  onInterviewAnswerClick?: (id: string) => void;
 }
 
 const InterviewAnswerItem = ({

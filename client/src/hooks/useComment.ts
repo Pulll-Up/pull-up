@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 interface useCommentProps {
-  interviewAnswerId: number;
+  interviewAnswerId: string;
 }
 
 export const useComment = ({ interviewAnswerId }: useCommentProps) => {

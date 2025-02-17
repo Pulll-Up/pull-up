@@ -14,7 +14,7 @@ import LoadingLayout from '@/layouts/loadingLayout';
 const InterviewResultPage = () => {
   const navigate = useNavigate();
   const { interviewAnswerId } = useParams();
-  const { data: result, isLoading, isError } = useGetInterviewResult(Number(interviewAnswerId));
+  const { data: result, isLoading, isError } = useGetInterviewResult(interviewAnswerId!);
   const { data: interviewList } = useGetInterviewList();
 
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
@@ -48,7 +48,7 @@ const InterviewResultPage = () => {
   };
 
   // 지난 문제 보기
-  const onInterviewClick = (interviewAnswerId: number) => {
+  const onInterviewClick = (interviewAnswerId: string) => {
     setIsModalOpen(false);
     navigate(`/interview/result/${interviewAnswerId}`);
   };

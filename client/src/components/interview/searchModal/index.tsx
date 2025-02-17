@@ -9,7 +9,7 @@ import { InputChangeEvent } from '@/types/event';
 
 interface SearchModalProps {
   onClose: () => void;
-  onInterviewClick: (interviewId: number) => void;
+  onInterviewClick: (interviewId: string) => void;
 }
 
 const SearchModal = ({ onClose, onInterviewClick }: SearchModalProps) => {

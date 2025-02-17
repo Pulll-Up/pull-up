@@ -13,8 +13,8 @@ const InterviewAnswerDetail = () => {
   const navigate = useNavigate();
   const { interviewId, interviewAnswerId } = useParams();
   const { member } = memberStore();
-  const { data: interviewAnswer } = useGetInterviewAnswerDetail(Number(interviewAnswerId));
-  const { data: comments } = useGetComments(Number(interviewAnswerId));
+  const { data: interviewAnswer } = useGetInterviewAnswerDetail(interviewAnswerId!);
+  const { data: comments } = useGetComments(interviewAnswerId!);
 
   // 댓글 훅
   const {
@@ -28,7 +28,7 @@ const InterviewAnswerDetail = () => {
     onCancelClick,
     onConfirmClick,
     handleCommentDelete,
-  } = useComment({ interviewAnswerId: Number(interviewAnswerId) });
+  } = useComment({ interviewAnswerId: interviewAnswerId! });
 
   // 다른 사람 답변 목록으로 돌아가기
   const onBackClick = () => {
@@ -36,9 +36,9 @@ const InterviewAnswerDetail = () => {
   };
 
   // 좋아요 토글
-  const likeMutation = useCreateInterviewAnswerLike(Number(interviewId));
+  const likeMutation = useCreateInterviewAnswerLike(interviewId!);
   const handleLikeClick = () => {
-    likeMutation(Number(interviewAnswerId));
+    likeMutation(interviewAnswerId!);
   };
 
   if (!member || !interviewAnswer || !comments) return null;

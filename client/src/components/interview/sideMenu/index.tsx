@@ -8,7 +8,7 @@ interface SideMenuProps {
   interviewList: InterviewListResponse[];
   handleMenuClick: (e: ButtonMouseEvent) => void;
   handleSearchClick: () => void;
-  onInterviewClick: (interviewId: number) => void;
+  onInterviewClick: (interviewId: string) => void;
 }
 
 const SideMenu = ({ isOpen, interviewList, handleMenuClick, handleSearchClick, onInterviewClick }: SideMenuProps) => {
