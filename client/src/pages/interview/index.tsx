@@ -6,10 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { TextAreaChangeEvent, TextAreaKeyboardEvent } from '@/types/event';
 import { memberStore } from '@/stores/memberStore';
+import { getMember } from '@/api/member';
+import { queryClient } from '@/main';
+import { Member } from '@/types/member';
 
 const InterviewPage = () => {
   const navigate = useNavigate();
-  const { member, setInterviewAnswerId, setIsSolvedToday, isSolvedToday } = memberStore();
+  const { setInterviewAnswerId, setIsSolvedToday, isSolvedToday } = memberStore();
+  const [member, setMember] = useState<Member>();
   const { data } = useGetInterview();
 
   const [hint, setHint] = useState(false);
@@ -25,6 +29,19 @@ const InterviewPage = () => {
 
       return;
     }
+
+    const fetchMember = async () => {
+      const data = await queryClient.fetchQuery({
+        queryKey: ['member'],
+        queryFn: getMember,
+      });
+
+      if (!data) return null;
+
+      setMember(data);
+    };
+
+    fetchMember();
   }, []);
 
   if (!data || !member) return null;
