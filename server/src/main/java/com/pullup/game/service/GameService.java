@@ -25,6 +25,7 @@ import com.pullup.game.dto.response.PlayerType;
 import com.pullup.game.repository.GameRoomRepository;
 import com.pullup.game.repository.WebSocketSessionManager;
 import com.pullup.member.domain.Member;
+import com.pullup.member.repository.MemberRepository;
 import com.pullup.member.service.MemberService;
 import com.pullup.problem.service.ProblemService;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class GameService {
     private final ProblemService problemService;
     private final MemberService memberService;
     private final WebSocketSessionManager sessionManager;
+    private final MemberRepository memberRepository;
 
 
     public CreateRoomResponse createRoom(Long memberId, CreateRoomWithSubjectsRequest request) {
@@ -432,6 +434,29 @@ public class GameService {
 
         }
         throw new InternalServerException(ErrorMessage.ERR_INTERNAL_SERVER);
+    }
+
+    public void checkForfeitAndDeleteGameRoom(String roomId, Long memberId) {
+        GameRoom gameRoom = findByRoomId(roomId);
+        Member member = memberService.findMemberById(memberId);
+
+        if (gameRoom.getPlayer1() == null || gameRoom.getPlayer2() == null) {
+            deleteGameRoom(roomId);
+            return;
+        }
+
+        // 기권 처리
+        if (gameRoom.getPlayer1().getId() == member.getId()) {
+            gameRoom.updateToForfeitGame();
+            gameRoom.updateWinner(gameRoom.getPlayer2());
+            gameRoom.updateStatusToFinished();
+        } else {
+            gameRoom.updateToForfeitGame();
+            gameRoom.updateWinner(gameRoom.getPlayer1());
+            gameRoom.updateStatusToFinished();
+        }
+
+
     }
 }
 

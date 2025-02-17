@@ -76,7 +76,9 @@ public class GameController implements GameApi {
     @DeleteMapping("/room/{roomId}")
     public ResponseEntity<Void> deleteGameRoom(@PathVariable("roomId") String roomId) {
         // delete 왔을 떄 방에 2명이 전부 다 있으면, 보낸 사람이 기권해.
-        gameService.deleteGameRoom(roomId);
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
+        gameService.checkForfeitAndDeleteGameRoom(roomId, memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .build();
