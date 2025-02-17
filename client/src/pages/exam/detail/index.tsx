@@ -15,7 +15,8 @@ import SubmitDialog from '@/components/exam/submitDialog';
 const ExamDetailPage = () => {
   const navigate = useNavigate();
   const { examId } = useParams();
-  const { data: examProblems } = useGetExamDetails(Number(examId));
+  const validExamId = examId ? examId : '';
+  const { data: examProblems } = useGetExamDetails(validExamId);
   const answers = useExamStore((state) => state.answers);
   const { resetExamState, setAnswer, setSolutionPage, initializeAndSetOptions } = useExamStore();
   const [isInitialized] = useState(false);
@@ -43,7 +44,7 @@ const ExamDetailPage = () => {
           chosenAnswer: answers[Number(problemId)] ?? '',
         })),
       };
-      await postExamAnswer(Number(examId), requestBody);
+      await postExamAnswer(validExamId, requestBody);
       setException();
       navigate(`/exam/${examId}/result`);
     } catch (error) {

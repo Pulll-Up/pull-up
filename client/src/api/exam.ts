@@ -56,16 +56,16 @@ export const useGetRecentExam = () =>
 // 모의고사 생성
 export const postExam = async (data: ExamCreateRequest) => {
   const response = await api.post('exam/me', { json: data });
-  const responseData = await response.json<{ examId: number }>();
+  const responseData = await response.json<{ examId: string }>();
   return responseData;
 };
 
 // 모의고사 조회
-const getExamDetails = (examId: number) => {
+const getExamDetails = (examId: string) => {
   return api.get(`exam/${examId}`).json<{ examDetailsDtos: ExamDetailsResponse }>();
 };
 
-export const useGetExamDetails = (examId: number) => {
+export const useGetExamDetails = (examId: string) => {
   return useSuspenseQuery({
     queryKey: ['examDetails', examId],
     queryFn: async () => {
@@ -79,18 +79,18 @@ export const useGetExamDetails = (examId: number) => {
 };
 
 // 모의고사 답안 제출
-export const postExamAnswer = async (examId: number, data: ExamResultRequest) => {
+export const postExamAnswer = async (examId: string, data: ExamResultRequest) => {
   return await api.post(`exam/${examId}`, {
     json: data,
   });
 };
 
 // 모의고사 채점 결과 조회
-export const getExamResult = (examId: number) => {
+export const getExamResult = (examId: string) => {
   return api.get(`exam/${examId}/result`).json<ExamResultResponse>();
 };
 
-export const useGetExamResult = (examId: number) => {
+export const useGetExamResult = (examId: string) => {
   return useSuspenseQuery({
     queryKey: ['examResult', examId],
     queryFn: () => getExamResult(examId),

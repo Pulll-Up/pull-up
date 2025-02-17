@@ -1,7 +1,7 @@
 import { Subject } from './member';
 
 export interface Exam {
-  examId: number;
+  examId: string;
   examName: string;
   date: string;
   subjects: Subject[];

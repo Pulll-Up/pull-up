@@ -6,10 +6,10 @@ import { useMutation } from '@tanstack/react-query';
 
 const QUERY_KEYS = {
   PROBLEM_DETAIL: (problemId: number) => ['problemDetail', problemId],
-  EXAM_RESULT: (examId: number) => ['examResult', examId],
+  EXAM_RESULT: (examId: string) => ['examResult', examId],
 };
 
-export const useToggleProblemBookmark = (problemId: number, examId?: number) => {
+export const useToggleProblemBookmark = (problemId: number, examId?: string) => {
   return useMutation({
     mutationFn: () => toggleProblemBookmark(problemId),
     onMutate: async () => {
