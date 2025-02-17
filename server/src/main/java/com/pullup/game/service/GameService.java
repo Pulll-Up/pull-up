@@ -289,10 +289,15 @@ public class GameService {
 
         if (gameRooms.isEmpty()) {
             return GetRandomMatchTypeResponse.createForCreateType(RandomMatchType.CREATE);
-        } else {
-            String roomId = gameRooms.get(0).getRoomId();
-            return GetRandomMatchTypeResponse.createForJoinType(RandomMatchType.JOIN, roomId);
         }
+
+        for (GameRoom gameRoom : gameRooms) {
+            if ("RANDOM_MATCHING".equals(gameRoom.getGameRoomType())) {
+                return GetRandomMatchTypeResponse.createForJoinType(RandomMatchType.JOIN, gameRoom.getRoomId());
+            }
+        }
+
+        throw new BadRequestException(ErrorMessage.ERR_GAME_ROOM_NOT_FOUND);
     }
 
     private Long getProblemCardIdByContent(List<ProblemCard> problemCards, String content) {
