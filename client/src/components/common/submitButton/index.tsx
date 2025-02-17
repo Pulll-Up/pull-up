@@ -1,7 +1,8 @@
 import { cn } from '@/lib/utils';
+import { ButtonMouseEvent } from '@/types/event';
 
 interface SubmitButtonProps {
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick: (e: ButtonMouseEvent) => void;
   text: string;
   color?: 'primary' | 'secondary' | 'gray';
   disabled?: boolean;

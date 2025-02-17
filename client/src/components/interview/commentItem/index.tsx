@@ -1,11 +1,12 @@
 import { Comment } from '@/types/comment';
+import { TextAreaChangeEvent } from '@/types/event';
 
 interface CommentItemProps {
   userEmail: string;
   comment: Comment;
   handleUpdate: (comment: string, commentId: number) => void;
   handleDelete: (commentId: number) => void;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>, commentId: number) => void;
+  onChange: (e: TextAreaChangeEvent, commentId: number) => void;
   onCancelClick: (commentId: number) => void;
   onConfirmClick: (commentId: number) => void;
   value: string;
