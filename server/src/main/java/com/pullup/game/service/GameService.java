@@ -74,9 +74,10 @@ public class GameService {
                 member.getName()
         );
 
-        gameRoomRepository.save(gameRoom);
-
-        problemService.generateProblemsForRandomMatching(gameRoom.getRoomId());
+        if (gameRoomRepository.findByRoomId(gameRoom.getRoomId()).isEmpty()) {
+            gameRoomRepository.save(gameRoom);
+            problemService.generateProblemsForRandomMatching(gameRoom.getRoomId());
+        }
 
         return CreateRoomResponse.of(
                 gameRoom.getRoomId()
