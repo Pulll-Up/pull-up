@@ -104,7 +104,6 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
       newSubscriptions['room'] = client.subscribe(`/topic/game/${roomId}`, (message) => {
         const { roomId, gameRoomStatus, player1P, player2P, problemCardWithoutCardIds } = JSON.parse(message.body);
         set({ roomInfo: { roomId, gameRoomStatus, player1P, player2P, problemCardWithoutCardIds } });
-        console.log('Check Answer');
         set({ isCheckedAnswer: true });
       });
     }

@@ -14,27 +14,9 @@ const GameBoard = ({ playerType, problems }: GameBoardProps) => {
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [shake, setShake] = useState(false);
 
-  const checkCardPair = (cardIndex1: number, cardIndex2: number) => {
-    sendMessage('/app/card/check', {
-      checkType: 'SUBMIT',
-      roomId: roomInfo.roomId,
-      playerType,
-      contents: [problems[cardIndex1].content, problems[cardIndex2].content],
-    });
-  };
-
   useEffect(() => {
     if (isCheckedAnswer) {
-      console.log('체크 시작');
       setShake(true);
-
-      setTimeout(() => {
-        setShake(false);
-        console.log('체크 시작');
-
-        completeCheckAnswer();
-        setSelectedCards([]);
-      }, 300);
     }
   }, [isCheckedAnswer]);
 
@@ -55,7 +37,23 @@ const GameBoard = ({ playerType, problems }: GameBoardProps) => {
 
     if (selectedCards.length === 1) {
       checkCardPair(selectedCards[0], index);
+
+      setTimeout(() => {
+        setShake(false);
+
+        completeCheckAnswer();
+        setSelectedCards([]);
+      }, 400);
     }
+  };
+
+  const checkCardPair = (cardIndex1: number, cardIndex2: number) => {
+    sendMessage('/app/card/check', {
+      checkType: 'SUBMIT',
+      roomId: roomInfo.roomId,
+      playerType,
+      contents: [problems[cardIndex1].content, problems[cardIndex2].content],
+    });
   };
 
   return (
