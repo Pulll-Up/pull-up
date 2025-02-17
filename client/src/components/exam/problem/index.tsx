@@ -1,8 +1,10 @@
 import ExamAnswer from './examAnswer';
 import Icon from '@/components/common/icon';
-import { useTogglProblemBookmark } from '@/hooks/useToggleBookmark';
+import { useToggleProblemBookmark } from '@/hooks/useToggleBookmark';
 import { useExamStore } from '@/stores/examStore';
 import { convertSubject } from '@/utils/convertSubject';
+import { PageType } from '@/utils/pageType';
+import { useParams } from 'react-router-dom';
 
 interface ExamProblemProps {
   index?: number;
@@ -20,8 +22,11 @@ interface ExamProblemProps {
 
 const ExamProblem = ({ index, problem }: ExamProblemProps) => {
   const { isSolutionPage } = useExamStore();
-  const toggleBookmarkMutation = useTogglProblemBookmark(problem.problemId);
+  const { isExamResultPage } = PageType();
+  const { examId } = useParams();
+  const validExamId = isExamResultPage ? Number(examId) : undefined;
 
+  const toggleBookmarkMutation = useToggleProblemBookmark(problem.problemId, validExamId);
   const handleBookmark = () => {
     toggleBookmarkMutation.mutate();
   };

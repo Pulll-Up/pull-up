@@ -44,16 +44,13 @@ export const useExamStore = create<ExamState>((set) => ({
     })),
 
   initializeAndSetOptions: (problemId, options, params) => {
-    const initializedOptions: Option[] = options.map((option) => ({
-      text: option,
-      state: params?.answer
-        ? option === params.answer
-          ? 'correct'
-          : option === params.chosenAnswer
-            ? 'wrong'
-            : 'default'
-        : 'default',
-    }));
+    const initializedOptions: Option[] = options.map((option) => {
+      if (!params?.answer) return { text: option, state: 'default' };
+      return {
+        text: option,
+        state: option === params.answer ? 'correct' : option === params.chosenAnswer ? 'wrong' : 'default',
+      };
+    });
 
     set((state) => ({
       options: {

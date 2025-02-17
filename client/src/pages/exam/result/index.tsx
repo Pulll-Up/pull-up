@@ -2,8 +2,6 @@ import { lazy, Suspense, useEffect } from 'react';
 import InfoSection from '@/components/exam/infoSection';
 import SubmitButton from '@/components/common/submitButton';
 import ProblemStatusButton from '@/components/exam/infoSection/problemStatusButton';
-//import ExamSolution from '@/components/exam/solution';
-//import ExamProblem from '@/components/exam/problem';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetExamResult } from '@/api/exam';
 import { useExamStore } from '@/stores/examStore';
@@ -44,7 +42,7 @@ const ExamResultPage = () => {
       title: '점수',
       icon: 'score',
       content: (
-        <div className="text-2xl text-3xl lg:text-3xl">
+        <div className="text-2xl lg:text-3xl">
           <span className="text-primary-500">{score}</span> / 100
         </div>
       ),
@@ -59,7 +57,7 @@ const ExamResultPage = () => {
             <ProblemStatusButton
               index={index + 1}
               key={problem.problemId}
-              status={problem.answerStatus ? 'correct' : 'wrong'} // 문제의 정답 여부를 기반으로 상태 설정
+              status={problem.answerStatus ? 'correct' : 'wrong'}
               onClick={() => {
                 document
                   .getElementById(`problem-${problem.problemId}`)
