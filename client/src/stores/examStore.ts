@@ -9,11 +9,9 @@ interface ExamState {
   isSolutionPage: boolean;
   answers: Record<number, string>;
   options: Record<number, Option[]>;
-  bookmark: Record<number, boolean>;
   setSolutionPage: (isSolution: boolean) => void;
   setAnswer: (problemId: number, answer: string) => void;
   updateOptionState: (problemId: number, index: number, state: Option['state']) => void;
-  toggleBookmark: (problemId: number) => void;
   initializeAndSetOptions: (
     problemId: number,
     options: string[],
@@ -25,7 +23,6 @@ interface ExamState {
 export const useExamStore = create<ExamState>((set) => ({
   answers: {},
   options: {},
-  bookmark: {},
   isSolutionPage: false,
 
   setSolutionPage: (isSolution) => set({ isSolutionPage: isSolution }),
@@ -44,11 +41,6 @@ export const useExamStore = create<ExamState>((set) => ({
           state: idx === index ? newState : 'default',
         })),
       },
-    })),
-
-  toggleBookmark: (problemId) =>
-    set((state) => ({
-      bookmark: { ...state.bookmark, [problemId]: !state.bookmark[problemId] },
     })),
 
   initializeAndSetOptions: (problemId, options, params) => {
@@ -70,5 +62,6 @@ export const useExamStore = create<ExamState>((set) => ({
       },
     }));
   },
-  resetExamState: () => set({ isSolutionPage: false, answers: {}, options: {}, bookmark: {} }),
+
+  resetExamState: () => set({ isSolutionPage: false, answers: {}, options: {} }),
 }));

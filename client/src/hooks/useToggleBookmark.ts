@@ -1,6 +1,5 @@
 import { toggleProblemBookmark } from '@/api/problem';
 import { queryClient } from '@/main';
-import { useExamStore } from '@/stores/examStore';
 import { ExamResultResponse } from '@/types/exam';
 import { ProblemDetail } from '@/types/problem';
 import { useMutation } from '@tanstack/react-query';
@@ -11,18 +10,14 @@ const QUERY_KEYS = {
 };
 
 export const useTogglProblemBookmark = (problemId: number, examId?: number) => {
-  const toggleBookmarkInStore = useExamStore((state) => state.toggleBookmark);
-
   const updateCache = <T>(queryKey: (string | number)[], updateFn: (data: T | undefined) => T | undefined) => {
     queryClient.setQueryData(queryKey, updateFn);
   };
 
   const handleOptimisticUpdate = () => {
-    toggleBookmarkInStore(problemId);
-
     updateCache<ProblemDetail>(QUERY_KEYS.PROBLEM_DETAIL(problemId), (data) => {
       if (data) {
-        return { ...data, bookmarkStatus: !data.bookmarkStatus };
+        return { ...data, bookmarkStatus: !data.bookmarkStatus }; // ✅ store 없이 queryClient만 업데이트
       }
       return data;
     });
@@ -51,7 +46,7 @@ export const useTogglProblemBookmark = (problemId: number, examId?: number) => {
         : undefined;
 
       handleOptimisticUpdate();
-      //console.log('Optimistic Update 상태:', useExamStore.getState().bookmark);
+
       await Promise.all(
         [
           queryClient.cancelQueries({ queryKey: QUERY_KEYS.PROBLEM_DETAIL(problemId) }),
@@ -63,6 +58,7 @@ export const useTogglProblemBookmark = (problemId: number, examId?: number) => {
     },
     onError: (error, _, context) => {
       console.error('북마크 토글 실패:', error);
+
       if (context?.previousProblemDetail) {
         queryClient.setQueryData(QUERY_KEYS.PROBLEM_DETAIL(problemId), context.previousProblemDetail);
       }
@@ -70,7 +66,6 @@ export const useTogglProblemBookmark = (problemId: number, examId?: number) => {
       if (examId && context?.previousExamResult) {
         queryClient.setQueryData(QUERY_KEYS.EXAM_RESULT(examId), context.previousExamResult);
       }
-      toggleBookmarkInStore(problemId);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PROBLEM_DETAIL(problemId) });

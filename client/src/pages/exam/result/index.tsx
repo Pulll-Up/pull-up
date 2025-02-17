@@ -16,7 +16,7 @@ const ExamSolution = lazy(() => import('@/components/exam/solution'));
 const ExamResultPage = () => {
   const navigate = useNavigate();
   const { examId } = useParams();
-  const { setSolutionPage, initializeAndSetOptions, setAnswer, toggleBookmark } = useExamStore();
+  const { setSolutionPage, initializeAndSetOptions, setAnswer } = useExamStore();
   const { data: examResult } = useGetExamResult(Number(examId));
 
   useEffect(() => {
@@ -31,13 +31,8 @@ const ExamResultPage = () => {
       if (problem.chosenAnswer) {
         setAnswer(problem.problemId, problem.chosenAnswer);
       }
-
-      // 북마크 상태 설정
-      if (problem.bookmarkStatus) {
-        toggleBookmark(problem.problemId);
-      }
     });
-  }, [examResult, initializeAndSetOptions, setAnswer, toggleBookmark, setSolutionPage]);
+  }, [examResult, initializeAndSetOptions, setAnswer, setSolutionPage]);
 
   if (!examResult) {
     return <div>시험 결과를 불러오는 데 실패했습니다.</div>;
@@ -112,6 +107,7 @@ const ExamResultPage = () => {
                     questionType: problem.problemType,
                     options: problem.options,
                     chosenAnswer: problem.chosenAnswer,
+                    bookmarkStatus: problem.bookmarkStatus,
                   }}
                 />
                 <ExamSolution
