@@ -6,8 +6,8 @@ import lombok.Builder;
 
 @Builder
 public record MyInterviewAnswerResultResponse(
-        Long interviewId,
-        Long interviewAnswerId,
+        String interviewId,
+        String interviewAnswerId,
         String question,
         String memberAnswer,
         List<String> keywords,
@@ -17,8 +17,8 @@ public record MyInterviewAnswerResultResponse(
         String answer
 ) {
     public static MyInterviewAnswerResultResponse of(
-            Long interviewId,
-            Long interviewAnswerId,
+            String interviewId,
+            String interviewAnswerId,
             String question,
             String memberAnswer,
             List<String> keywords,

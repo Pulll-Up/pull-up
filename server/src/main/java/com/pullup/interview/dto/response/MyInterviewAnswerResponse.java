@@ -4,12 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public record MyInterviewAnswerResponse(
         @Schema(description = "오늘의 문제 ID", example = "1")
-        Long interviewId,
+        String interviewId,
         @Schema(description = "오늘의 문제 답변 ID", example = "1")
-        Long interviewAnswerId
+        String interviewAnswerId
 ) {
 
-    public static MyInterviewAnswerResponse of(Long interviewId, Long interviewAnswerId) {
+    public static MyInterviewAnswerResponse of(String interviewId, String interviewAnswerId) {
         return new MyInterviewAnswerResponse(interviewId, interviewAnswerId);
     }
 }

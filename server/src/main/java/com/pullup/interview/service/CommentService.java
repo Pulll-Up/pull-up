@@ -2,6 +2,7 @@ package com.pullup.interview.service;
 
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
+import com.pullup.common.util.IdEncryptionUtil;
 import com.pullup.interview.domain.Comment;
 import com.pullup.interview.domain.InterviewAnswer;
 import com.pullup.interview.dto.CommentsDto;
@@ -25,6 +26,7 @@ public class CommentService {
     private final MemberService memberService;
     private final InterviewAnswerRepository interviewAnswerRepository;
     private final CommentRepository commentRepository;
+    private final IdEncryptionUtil idEncryptionUtil;
 
     @Transactional
     public PostCommentResponse postComment(
@@ -42,7 +44,9 @@ public class CommentService {
                         interviewAnswer)
         ).getId();
 
-        return PostCommentResponse.of(commentId);
+        String encryptedId = idEncryptionUtil.encrypt(commentId);
+
+        return PostCommentResponse.of(encryptedId);
     }
 
     public Integer getCommentsCount(Long interviewAnswerId) {
@@ -75,7 +79,7 @@ public class CommentService {
                 .stream()
                 .map(
                         comment -> new CommentsDto(
-                                comment.getId(),
+                                idEncryptionUtil.encrypt(comment.getId()),
                                 comment.getMember().getName(),
                                 comment.getMember().getEmail(),
                                 comment.getContent(),
