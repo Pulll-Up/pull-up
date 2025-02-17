@@ -47,4 +47,12 @@ public class Bookmark extends BaseTimeEntity {
     public void toggleBookmarked() {
         this.isBookmarked = !this.isBookmarked;
     }
+
+    public static Bookmark initBookmark(Problem problem, Member member) {
+        return Bookmark.builder()
+                .problem(problem)
+                .member(member)
+                .isBookmarked(false)
+                .build();
+    }
 }
