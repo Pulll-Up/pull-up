@@ -144,6 +144,8 @@ public class ExamService {
         Exam savedExam = examRepository.save(exam);
         saveExamProblems(savedExam, selectedProblems);
 
+        selectedProblems.forEach(problem -> bookmarkRepository.save(Bookmark.initBookmark(problem, member)));
+
         return PostExamResponse.of(savedExam.getId());
     }
 
@@ -166,7 +168,7 @@ public class ExamService {
                     answer.chosenAnswer());
             examProblem.updateCheckedAnswerAndAnswerStauts(answer.chosenAnswer(), isCorrect);
             problem.updateCounts(isCorrect);
-            
+
             MemberExamStatistic memberExamStatistic = memberExamStatisticRepository.findByMemberIdAndSubject(memberId,
                             examProblem.getProblem().getSubject())
                     .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_EXAM_STATISTIC_NOT_FOUND));
