@@ -160,11 +160,13 @@ public class ExamService {
             if (examProblem == null) {
                 throw new NotFoundException(ErrorMessage.ERR_EXAM_PROBLEM_NOT_FOUND);
             }
+            Problem problem = examProblem.getProblem();
 
-            boolean isCorrect = problemAnswerService.isCorrectAnswer(examProblem.getProblem().getId(),
+            boolean isCorrect = problemAnswerService.isCorrectAnswer(problem.getId(),
                     answer.chosenAnswer());
             examProblem.updateCheckedAnswerAndAnswerStauts(answer.chosenAnswer(), isCorrect);
-
+            problem.updateCounts(isCorrect);
+            
             MemberExamStatistic memberExamStatistic = memberExamStatisticRepository.findByMemberIdAndSubject(memberId,
                             examProblem.getProblem().getSubject())
                     .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_EXAM_STATISTIC_NOT_FOUND));
