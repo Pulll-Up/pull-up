@@ -34,13 +34,13 @@ const RedirectPage = () => {
       setIsSolvedToday(auth.isSolvedToday);
       setInterviewAnswerId(auth.interviewAnswerId);
 
+      const member = await getMember();
+
       // 비회원가입 시
       if (!auth.isSignedUp) {
         navigate('/signup');
         return;
       }
-
-      const member = await getMember();
 
       // 관심과목 미선택 시
       if (!member.interestSubjects) {
