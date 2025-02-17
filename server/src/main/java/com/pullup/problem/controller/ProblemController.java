@@ -1,5 +1,6 @@
 package com.pullup.problem.controller;
 
+import com.pullup.common.annotation.DecryptedId;
 import com.pullup.common.util.SecurityUtil;
 import com.pullup.problem.dto.response.GetAllWrongProblemsResponse;
 import com.pullup.problem.dto.response.GetBookmarkedProblemsResponse;
@@ -25,7 +26,7 @@ public class ProblemController implements ProblemApi {
     private final ProblemService problemService;
 
     @PostMapping("/{problemId}")
-    public ResponseEntity<Void> toggleProblemBookmark(@PathVariable("problemId") Long problemId) {
+    public ResponseEntity<Void> toggleProblemBookmark(@PathVariable("problemId") @DecryptedId Long problemId) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
 
         problemService.toggleProblemBookmark(problemId, memberId);
@@ -45,7 +46,7 @@ public class ProblemController implements ProblemApi {
     }
 
     @GetMapping("/{problemId}")
-    public ResponseEntity<GetProblemResponse> getProblem(@PathVariable("problemId") Long problemId) {
+    public ResponseEntity<GetProblemResponse> getProblem(@PathVariable("problemId") @DecryptedId Long problemId) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
 
         GetProblemResponse getProblemResponse = problemService.getProblem(problemId, memberId);

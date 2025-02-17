@@ -94,7 +94,8 @@ public class InterviewController implements InterviewApi {
     @Override
     @GetMapping("/{interviewAnswerId}")
     public ResponseEntity<InterviewAnswerResponse> getInterviewAnswer(
-            @PathVariable("interviewAnswerId") @DecryptedId Long interviewAnswerId) {
+            @PathVariable("interviewAnswerId") @DecryptedId Long interviewAnswerId
+    ) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
         InterviewAnswerResponse interviewAnswerResponse = interviewService.getInterviewAnswer(
                 memberId, interviewAnswerId);
@@ -106,7 +107,8 @@ public class InterviewController implements InterviewApi {
     @Override
     @GetMapping("{interviewId}/all")
     public ResponseEntity<InterviewAnswersResponse> getInterviewAnswers(
-            @PathVariable("interviewId") @DecryptedId Long interviewId) {
+            @PathVariable("interviewId") @DecryptedId Long interviewId
+    ) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
         InterviewAnswersResponse interviewAnswersResponse = interviewService.getInterviewAnswers(memberId, interviewId);
 
@@ -117,7 +119,8 @@ public class InterviewController implements InterviewApi {
     @Override
     @GetMapping("/search")
     public ResponseEntity<SearchedInterviewQuestionsResponse> getSearchedInterviewQuestions(
-            @RequestParam("keyword") String keyword) {
+            @RequestParam("keyword") String keyword
+    ) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
         SearchedInterviewQuestionsResponse searchedInterviewQuestionsResponse = interviewService.getSearchedInterviewQuestions(
                 memberId,
@@ -131,8 +134,10 @@ public class InterviewController implements InterviewApi {
 
     @Override
     @PostMapping("/{interviewId}/comment")
-    public ResponseEntity<PostCommentResponse> postComment(@PathVariable("interviewId") @DecryptedId Long interviewId,
-                                                           @Valid @RequestBody PostCommentRequest postCommentRequest) {
+    public ResponseEntity<PostCommentResponse> postComment(
+            @PathVariable("interviewId") @DecryptedId Long interviewId,
+            @Valid @RequestBody PostCommentRequest postCommentRequest
+    ) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
         PostCommentResponse postCommentResponse = commentService.postComment(memberId, interviewId, postCommentRequest);
 
@@ -142,8 +147,10 @@ public class InterviewController implements InterviewApi {
 
     @Override
     @PatchMapping("/interview-answer/comment/{commentId}")
-    public ResponseEntity<Void> modifyComment(@PathVariable("commentId") @DecryptedId Long commentId,
-                                              @Valid @RequestBody PostCommentRequest postCommentRequest) {
+    public ResponseEntity<Void> modifyComment(
+            @PathVariable("commentId") @DecryptedId Long commentId,
+            @Valid @RequestBody PostCommentRequest postCommentRequest
+    ) {
         commentService.modifyComment(commentId, postCommentRequest);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -161,7 +168,9 @@ public class InterviewController implements InterviewApi {
 
     @Override
     @GetMapping("/{interviewAnswerId}/comment/all")
-    public ResponseEntity<CommentsResponse> getComments(@PathVariable("interviewAnswerId") @DecryptedId Long interviewAnswerId) {
+    public ResponseEntity<CommentsResponse> getComments(
+            @PathVariable("interviewAnswerId") @DecryptedId Long interviewAnswerId
+    ) {
         CommentsResponse commentsResponse = commentService.getComments(interviewAnswerId);
 
         return ResponseEntity.status(HttpStatus.OK)

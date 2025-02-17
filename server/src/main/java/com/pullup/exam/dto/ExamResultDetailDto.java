@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public record ExamResultDetailDto(
-        Long problemId,
+        String problemId,
         String problem,
         List<String> options,
         String chosenAnswer,
@@ -20,13 +20,14 @@ public record ExamResultDetailDto(
         String problemType
 ) {
     public static ExamResultDetailDto of(
+            String problemId,
+            Problem problem,
             ExamProblem examProblem,
             Map<Long, List<String>> problemOptionsMap,
             Map<Long, Boolean> bookmarkStatusMap
     ) {
-        Problem problem = examProblem.getProblem();
         return new ExamResultDetailDto(
-                problem.getId(),
+                problemId,
                 problem.getQuestion(),
                 problemOptionsMap.getOrDefault(problem.getId(), Collections.emptyList()),
                 examProblem.getMemberCheckedAnswer(),

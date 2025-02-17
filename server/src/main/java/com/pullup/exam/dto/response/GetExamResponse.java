@@ -6,19 +6,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 
+@Builder
 public record GetExamResponse(
-        Long examId,
+        String examId,
         String examName,
         LocalDateTime date,
         List<Subject> subjects
 ) {
-    @Builder
-    public GetExamResponse {
-    }
-
-    public static GetExamResponse of(Exam exam, List<Subject> subjects) {
+    public static GetExamResponse of(String examId, Exam exam, List<Subject> subjects) {
         return GetExamResponse.builder()
-                .examId(exam.getId())
+                .examId(examId)
                 .examName(String.format("제 %d회 모의고사", exam.getRound()))
                 .date(exam.getCreatedAt())
                 .subjects(subjects)

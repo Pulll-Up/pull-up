@@ -6,7 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record ExamDetailsDto(
-        Long problemId,
+        String problemId,
         String problem,
         List<String> options,
         String subject,
@@ -14,7 +14,7 @@ public record ExamDetailsDto(
         Boolean bookmarkStatus
 ) {
     public static ExamDetailsDto of(
-            Long problemId,
+            String problemId,
             String problem,
             List<String> options,
             String subject,

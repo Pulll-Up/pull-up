@@ -1,5 +1,6 @@
 package com.pullup.exam.controller;
 
+import com.pullup.common.annotation.DecryptedId;
 import com.pullup.common.util.SecurityUtil;
 import com.pullup.exam.dto.request.PostExamRequest;
 import com.pullup.exam.dto.request.PostExamWithAnswerReqeust;
@@ -33,7 +34,7 @@ public class ExamController implements ExamApi {
     private final ExamService examService;
 
     @GetMapping("/{examId}")
-    public ResponseEntity<GetExamDetailsResponse> getExamDetails(@PathVariable("examId") Long id) {
+    public ResponseEntity<GetExamDetailsResponse> getExamDetails(@PathVariable("examId") @DecryptedId Long id) {
         GetExamDetailsResponse getExamDetailsResponse = examService.getExamDetails(id);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -43,7 +44,6 @@ public class ExamController implements ExamApi {
     @PostMapping("/me")
     public ResponseEntity<PostExamResponse> postExam(@Valid @RequestBody PostExamRequest postExamRequest) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-
         PostExamResponse postExamResponse = examService.postExam(postExamRequest, memberId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -53,7 +53,6 @@ public class ExamController implements ExamApi {
     @GetMapping("/me/all")
     public ResponseEntity<GetAllExamResponse> getAllExamOrderByCreatedAtDesc() {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-
         GetAllExamResponse getAllExamResponse = examService.getAllExamOrderByCreatedAtDesc(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -61,11 +60,11 @@ public class ExamController implements ExamApi {
     }
 
     @PostMapping("/{examId}")
-    public ResponseEntity<Void> postExamWithAnswer(@PathVariable("examId") Long id,
-                                                   @RequestBody PostExamWithAnswerReqeust postExamWithAnswerReqeust) {
-
+    public ResponseEntity<Void> postExamWithAnswer(
+            @PathVariable("examId") @DecryptedId Long id,
+            @RequestBody PostExamWithAnswerReqeust postExamWithAnswerReqeust
+    ) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-
         examService.postExamWithAnswer(id, postExamWithAnswerReqeust, memberId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -73,7 +72,7 @@ public class ExamController implements ExamApi {
     }
 
     @GetMapping("/{examId}/result")
-    public ResponseEntity<GetExamResultResponse> getExamResult(@PathVariable("examId") Long id) {
+    public ResponseEntity<GetExamResultResponse> getExamResult(@PathVariable("examId") @DecryptedId Long id) {
         GetExamResultResponse getExamResultResponse = examService.getExamResult(id);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -83,7 +82,6 @@ public class ExamController implements ExamApi {
     @GetMapping("/me/recent")
     public ResponseEntity<GetExamResponse> getRecentExam() {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-
         GetExamResponse getExamResponse = examService.getExam(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -94,7 +92,6 @@ public class ExamController implements ExamApi {
     public ResponseEntity<GetExamPageResponse> getExamPageOrderByCreatedAt(
             @PageableDefault(size = 10) Pageable pageable) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-
         GetExamPageResponse getExamPageResponse = examService.getExamPageOrderByCreatedAt(pageable, memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -105,7 +102,6 @@ public class ExamController implements ExamApi {
     @GetMapping("/me/score")
     public ResponseEntity<GetExamScoresResponse> getRecentFiveExamScores() {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-
         GetExamScoresResponse getExamScoresResponse = examService.getRecentFiveExamScores(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -115,7 +111,6 @@ public class ExamController implements ExamApi {
     @GetMapping("/me/correct-rate")
     public ResponseEntity<GetExamStrengthResponse> getExamStrength() {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-
         GetExamStrengthResponse getExamStrengthResponse = examService.getExamStrength(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)

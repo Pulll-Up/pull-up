@@ -6,13 +6,13 @@ import lombok.Builder;
 
 @Builder
 public record WrongProblemDto(
-        Long problemId,
+        String problemId,
         String question,
         Subject subject,
         LocalDateTime date
 ) {
 
-    public static WrongProblemDto of(Long problemId, String question, Subject subject, LocalDateTime date) {
+    public static WrongProblemDto of(String problemId, String question, Subject subject, LocalDateTime date) {
         return WrongProblemDto.builder()
                 .problemId(problemId)
                 .question(question)
