@@ -159,7 +159,7 @@ public class GameService {
             log.info("init 처리 되었습니다");
             return GameRoomInfoWithProblemsResponse.of(
                     gameRoom.getRoomId(),
-                    GameRoomStatus.PLAYING,
+                    gameRoom.getGameRoomStatus(),
                     PlayerInfo.of(
                             gameRoom.getPlayer1().getId(),
                             gameRoom.getPlayer1().getName(),

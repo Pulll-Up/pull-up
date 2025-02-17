@@ -56,5 +56,4 @@ public class GameWebSocketController {
         messagingTemplate.convertAndSend(destination, gameRoomResultResponse);
     }
 
-
 }
