@@ -10,12 +10,12 @@ import { Comment } from '@/types/comment';
 import { toast } from 'react-toastify';
 
 // 댓글 전체 조회
-const getComments = async (interviewAnswerId: number) => {
+const getComments = async (interviewAnswerId: string) => {
   const response = await api.get(`interview/${interviewAnswerId}/comment/all`).json<{ comments: Comment[] }>();
   return response.comments;
 };
 
-export const useGetComments = (interviewAnswerId: number) => {
+export const useGetComments = (interviewAnswerId: string) => {
   return useQuery({
     queryKey: ['comments', interviewAnswerId],
     queryFn: () => getComments(interviewAnswerId),
@@ -30,7 +30,7 @@ const createComment = async (comment: CommentCreateRequest): Promise<CreateRespo
   return data;
 };
 
-export const useCreateComment = (interviewAnswerId: number) => {
+export const useCreateComment = (interviewAnswerId: string) => {
   const { mutate } = useMutation({
     mutationFn: (comment: CommentCreateRequest) => {
       return createComment(comment);
@@ -87,7 +87,7 @@ const updateComment = async (comment: CommentUpdateRequest): Promise<void> => {
     .json();
 };
 
-export const useUpdateComment = (interviewAnswerId: number) => {
+export const useUpdateComment = (interviewAnswerId: string) => {
   const { mutate } = useMutation({
     mutationFn: (comment: CommentUpdateRequest) => updateComment(comment),
     onMutate: async (comment: CommentUpdateRequest) => {
@@ -122,7 +122,7 @@ const deleteComment = async (commentId: number) => {
   return await api.delete(`interview/interview-answer/comment/${commentId}`);
 };
 
-export const useDeleteComment = (interviewAnswerId: number) => {
+export const useDeleteComment = (interviewAnswerId: string) => {
   const { mutate } = useMutation({
     mutationFn: (commentId: number) => deleteComment(commentId),
     onMutate: async (commentId: number) => {

@@ -8,19 +8,34 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import InterviewMyAnswer from '@/components/interview/myAnswer';
 import convertDate from '@/utils/convertDate';
 import Icon from '@/components/common/icon';
-import Page404 from '@/pages/404';
+import { toast } from 'react-toastify';
+import LoadingLayout from '@/layouts/loadingLayout';
 
 const InterviewResultPage = () => {
   const navigate = useNavigate();
   const { interviewAnswerId } = useParams();
-  const { data: result } = useGetInterviewResult(Number(interviewAnswerId));
+  const { data: result, isLoading, isError } = useGetInterviewResult(interviewAnswerId!);
   const { data: interviewList } = useGetInterviewList();
 
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  if (!result || !interviewList) {
-    return <Page404 />;
+  // 결과 분석 오류
+  if (isError) {
+    navigate('/');
+    toast.error('존재하지 않는 페이지입니다.', {
+      position: 'bottom-center',
+      toastId: 'not-found',
+    });
+
+    return;
+  }
+
+  // 결과 분석 로딩
+  if (isLoading) {
+    return <LoadingLayout />;
+  } else {
+    if (!result || !interviewList) return null;
   }
 
   const handleMenuClick = () => {
@@ -33,9 +48,9 @@ const InterviewResultPage = () => {
   };
 
   // 지난 문제 보기
-  const onInterviewClick = (interviewAnswerId: number) => {
-    navigate(`/interview/result/${interviewAnswerId}`);
+  const onInterviewClick = (interviewAnswerId: string) => {
     setIsModalOpen(false);
+    navigate(`/interview/result/${interviewAnswerId}`);
   };
 
   const formatDate = convertDate(result.createdAt).split('-');
@@ -55,6 +70,29 @@ const InterviewResultPage = () => {
           handleSearchClick={() => setIsModalOpen(true)}
           onInterviewClick={onInterviewClick}
         />
+
+        {/* 데스크탑 뷰 (lg 이상) */}
+        <div className="hidden w-full flex-col gap-8 lg:flex lg:flex-row">
+          <div className="flex flex-[4.5] flex-col gap-6">
+            <button className="flex items-center gap-4">
+              {!isSideMenuOpen ? (
+                <Icon id="menu" size={20} onClick={() => setIsSideMenuOpen(true)} className="h-auto md:w-6" />
+              ) : null}
+              <span className="text-xl font-semibold md:text-2xl">
+                {`${formatDate[0]}년 ${formatDate[1]}월 ${formatDate[2]}일`}
+              </span>
+            </button>
+            <InterviewMyAnswer question={result.question} answer={result.memberAnswer} onButtonClick={onButtonClick} />
+          </div>
+          <div className="flex flex-[5.5]">
+            <InterviewFeedback
+              keywords={result.keywords}
+              strength={result.strength}
+              weakness={result.weakness}
+              answer={result.answer}
+            />
+          </div>
+        </div>
 
         {/* 모바일/태블릿 뷰 (md 미만) */}
         <div className="flex w-full flex-col gap-6 lg:hidden">
@@ -97,29 +135,6 @@ const InterviewResultPage = () => {
               />
             </TabsContent>
           </Tabs>
-        </div>
-
-        {/* 데스크탑 뷰 (lg 이상) */}
-        <div className="hidden w-full flex-col gap-8 lg:flex lg:flex-row">
-          <div className="flex flex-[4.5] flex-col gap-6">
-            <button className="flex items-center gap-4">
-              {!isSideMenuOpen ? (
-                <Icon id="menu" size={20} onClick={() => setIsSideMenuOpen(true)} className="h-auto md:w-6" />
-              ) : null}
-              <span className="text-xl font-semibold md:text-2xl">
-                {`${formatDate[0]}년 ${formatDate[1]}월 ${formatDate[2]}일`}
-              </span>
-            </button>
-            <InterviewMyAnswer question={result.question} answer={result.memberAnswer} onButtonClick={onButtonClick} />
-          </div>
-          <div className="flex flex-[5.5]">
-            <InterviewFeedback
-              keywords={result.keywords}
-              strength={result.strength}
-              weakness={result.weakness}
-              answer={result.answer}
-            />
-          </div>
         </div>
 
         {isModalOpen && <SearchModal onClose={() => setIsModalOpen(false)} onInterviewClick={onInterviewClick} />}

@@ -5,22 +5,16 @@ import CommentItem from '@/components/interview/commentItem';
 import InputForm from '@/components/interview/inputForm';
 import InterviewAnswerItem from '@/components/interview/interviewAnswerItem';
 import { useComment } from '@/hooks/useComment';
-import Page404 from '@/pages/404';
 import { memberStore } from '@/stores/memberStore';
-import { Comment } from '@/types/comment';
-import { InterviewAnswer } from '@/types/interview';
 import convertDate from '@/utils/convertDate';
-import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const InterviewAnswerDetail = () => {
-  const { member } = memberStore.getState();
   const navigate = useNavigate();
   const { interviewId, interviewAnswerId } = useParams();
-  const { data: interviewAnswer, isLoading: isAnswerLoading } = useGetInterviewAnswerDetail(Number(interviewAnswerId));
-  const [interviewAnswerData, setInterviewAnswerData] = useState<InterviewAnswer>();
-  const { data: comments, isLoading: isCommentsLoading } = useGetComments(Number(interviewAnswerId));
-  const [commentsData, setCommentsData] = useState<Comment[]>();
+  const { member } = memberStore();
+  const { data: interviewAnswer } = useGetInterviewAnswerDetail(interviewAnswerId!);
+  const { data: comments } = useGetComments(interviewAnswerId!);
 
   // 댓글 훅
   const {
@@ -34,18 +28,7 @@ const InterviewAnswerDetail = () => {
     onCancelClick,
     onConfirmClick,
     handleCommentDelete,
-  } = useComment({ interviewAnswerId: Number(interviewAnswerId) });
-
-  const likeMutation = useCreateInterviewAnswerLike(Number(interviewId));
-
-  useEffect(() => {
-    if (!isAnswerLoading && interviewAnswer) {
-      setInterviewAnswerData(interviewAnswer);
-    }
-    if (!isCommentsLoading && comments) {
-      setCommentsData(comments);
-    }
-  }, [interviewAnswer, isAnswerLoading, comments, isCommentsLoading]);
+  } = useComment({ interviewAnswerId: interviewAnswerId! });
 
   // 다른 사람 답변 목록으로 돌아가기
   const onBackClick = () => {
@@ -53,27 +36,26 @@ const InterviewAnswerDetail = () => {
   };
 
   // 좋아요 토글
+  const likeMutation = useCreateInterviewAnswerLike(interviewId!);
   const handleLikeClick = () => {
-    likeMutation(Number(interviewAnswerId));
+    likeMutation(interviewAnswerId!);
   };
 
-  if (!member || !interviewAnswerData || !commentsData) {
-    return <Page404 />;
-  }
+  if (!member || !interviewAnswer || !comments) return null;
 
   return (
     <div className="min-h-full bg-Main px-6 py-10 md:px-10 xl:px-20">
       <div className="mt-[94px] flex flex-col gap-4 rounded-2xl sm:mt-16 md:gap-6 md:border md:border-primary-200 md:bg-white md:p-6">
         <RouteHeader prev="다른 사람의 답변 목록" title="답변 상세 보기" onBackClick={onBackClick} />
         <InterviewAnswerItem
-          id={interviewAnswerData.interviewAnswerId}
-          userName={interviewAnswerData.memberName}
-          content={interviewAnswerData.answer}
-          keywords={interviewAnswerData.keywords}
-          date={convertDate(interviewAnswerData.createdAt)}
-          likeCount={interviewAnswerData.likeCount}
-          commentCount={interviewAnswerData.commentCount}
-          liked={interviewAnswerData.isLiked}
+          id={interviewAnswer.interviewAnswerId}
+          userName={interviewAnswer.memberName}
+          content={interviewAnswer.answer}
+          keywords={interviewAnswer.keywords}
+          date={convertDate(interviewAnswer.createdAt)}
+          likeCount={interviewAnswer.likeCount}
+          commentCount={interviewAnswer.commentCount}
+          liked={interviewAnswer.isLiked}
           handleLikeClick={handleLikeClick}
         />
         <InputForm
@@ -85,8 +67,8 @@ const InterviewAnswerDetail = () => {
           onKeyDown={onKeyDown}
         />
         <div>
-          {commentsData && commentsData.length > 0 ? (
-            commentsData.map((comment, index) => (
+          {comments && comments.length > 0 ? (
+            comments.map((comment, index) => (
               <div key={index}>
                 <CommentItem
                   userEmail={member.email}

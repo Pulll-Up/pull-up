@@ -1,9 +1,10 @@
+import { ButtonMouseEvent } from '@/types/event';
 import Icon from '../icon';
 
 interface RouteHeaderProps {
   prev: string;
   title: string;
-  onBackClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onBackClick: (e: ButtonMouseEvent) => void;
 }
 
 const RouteHeader = ({ prev, title, onBackClick }: RouteHeaderProps) => {

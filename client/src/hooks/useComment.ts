@@ -1,10 +1,11 @@
 import { useCreateComment, useDeleteComment, useUpdateComment } from '@/api/comment';
+import { TextAreaChangeEvent, TextAreaKeyboardEvent } from '@/types/event';
 import { debounce } from 'lodash';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 interface useCommentProps {
-  interviewAnswerId: number;
+  interviewAnswerId: string;
 }
 
 export const useComment = ({ interviewAnswerId }: useCommentProps) => {
@@ -12,7 +13,7 @@ export const useComment = ({ interviewAnswerId }: useCommentProps) => {
   const [inputValue, setInputValue] = useState('');
   const createComment = useCreateComment(interviewAnswerId);
 
-  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onChange = (e: TextAreaChangeEvent) => {
     setInputValue(e.target.value);
   };
 
@@ -22,7 +23,7 @@ export const useComment = ({ interviewAnswerId }: useCommentProps) => {
     setInputValue('');
   }, 300);
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const onKeyDown = (e: TextAreaKeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       onSubmit();
@@ -42,7 +43,7 @@ export const useComment = ({ interviewAnswerId }: useCommentProps) => {
   };
 
   // 댓글 수정 중
-  const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>, commentId: number) => {
+  const onCommentChange = (e: TextAreaChangeEvent, commentId: number) => {
     setUpdatedComment((prev) => ({
       ...prev,
       id: commentId,

@@ -63,12 +63,12 @@ export const useCreateAnswer = (request: AnswerRequest) => {
 };
 
 // 결과 조회
-const getInterviewResult = (interviewAnswerId: number): Promise<InterviewResultResponse> => {
+const getInterviewResult = (interviewAnswerId: string): Promise<InterviewResultResponse> => {
   const data = api.get(`interview/${interviewAnswerId}/result`).json<InterviewResultResponse>();
   return data;
 };
 
-export const useGetInterviewResult = (interviewAnswerId: number) => {
+export const useGetInterviewResult = (interviewAnswerId: string) => {
   return useQuery({
     queryKey: ['result', interviewAnswerId],
     queryFn: () => getInterviewResult(interviewAnswerId),
@@ -100,12 +100,12 @@ export const getInterviewListByKeyword = async (keyword: string): Promise<Interv
 };
 
 // 다른 사람 답변 전체 조회
-const getInterviewAnswers = async (interviewId: number): Promise<InterviewAnswer[]> => {
+const getInterviewAnswers = async (interviewId: string): Promise<InterviewAnswer[]> => {
   const response = await api.get(`interview/${interviewId}/all`).json<{ interviewAnswers: InterviewAnswer[] }>();
   return response.interviewAnswers;
 };
 
-export const useGetInterviewAnswers = (interviewId: number) => {
+export const useGetInterviewAnswers = (interviewId: string) => {
   return useQuery({
     queryKey: ['interviewAnswers', interviewId],
     queryFn: () => getInterviewAnswers(interviewId),
@@ -113,12 +113,12 @@ export const useGetInterviewAnswers = (interviewId: number) => {
 };
 
 // 다른 사람 답변 단건 조회
-const getInterviewAnswerDetail = async (interviewAnswerId: number) => {
+const getInterviewAnswerDetail = async (interviewAnswerId: string) => {
   const response = await api.get(`interview/${interviewAnswerId}`).json<{ interviewAnswer: InterviewAnswer }>();
   return response.interviewAnswer;
 };
 
-export const useGetInterviewAnswerDetail = (interviewAnswerId: number) => {
+export const useGetInterviewAnswerDetail = (interviewAnswerId: string) => {
   return useQuery({
     queryKey: ['interviewAnswerDetail', interviewAnswerId],
     queryFn: () => getInterviewAnswerDetail(interviewAnswerId),
@@ -126,14 +126,14 @@ export const useGetInterviewAnswerDetail = (interviewAnswerId: number) => {
 };
 
 // 다른 사람 답변 좋아요
-const createInterviewAnswerLike = async (interviewAnswerId: number): Promise<LikeResponse> => {
+const createInterviewAnswerLike = async (interviewAnswerId: string): Promise<LikeResponse> => {
   const data = await api.post(`interview/${interviewAnswerId}/like`).json<LikeResponse>();
   return data;
 };
 
-export const useCreateInterviewAnswerLike = (interviewId: number) => {
+export const useCreateInterviewAnswerLike = (interviewId: string) => {
   const { mutate } = useMutation({
-    mutationFn: (interviewAnswerId: number) => createInterviewAnswerLike(interviewAnswerId),
+    mutationFn: (interviewAnswerId: string) => createInterviewAnswerLike(interviewAnswerId),
     onMutate: async (interviewAnswerId) => {
       await Promise.all([
         queryClient.cancelQueries({ queryKey: ['interviewAnswers', interviewId] }),

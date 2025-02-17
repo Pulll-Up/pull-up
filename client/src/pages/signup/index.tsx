@@ -1,16 +1,21 @@
 import { signup } from '@/api/auth';
 import { getMember } from '@/api/member';
 import CsConditionSelector from '@/components/common/csConditionSelector';
+import ProgressSteps from '@/components/common/progressSteps';
 import { queryClient } from '@/main';
 import { memberStore } from '@/stores/memberStore';
 import { Subject } from '@/types/member';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import CompleteMessage from '@/components/common/completeMessage';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { setMember, setIsLoggedIn } = memberStore();
+  const [progress, setProgress] = useState(1);
+  const [showLoginComplete, setShowLoginComplete] = useState(false);
+  const [showSelector, setShowSelector] = useState(false);
 
   useEffect(() => {
     const fetchMember = async () => {
@@ -19,29 +24,38 @@ const SignUpPage = () => {
         queryFn: getMember,
       });
 
-      // 기존 사용자는 재가입 불가
       if (member.interestSubjects.length > 0) {
+        navigate('/');
         toast.info('이미 가입된 회원입니다.', {
           position: 'bottom-center',
           toastId: 'member-checked',
         });
-
-        setTimeout(() => {
-          navigate(-1);
-        }, 3000);
-
         return;
       }
+
+      setShowLoginComplete(true);
+
+      setTimeout(() => {
+        setProgress(2);
+
+        // 프로그레스바 변경 후 0.5초 뒤에 로그인 완료 메시지 페이드아웃
+        setTimeout(() => {
+          setShowLoginComplete(false);
+          // 메시지 페이드아웃 후 0.3초 뒤에 선택기 표시
+          setTimeout(() => {
+            setShowSelector(true);
+          }, 300);
+        }, 500);
+      }, 2000);
     };
 
     fetchMember();
   }, []);
 
   const onConfirmSignUp = async (selectedSubjects: Subject[]) => {
-    // 회원가입 완료
     await signup(selectedSubjects);
+    setProgress(3);
 
-    // 사용자 정보 조회
     const member = await getMember();
 
     if (!member) {
@@ -49,52 +63,99 @@ const SignUpPage = () => {
         position: 'bottom-center',
         toastId: 'member-required',
       });
-
+      setProgress(2);
       return;
     }
 
     setMember(member);
     setIsLoggedIn(true);
 
-    toast.success('회원가입이 완료되었습니다.', {
-      position: 'bottom-center',
-      toastId: 'signed-up',
-    });
-
     setTimeout(() => {
       navigate('/');
-    }, 3000);
+      toast.success('회원가입이 완료되었습니다.', {
+        position: 'bottom-center',
+        toastId: 'signed-up',
+      });
+    }, 300);
   };
 
   return (
-    <div
-      className="relative flex h-full w-full items-center pt-[94px] sm:pt-16"
-      style={{
-        background: `
-        radial-gradient(circle at 50% 50%, rgb(255, 255, 255) 0%, transparent 100%),
-        radial-gradient(circle at 50% 10%, rgb(186, 230, 253) 0%, transparent 30%),
-        radial-gradient(circle at 80% 80%, rgb(227, 227, 255) 0%, transparent 50%),
-        linear-gradient(180deg, rgb(219, 234, 254) 0%, rgb(255, 255, 255) 100%)
-      `,
-      }}
-    >
-      <div className="relative flex h-full w-full items-center justify-around lg:p-10 xl:p-20">
-        {/* 좌측 컨테이너 */}
-        <div className="flex flex-col gap-12">
-          <CsConditionSelector
-            title="관심 과목 선택"
-            text="회원가입"
-            onClick={(level, subjects) => onConfirmSignUp(subjects)}
-          />
+    <>
+      <style>
+        {`
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @keyframes fadeOut {
+            from {
+              opacity: 1;
+              transform: translateY(0);
+            }
+            to {
+              opacity: 0;
+              transform: translateY(-20px);
+            }
+          }
+
+          .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+          }
+
+          .animate-fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+          }
+        `}
+      </style>
+
+      <div
+        className="relative flex h-full w-full flex-col items-center pt-[94px] sm:pt-16"
+        style={{
+          background: `
+          radial-gradient(circle at 50% 50%, rgb(255, 255, 255) 0%, transparent 100%),
+          radial-gradient(circle at 50% 10%, rgb(186, 230, 253) 0%, transparent 30%),
+          radial-gradient(circle at 80% 80%, rgb(227, 227, 255) 0%, transparent 50%),
+          linear-gradient(180deg, rgb(219, 234, 254) 0%, rgb(255, 255, 255) 100%)
+        `,
+        }}
+      >
+        {/* 프로그레스바 컨테이너 */}
+        <div className="flex h-full w-full flex-col items-center justify-start gap-10 p-36">
+          <div className="sticky">
+            <ProgressSteps currentStep={progress} totalStep={2} />
+          </div>
+
+          {/* 메인 컨텐츠 영역 */}
+          <div className="flex h-[381px] w-[300px] items-center justify-center rounded-2xl bg-white shadow-sm md:h-[464px] md:min-w-[400px] xl:min-w-[450px]">
+            {showLoginComplete && (
+              <div className={`absolute ${!showSelector ? '' : 'animate-fade-out'}`}>
+                <CompleteMessage
+                  title="소셜 로그인 완료!"
+                  subTitle="곧 마지막 절차로 이동합니다. 잠시만 기다려주세요."
+                />
+              </div>
+            )}
+
+            {showSelector && (
+              <div className="animate-fade-in-up">
+                <CsConditionSelector
+                  title="관심 과목 선택"
+                  text="회원가입"
+                  onClick={(level, subjects) => onConfirmSignUp(subjects)}
+                />
+              </div>
+            )}
+          </div>
         </div>
-        {/* 우측 컨테이너 */}
-        <img
-          src="/assets/images/exam1.png"
-          alt="대문 이미지"
-          className="hidden h-auto w-[400px] lg:block xl:w-[600px]"
-        />
       </div>
-    </div>
+    </>
   );
 };
 

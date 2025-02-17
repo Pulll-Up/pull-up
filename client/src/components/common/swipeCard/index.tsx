@@ -1,8 +1,8 @@
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from '@/components/ui/carousel';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import SwipeDots from './SwipeDots';
 
-type examComponent = { id: string; component: React.ReactNode };
+type examComponent = { id: string; component: ReactNode };
 interface SwipeCardProps {
   components: examComponent[];
   dots?: boolean;

@@ -11,7 +11,7 @@ const DashboardFeedback = () => {
   const { data: result, isLoading } = useGetInterviewResult(interviewAnswerId);
 
   const [resultData, setResultData] = useState<InterviewResultResponse>({
-    interviewId: 1,
+    interviewId: '1',
     question: '프로세스와 스레드의 차이에 대해서 설명해주세요.',
     memberAnswer:
       '프로세스는 운영체제에서 독립적으로 실행되는 프로그램의 단위이며, 스레드는 프로세스 내에서 실행되는 작은 작업 단위입니다. 각 프로세스는 독립적인 메모리 공간을 가지고 있지만, 스레드는 프로세스 내에서 메모리를 공유합니다.',
