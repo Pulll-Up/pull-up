@@ -147,7 +147,7 @@ public class SubscriptionEventListener {
             GameRoomStatus gameRoomStatus = gameService.getGameRoomStatus(roomId);
             if (gameRoomStatus == GameRoomStatus.WAITING) {
                 log.info("구독 해제 후 방 상태가 WAITING이므로 방 삭제 - Room ID: {}", roomId);
-                gameService.deleteGameRoom(roomId);
+                gameService.deleteGameRoomWithPlayerId(roomId);
             } else {
                 log.info("구독 해제되었지만 방 상태가 WAITING이 아님 - Room ID: {}, Status: {}", roomId, gameRoomStatus);
             }

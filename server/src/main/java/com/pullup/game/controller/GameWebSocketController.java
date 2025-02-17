@@ -49,7 +49,7 @@ public class GameWebSocketController {
         GameRoomResultResponse gameRoomResultResponse = gameService.getGameRoomResult(roomId);
 
         // 게임 방 삭제
-        gameService.deleteGameRoom(roomId);
+        gameService.deleteGameRoomWithPlayerId(roomId);
 
         // 구독 중인 클라이언트들에게 결과 전송
         String destination = "/topic/game/" + roomId + "/result";
