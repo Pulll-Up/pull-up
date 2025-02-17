@@ -1,5 +1,6 @@
 import Header from '@/components/common/header/Header';
 import MobileHeader from '@/components/common/header/MobileHeader';
+import PageSpinner from '@/components/fallbacks/spinners/PageSpinner';
 import { cn } from '@/lib/utils';
 import { memberStore } from '@/stores/memberStore';
 import { Suspense, useEffect } from 'react';
@@ -8,12 +9,6 @@ import { toast } from 'react-toastify';
 
 const SM_STYLE = 'mx-auto max-w-[430px]';
 const BASIC_STYLE = 'sm:mx-0 sm:max-w-full w-full h-screen';
-
-const PageFallback = () => (
-  <div className="flex h-full items-center justify-center bg-Main">
-    <span className="text-lg font-semibold">페이지 로딩 중...</span>
-  </div>
-);
 
 const MainLayout = () => {
   const location = useLocation();
@@ -39,7 +34,7 @@ const MainLayout = () => {
       <Header />
       <MobileHeader />
       <main className="h-full w-full">
-        <Suspense fallback={<PageFallback />}>
+        <Suspense fallback={<PageSpinner />}>
           <Outlet />
         </Suspense>
       </main>
