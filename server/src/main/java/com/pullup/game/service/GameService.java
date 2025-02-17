@@ -77,6 +77,7 @@ public class GameService {
         if (gameRoomRepository.findByRoomId(gameRoom.getRoomId()).isEmpty()) {
             gameRoomRepository.save(gameRoom);
             problemService.generateProblemsForRandomMatching(gameRoom.getRoomId());
+            log.info("랜덤매칭 게임방 저장 - id : {}", gameRoom.getRoomId());
         }
 
         return CreateRoomResponse.of(
