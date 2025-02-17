@@ -7,13 +7,13 @@ interface Option {
 
 interface ExamState {
   isSolutionPage: boolean;
-  answers: Record<number, string>;
-  options: Record<number, Option[]>;
+  answers: Record<string, string>;
+  options: Record<string, Option[]>;
   setSolutionPage: (isSolution: boolean) => void;
-  setAnswer: (problemId: number, answer: string) => void;
-  updateOptionState: (problemId: number, index: number, state: Option['state']) => void;
+  setAnswer: (problemId: string, answer: string) => void;
+  updateOptionState: (problemId: string, index: number, state: Option['state']) => void;
   initializeAndSetOptions: (
-    problemId: number,
+    problemId: string,
     options: string[],
     params?: { answer?: string; chosenAnswer?: string },
   ) => void;

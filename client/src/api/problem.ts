@@ -49,9 +49,9 @@ export const useGetWrongProblemsByTitle = (searchValue: string) => {
 };
 
 // 문제 단건 조회
-const getProblemDetail = (problemId: number) => api.get<ProblemDetail>(`problem/${problemId}`).json();
+const getProblemDetail = (problemId: string) => api.get<ProblemDetail>(`problem/${problemId}`).json();
 
-export const useGetProblemDetail = (problemId: number) =>
+export const useGetProblemDetail = (problemId: string) =>
   useSuspenseQuery({
     queryKey: ['problemDetail', problemId],
     queryFn: () => getProblemDetail(problemId),
@@ -67,7 +67,7 @@ export const useGetArchivedProblemAll = () =>
   });
 
 // 문제 북마크
-export const toggleProblemBookmark = async (problemId: number) => {
+export const toggleProblemBookmark = async (problemId: string) => {
   await api.post(`problem/${problemId}`);
 };
 
