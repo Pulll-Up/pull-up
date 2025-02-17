@@ -1,10 +1,10 @@
 package com.pullup.exam.dto.response;
 
 public record PostExamResponse(
-        Long examId
+        String examId
 
 ) {
-    public static PostExamResponse of(Long examId) {
+    public static PostExamResponse of(String examId) {
         return new PostExamResponse(examId);
     }
 }

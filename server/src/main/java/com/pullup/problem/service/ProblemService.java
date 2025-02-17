@@ -2,6 +2,7 @@ package com.pullup.problem.service;
 
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
+import com.pullup.common.util.IdEncryptionUtil;
 import com.pullup.exam.domain.ExamProblem;
 import com.pullup.exam.repository.ExamProblemRepository;
 import com.pullup.game.dto.CardType;
@@ -49,6 +50,7 @@ public class ProblemService {
     private final ProblemOptionRepository problemOptionRepository;
     private final ExamProblemRepository examProblemRepository;
     private final GameRoomRepository gameRoomRepository;
+    private final IdEncryptionUtil idEncryptionUtil;
 
     @Transactional
     public void toggleProblemBookmark(Long problemId, Long memberId) {
@@ -85,7 +87,8 @@ public class ProblemService {
         List<Bookmark> bookmarks = bookmarkRepository.findBookmarkedProblemsByMemberIdWithProblemOrderByModifiedAtDesc(
                 memberId);
         List<BookmarkedProblemDto> bookmarkedProblemDtos = bookmarks.stream()
-                .map(BookmarkedProblemDto::of)
+                .map(bookmark -> BookmarkedProblemDto.of(idEncryptionUtil.encrypt(bookmark.getProblem().getId()),
+                        bookmark))
                 .toList();
 
         return GetBookmarkedProblemsResponse.of(bookmarkedProblemDtos);
@@ -111,7 +114,7 @@ public class ProblemService {
                         memberId, false)
                 .stream()
                 .map(examProblem -> new RecentWrongQuestionDto(
-                        examProblem.getProblem().getId(),
+                        idEncryptionUtil.encrypt(examProblem.getProblem().getId()),
                         examProblem.getProblem().getQuestion(),
                         examProblem.getProblem().getSubject()
                 ))
@@ -133,7 +136,7 @@ public class ProblemService {
                         memberId)
                 .stream()
                 .map(examProblem -> WrongProblemDto.of(
-                        examProblem.getProblem().getId(),
+                        idEncryptionUtil.encrypt(examProblem.getProblem().getId()),
                         examProblem.getProblem().getQuestion(),
                         examProblem.getProblem().getSubject(),
                         examProblem.getCreatedAt()
@@ -274,7 +277,7 @@ public class ProblemService {
                 .collect(Collectors.toMap(
                         ep -> ep.getProblem().getId(),
                         ep -> WrongProblemDto.of(
-                                ep.getProblem().getId(),
+                                idEncryptionUtil.encrypt(ep.getProblem().getId()),
                                 ep.getProblem().getQuestion(),
                                 ep.getProblem().getSubject(),
                                 ep.getCreatedAt()
@@ -292,7 +295,8 @@ public class ProblemService {
                 title);
 
         List<BookmarkedProblemDto> bookmarkedProblemDtos = bookmarks.stream()
-                .map(BookmarkedProblemDto::of)
+                .map(bookmark -> BookmarkedProblemDto.of(idEncryptionUtil.encrypt(bookmark.getProblem().getId()),
+                        bookmark))
                 .collect(Collectors.toList());
 
         return SearchBookmarkedProblemsResponse.of(bookmarkedProblemDtos);

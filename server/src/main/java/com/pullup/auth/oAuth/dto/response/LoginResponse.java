@@ -9,7 +9,7 @@ public record LoginResponse(
         @Schema(description = "오늘 문제 풀이 여부", example = "false")
         boolean isSolvedToday,
         @Schema(description = "문제를 푼 경우, 정답 번호를 반환", example = "1")
-        Long interviewAnswerId
+        String interviewAnswerId
 ) {
 
     public static LoginResponse isFirstLogin() {
@@ -20,7 +20,7 @@ public record LoginResponse(
         return new LoginResponse(true, false, null);
     }
 
-    public static LoginResponse isNotFirstLoginAndSolvedToday(Long interviewAnswerId) {
+    public static LoginResponse isNotFirstLoginAndSolvedToday(String interviewAnswerId) {
         return new LoginResponse(true, true, interviewAnswerId);
     }
 }

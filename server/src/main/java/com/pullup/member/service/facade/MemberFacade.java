@@ -72,7 +72,8 @@ public class MemberFacade {
         }
     }
 
-    public Long getTodayInterviewAnswerId(Long memberId) {
-        return interviewService.getTodayInterviewAnswerId(memberId);
+    public String getEncryptedTodayInterviewAnswerId(Long memberId) {
+        Long todayInterviewAnswerId = interviewService.getTodayInterviewAnswerId(memberId);
+        return idEncryptionUtil.encrypt(todayInterviewAnswerId);
     }
 }

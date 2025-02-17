@@ -3,6 +3,7 @@ package com.pullup.exam.service;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.InternalServerException;
 import com.pullup.common.exception.NotFoundException;
+import com.pullup.common.util.IdEncryptionUtil;
 import com.pullup.exam.domain.DifficultyLevel;
 import com.pullup.exam.domain.Exam;
 import com.pullup.exam.domain.ExamProblem;
@@ -64,6 +65,7 @@ public class ExamService {
     private final MemberExamStatisticRepository examStatisticRepository;
     private final MemberExamStatisticRepository memberExamStatisticRepository;
     private final ProblemAnswerService problemAnswerService;
+    private final IdEncryptionUtil idEncryptionUtil;
 
     public GetExamDetailsResponse getExamDetails(Long examId) {
         Exam exam = findExamById(examId);
@@ -78,7 +80,7 @@ public class ExamService {
 
         List<ExamDetailsDto> examDetailsDtos = examProblems.stream()
                 .map(examProblem -> ExamDetailsDto.of(
-                        examProblem.getProblem().getId(),
+                        idEncryptionUtil.encrypt(examProblem.getProblem().getId()),
                         examProblem.getProblem().getQuestion(),
                         problemOptionsMap.getOrDefault(examProblem.getProblem().getId(), Collections.emptyList()),
                         examProblem.getProblem().getSubject().name(),
@@ -146,7 +148,7 @@ public class ExamService {
 
         selectedProblems.forEach(problem -> bookmarkRepository.save(Bookmark.initBookmark(problem, member)));
 
-        return PostExamResponse.of(savedExam.getId());
+        return PostExamResponse.of(idEncryptionUtil.encrypt(savedExam.getId()));
     }
 
     @Transactional
@@ -199,6 +201,8 @@ public class ExamService {
 
         List<ExamResultDetailDto> examResultDetailDtos = examProblems.stream()
                 .map(examProblem -> ExamResultDetailDto.of(
+                        idEncryptionUtil.encrypt(examProblem.getProblem().getId()),
+                        examProblem.getProblem(),
                         examProblem,
                         problemOptionsMap,
                         bookmarkStatusMap
@@ -312,7 +316,7 @@ public class ExamService {
         Exam exam = findFirstExamByMemberId(memberId);
         List<Subject> subjects = findSubjectsOfExam(exam.getId());
 
-        return GetExamResponse.of(exam, subjects);
+        return GetExamResponse.of(idEncryptionUtil.encrypt(exam.getId()), exam, subjects);
     }
 
     // 시험에 있는 문제 조회해서, 문제 과목 알아오기
@@ -341,6 +345,7 @@ public class ExamService {
 
         List<GetExamResponse> content = examPage.stream()
                 .map(exam -> GetExamResponse.of(
+                        idEncryptionUtil.encrypt(exam.getId()),
                         exam,
                         findSubjectsOfExam(exam.getId())
                 ))
@@ -368,6 +373,7 @@ public class ExamService {
 
         List<GetExamResponse> examResponses = exams.stream()
                 .map(exam -> GetExamResponse.of(
+                        idEncryptionUtil.encrypt(exam.getId()),
                         exam,
                         findSubjectsOfExam(exam.getId()) // 시험의 과목 목록 조회
                 ))
