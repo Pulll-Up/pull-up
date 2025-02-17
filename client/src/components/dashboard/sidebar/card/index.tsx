@@ -7,7 +7,7 @@ interface CardProps {
   link: string;
   title: string;
   data: {
-    id: number;
+    id: number | string;
     content: string;
     date?: string;
     subjects: string[];

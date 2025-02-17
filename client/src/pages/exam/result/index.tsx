@@ -14,8 +14,9 @@ const ExamSolution = lazy(() => import('@/components/exam/solution'));
 const ExamResultPage = () => {
   const navigate = useNavigate();
   const { examId } = useParams();
+  const validExamId = examId ? examId : '';
   const { setSolutionPage, initializeAndSetOptions, setAnswer } = useExamStore();
-  const { data: examResult } = useGetExamResult(Number(examId));
+  const { data: examResult } = useGetExamResult(validExamId);
 
   useEffect(() => {
     setSolutionPage(true); // 결과 페이지로 설정
