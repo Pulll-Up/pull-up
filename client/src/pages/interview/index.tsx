@@ -1,7 +1,7 @@
 import { createAnswer, useGetInterview } from '@/api/interview';
 import InputForm from '@/components/interview/inputForm';
 import InterviewCard from '@/components/interview/interviewCard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { TextAreaChangeEvent, TextAreaKeyboardEvent } from '@/types/event';
@@ -9,17 +9,30 @@ import { memberStore } from '@/stores/memberStore';
 
 const InterviewPage = () => {
   const navigate = useNavigate();
-  const { member, setInterviewAnswerId, setIsSolvedToday } = memberStore();
+  const { member, setInterviewAnswerId, setIsSolvedToday, isSolvedToday } = memberStore();
   const { data } = useGetInterview();
 
   const [hint, setHint] = useState(false);
   const [answer, setAnswer] = useState('');
+
+  useEffect(() => {
+    if (isSolvedToday) {
+      navigate('/');
+      toast.info('오늘의 문제를 이미 풀었습니다. 결과를 확인하세요!', {
+        position: 'bottom-center',
+        toastId: 'interview-solved',
+      });
+
+      return;
+    }
+  }, []);
 
   if (!data || !member) return null;
 
   const onSubmit = async () => {
     if (!answer) {
       toast.error('답변을 입력해주세요.', { position: 'bottom-center', toastId: 'answer-required' });
+
       return;
     }
 

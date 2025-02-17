@@ -21,14 +21,11 @@ const SignUpPage = () => {
 
       // 기존 사용자는 재가입 불가
       if (member.interestSubjects.length > 0) {
+        navigate('/');
         toast.info('이미 가입된 회원입니다.', {
           position: 'bottom-center',
           toastId: 'member-checked',
         });
-
-        setTimeout(() => {
-          navigate(-1);
-        }, 3000);
 
         return;
       }
@@ -56,14 +53,13 @@ const SignUpPage = () => {
     setMember(member);
     setIsLoggedIn(true);
 
+    navigate('/');
     toast.success('회원가입이 완료되었습니다.', {
       position: 'bottom-center',
       toastId: 'signed-up',
     });
 
-    setTimeout(() => {
-      navigate('/');
-    }, 3000);
+    return;
   };
 
   return (

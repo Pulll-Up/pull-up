@@ -2,12 +2,13 @@ import { useGetInterviewList, useGetInterviewResult } from '@/api/interview';
 import SearchModal from '@/components/interview/searchModal';
 import SideMenu from '@/components/interview/sideMenu';
 import InterviewFeedback from '@/components/interview/interviewFeedback';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import InterviewMyAnswer from '@/components/interview/myAnswer';
 import convertDate from '@/utils/convertDate';
 import Icon from '@/components/common/icon';
+import InterviewFeedbackSkeleton from '@/components/interview/interviewFeedback/interviewFeedbackSkeleton';
 
 const InterviewResultPage = () => {
   const navigate = useNavigate();
@@ -109,12 +110,14 @@ const InterviewResultPage = () => {
               />
             </TabsContent>
             <TabsContent value="analyze">
-              <InterviewFeedback
-                keywords={result.keywords}
-                strength={result.strength}
-                weakness={result.weakness}
-                answer={result.answer}
-              />
+              <Suspense fallback={<InterviewFeedbackSkeleton />}>
+                <InterviewFeedback
+                  keywords={result.keywords}
+                  strength={result.strength}
+                  weakness={result.weakness}
+                  answer={result.answer}
+                />
+              </Suspense>
             </TabsContent>
           </Tabs>
         </div>
