@@ -1,12 +1,12 @@
-package com.pullup.interview.service;
+package com.pullup.external.gpt.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.InternalServerException;
-import com.pullup.interview.dto.Message;
-import com.pullup.interview.dto.request.ChatGptRequest;
-import com.pullup.interview.dto.response.ChatGptResponse;
+import com.pullup.external.gpt.dto.Message;
+import com.pullup.external.gpt.dto.request.ChatGptRequest;
+import com.pullup.external.gpt.dto.response.ChatGptResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;

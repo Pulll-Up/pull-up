@@ -1,4 +1,4 @@
-package com.pullup.interview.util;
+package com.pullup.external.gpt.util;
 
 import com.pullup.interview.domain.Interview;
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
@@ -51,6 +51,7 @@ public class PromptGenerator {
 
             ## 응답 형식 ##
             **다른 설명 없이 JSON 형식만 반환하라.**
+            **만약 사용자의 답변이 장점과 단점을 판별할 수 없을 경우, 답변 내용이 부족하여 분석할 수 없다는 내용을 JSON으로 반환하라.**
             JSON 예시:
             {
               "strength": [

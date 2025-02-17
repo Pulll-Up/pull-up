@@ -1,6 +1,6 @@
-package com.pullup.interview.dto.request;
+package com.pullup.external.gpt.dto.request;
 
-import com.pullup.interview.dto.Message;
+import com.pullup.external.gpt.dto.Message;
 import java.util.List;
 import lombok.Builder;
 

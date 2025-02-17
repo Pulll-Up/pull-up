@@ -1,4 +1,4 @@
-package com.pullup.interview.dto.response;
+package com.pullup.external.gpt.dto.response;
 
 public record ChatGptResponse(
         String strength,
