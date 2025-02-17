@@ -1,14 +1,50 @@
 self.importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js');
 self.importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
 
-self.addEventListener(
-  'message',
-  function (event) {
-    if (event.data && event.data.type === 'FIREBASE_CONFIG') {
-      self.firebase.initializeApp(event.data.config);
-      const messaging = self.firebase.messaging();
+// install과 activate 핸들러에 실제 콜백 함수 추가
+self.addEventListener('install', function (event) {
+  event.waitUntil(self.skipWaiting());
+});
 
-      // 백그라운드 메시지
+self.addEventListener('activate', function (event) {
+  event.waitUntil(self.clients.claim());
+});
+
+self.addEventListener('pushsubscriptionchange', function (event) {
+  // 구독 변경 처리
+});
+
+self.addEventListener('push', function (e) {
+  if (!e.data.json()) return;
+
+  const resultData = e.data.json().notification;
+  const notificationTitle = resultData.title;
+  const notificationOptions = {
+    body: resultData.body,
+    icon: resultData.image,
+    tag: resultData.tag,
+    ...resultData,
+  };
+
+  e.waitUntil(self.registration.showNotification(notificationTitle, notificationOptions));
+});
+
+self.addEventListener('notificationclick', function (event) {
+  const url = 'https://www.pull-up.store/signin';
+  event.notification.close();
+  event.waitUntil(self.clients.openWindow(url));
+});
+
+// Firebase 초기화를 더 일찍 수행
+let messaging = null;
+
+self.addEventListener('message', function (event) {
+  if (event.data && event.data.type === 'FIREBASE_CONFIG') {
+    // Firebase가 아직 초기화되지 않은 경우에만 초기화
+    if (!messaging) {
+      self.firebase.initializeApp(event.data.config);
+      messaging = self.firebase.messaging();
+
       messaging.onBackgroundMessage(function (payload) {
         const notificationTitle = payload.notification.title;
         const notificationOptions = {
@@ -27,39 +63,5 @@ self.addEventListener(
         return self.registration.showNotification(notificationTitle, notificationOptions);
       });
     }
-  },
-  { once: false },
-);
-
-self.addEventListener('install', { once: false });
-
-self.addEventListener('activate', { once: false });
-
-self.addEventListener(
-  'push',
-  function (e) {
-    if (!e.data.json()) return;
-
-    const resultData = e.data.json().notification;
-    const notificationTitle = resultData.title;
-    const notificationOptions = {
-      body: resultData.body,
-      icon: resultData.image,
-      tag: resultData.tag,
-      ...resultData,
-    };
-
-    e.waitUntil(self.registration.showNotification(notificationTitle, notificationOptions));
-  },
-  { once: false },
-);
-
-self.addEventListener(
-  'notificationclick',
-  function (event) {
-    const url = 'https://www.pull-up.store/signin';
-    event.notification.close();
-    event.waitUntil(self.clients.openWindow(url));
-  },
-  { once: false },
-);
+  }
+});
