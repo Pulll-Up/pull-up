@@ -6,6 +6,7 @@ import com.pullup.common.exception.InternalServerException;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
 import com.pullup.game.domain.GameRoomStatus;
+import com.pullup.game.domain.GameRoomType;
 import com.pullup.game.domain.Player;
 import com.pullup.game.dto.GameRoomResultStatus;
 import com.pullup.game.dto.PlayerInfo;
@@ -294,7 +295,7 @@ public class GameService {
         }
 
         for (GameRoom gameRoom : gameRooms) {
-            if ("RANDOM_MATCHING".equals(gameRoom.getGameRoomType())) {
+            if (gameRoom.getGameRoomType() == GameRoomType.RANDOM_MATCHING) {
                 return GetRandomMatchTypeResponse.createForJoinType(RandomMatchType.JOIN, gameRoom.getRoomId());
             }
         }
@@ -455,8 +456,6 @@ public class GameService {
             gameRoom.updateWinner(gameRoom.getPlayer1());
             gameRoom.updateStatusToFinished();
         }
-
-
     }
 }
 
