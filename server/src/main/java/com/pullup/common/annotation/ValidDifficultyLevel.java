@@ -1,5 +1,6 @@
-package com.pullup.common.vaildator;
+package com.pullup.common.annotation;
 
+import com.pullup.common.vaildator.DifficultyLevelValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import java.lang.annotation.ElementType;

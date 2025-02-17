@@ -1,5 +1,6 @@
 package com.pullup.common.vaildator;
 
+import com.pullup.common.annotation.ValidDifficultyLevel;
 import com.pullup.exam.domain.DifficultyLevel;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
