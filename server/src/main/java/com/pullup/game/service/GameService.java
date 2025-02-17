@@ -153,6 +153,8 @@ public class GameService {
             PlayerType playerType = submitCardRequest.playerType(); // 메시지에서 playerType 가져오기
             sessionManager.addSession(sessionId, roomId, playerType); // 세션 등록
 
+            log.info("세션 등록 - 세션 ID: {}, 방 ID: {}, 플레이어 타입: {}", sessionId, roomId, playerType);
+
             GameRoom gameRoom = findByRoomId(submitCardRequest.roomId());
             List<ProblemCard> problemCards = getProblemsByRoomId(submitCardRequest.roomId());
 
