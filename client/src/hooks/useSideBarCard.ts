@@ -9,7 +9,7 @@ function useSideBarCard(limit: number = 10) {
 
   // 문제 데이터 가공(recent, archived)
   function getProcessedProblemList(
-    problemDtos?: { problemId: number; question: string; subject: string }[],
+    problemDtos?: { problemId: string; question: string; subject: string }[],
     defaultMessage: string = '문제 데이터가 없습니다.',
   ) {
     if (!problemDtos || problemDtos.length === 0) {

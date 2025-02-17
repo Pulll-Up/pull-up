@@ -1,7 +1,7 @@
 import { useExamStore } from '@/stores/examStore';
 import { useShallow } from 'zustand/react/shallow';
 
-export const useExamAnswer = (problemId: number) => {
+export const useExamAnswer = (problemId: string) => {
   const { answers, options, isSolutionPage } = useExamStore(
     useShallow((state) => ({
       answers: state.answers,
