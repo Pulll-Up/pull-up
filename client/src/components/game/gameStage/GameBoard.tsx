@@ -17,13 +17,6 @@ const GameBoard = ({ playerType, problems }: GameBoardProps) => {
   useEffect(() => {
     if (isCheckedAnswer) {
       setShake(true);
-
-      setTimeout(() => {
-        setShake(false);
-
-        completeCheckAnswer();
-        setSelectedCards([]);
-      }, 400);
     }
   }, [isCheckedAnswer]);
 
@@ -54,6 +47,13 @@ const GameBoard = ({ playerType, problems }: GameBoardProps) => {
       playerType,
       contents: [problems[cardIndex1].content, problems[cardIndex2].content],
     });
+
+    setTimeout(() => {
+      setShake(false);
+
+      completeCheckAnswer();
+      setSelectedCards([]);
+    }, 500);
   };
 
   return (
