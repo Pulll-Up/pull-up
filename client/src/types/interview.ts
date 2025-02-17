@@ -1,6 +1,6 @@
 export interface Interview {
-  interviewId: number;
-  interviewAnswerId: number;
+  interviewId: string;
+  interviewAnswerId: string;
   question: string;
   memberAnswer: string;
   keywords: string[];
@@ -11,7 +11,7 @@ export interface Interview {
 }
 
 export interface InterviewAnswer {
-  interviewAnswerId: number;
+  interviewAnswerId: string;
   question: string;
   keywords: string[];
   memberName: string;

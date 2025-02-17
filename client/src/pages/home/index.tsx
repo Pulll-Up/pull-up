@@ -20,9 +20,7 @@ const HomePage = () => {
         queryFn: getMember,
       });
 
-      if (member) {
-        setData(member);
-      }
+      setData(member);
     };
 
     fetchMember();

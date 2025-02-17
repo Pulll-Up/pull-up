@@ -1,9 +1,10 @@
+import { InputChangeEvent, InputKeyboardEvent } from '@/types/event';
 import Icon from '../icon';
 
 interface SearchBarProps {
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onChange: (e: InputChangeEvent) => void;
+  onKeyDown?: (e: InputKeyboardEvent) => void;
 }
 
 const SearchBar = ({ value, onChange, onKeyDown }: SearchBarProps) => {
