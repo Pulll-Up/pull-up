@@ -33,6 +33,12 @@ public class Problem extends BaseTimeEntity {
     private String explanation;
 
     @Column(nullable = false)
+    private Integer totalCount;
+
+    @Column(nullable = false)
+    private Integer correctCount;
+
+    @Column(nullable = false)
     private Integer correctRate;
 
     @Column(nullable = false)
@@ -43,5 +49,20 @@ public class Problem extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ProblemType problemType;
 
+    public void updateCounts(boolean isCorrect) {
+        this.totalCount++;
+        if (isCorrect) {
+            this.correctCount++;
+        }
+        calculateCorrectRate();
+    }
+
+    private void calculateCorrectRate() {
+        if (this.totalCount > 0) {
+            this.correctRate = (this.correctCount * 100) / this.totalCount;
+        } else {
+            this.correctRate = 0;
+        }
+    }
 
 }
