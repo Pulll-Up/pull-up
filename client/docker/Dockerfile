@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:lts AS builder
 
 WORKDIR /app
 
@@ -10,6 +10,6 @@ COPY ../ ./
 
 RUN npm run build
 
-ENTRYPOINT [ "npm", "run", "dev" ]
-
-EXPOSE 5173
+CMD rm -rf /var/www/html/* && \
+    cp -r /app/dist/* /var/www/html/ && \
+    chown -R www-data:www-data /var/www/html

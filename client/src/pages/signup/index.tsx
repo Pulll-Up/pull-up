@@ -1,14 +1,41 @@
 import { signup } from '@/api/auth';
 import { getMember } from '@/api/member';
 import CsConditionSelector from '@/components/common/csConditionSelector';
+import { queryClient } from '@/main';
 import { memberStore } from '@/stores/memberStore';
 import { Subject } from '@/types/member';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { setMember, setIsLoggedIn } = memberStore();
+
+  useEffect(() => {
+    const fetchMember = async () => {
+      const member = await queryClient.fetchQuery({
+        queryKey: ['member'],
+        queryFn: getMember,
+      });
+
+      // 기존 사용자는 재가입 불가
+      if (member.interestSubjects.length > 0) {
+        toast.info('이미 가입된 회원입니다.', {
+          position: 'bottom-center',
+          toastId: 'member-checked',
+        });
+
+        setTimeout(() => {
+          navigate(-1);
+        }, 3000);
+
+        return;
+      }
+    };
+
+    fetchMember();
+  }, []);
 
   const onConfirmSignUp = async (selectedSubjects: Subject[]) => {
     // 회원가입 완료
@@ -28,7 +55,15 @@ const SignUpPage = () => {
 
     setMember(member);
     setIsLoggedIn(true);
-    navigate('/');
+
+    toast.success('회원가입이 완료되었습니다.', {
+      position: 'bottom-center',
+      toastId: 'signed-up',
+    });
+
+    setTimeout(() => {
+      navigate('/');
+    }, 3000);
   };
 
   return (

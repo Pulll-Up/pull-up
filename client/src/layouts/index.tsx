@@ -19,6 +19,7 @@ const MainLayout = () => {
     if (
       location.pathname !== '/' &&
       location.pathname !== '/signin' &&
+      location.pathname !== '/signup' &&
       location.pathname !== '/redirect' &&
       !isLoggedIn
     ) {
