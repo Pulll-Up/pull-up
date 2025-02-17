@@ -1,6 +1,8 @@
+import { lazy } from 'react';
 import GamePage from '@/pages/game';
-import GameResultPage from '@/pages/game/gameResult';
-import GameStage from '@/pages/game/gameStage';
+
+const GameResultPage = lazy(() => import('@/pages/game/gameResult'));
+const GameStage = lazy(() => import('@/pages/game/gameStage'));
 
 const gameRoutes = [
   {
