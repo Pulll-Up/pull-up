@@ -1,11 +1,12 @@
 import Icon from '@/components/common/icon';
 import MenuItem from './menuitem';
 import { InterviewListResponse } from '@/types/response/interview';
+import { ButtonMouseEvent } from '@/types/event';
 
 interface SideMenuProps {
   isOpen: boolean;
   interviewList: InterviewListResponse[];
-  handleMenuClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  handleMenuClick: (e: ButtonMouseEvent) => void;
   handleSearchClick: () => void;
   onInterviewClick: (interviewId: number) => void;
 }

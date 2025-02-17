@@ -5,6 +5,7 @@ import MenuItem from '../sideMenu/menuitem';
 import { InterviewListResponse } from '@/types/response/interview';
 import { getInterviewListByKeyword } from '@/api/interview';
 import { debounce } from 'lodash';
+import { InputChangeEvent } from '@/types/event';
 
 interface SearchModalProps {
   onClose: () => void;
@@ -24,7 +25,7 @@ const SearchModal = ({ onClose, onInterviewClick }: SearchModalProps) => {
     }
   }, 300);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: InputChangeEvent) => {
     const searchValue = e.target.value;
     setValue(searchValue);
     handleSearch(searchValue);
