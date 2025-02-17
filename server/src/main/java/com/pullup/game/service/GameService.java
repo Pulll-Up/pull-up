@@ -30,6 +30,7 @@ import com.pullup.member.repository.MemberRepository;
 import com.pullup.member.service.MemberService;
 import com.pullup.problem.service.ProblemService;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -330,6 +331,21 @@ public class GameService {
         gameRoomRepository.deleteGameRoomAndProblems(roomId);
     }
 
+    // 현재 room에 있는 player가 속한 모든 gameroom 삭제
+    public void deleteGameRoomWithPlayerId(String roomId) {
+        GameRoom findGameRoom = findByRoomId(roomId);
+        Collection<GameRoom> gameRooms = gameRoomRepository.findAll();
+        for (GameRoom gameRoom : gameRooms) {
+            if ((gameRoom.getPlayer1().getId() == findGameRoom.getPlayer1().getId())
+                    || (gameRoom.getPlayer1().getId() == findGameRoom.getPlayer2().getId())
+                    || (gameRoom.getPlayer2().getId() == findGameRoom.getPlayer1().getId())
+                    || (gameRoom.getPlayer2().getId() == findGameRoom.getPlayer2().getId())) {
+
+                deleteGameRoom(gameRoom.getRoomId());
+            }
+        }
+    }
+
     public GameRoomResultResponse getGameRoomResult(String roomId) {
         GameRoom gameRoom = findByRoomId(roomId);
 
@@ -449,7 +465,7 @@ public class GameService {
         Member member = memberService.findMemberById(memberId);
 
         if (gameRoom.getPlayer1() == null || gameRoom.getPlayer2() == null) {
-            deleteGameRoom(roomId);
+            deleteGameRoomWithPlayerId(roomId);
             return;
         }
 
