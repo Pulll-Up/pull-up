@@ -25,10 +25,13 @@ const GameBoard = ({ playerType, problems }: GameBoardProps) => {
 
   useEffect(() => {
     if (isCheckedAnswer) {
+      console.log('체크 시작');
       setShake(true);
 
       setTimeout(() => {
         setShake(false);
+        console.log('체크 시작');
+
         completeCheckAnswer();
         setSelectedCards([]);
       }, 300);
