@@ -17,12 +17,17 @@ const GameBoard = ({ playerType, problems }: GameBoardProps) => {
   useEffect(() => {
     if (isCheckedAnswer) {
       setShake(true);
+
+      setTimeout(() => {
+        setShake(false);
+
+        completeCheckAnswer();
+        setSelectedCards([]);
+      }, 400);
     }
   }, [isCheckedAnswer]);
 
   const handleClickCard = (index: number) => {
-    if (isCheckedAnswer) completeCheckAnswer();
-
     if (selectedCards.length === 1 && problems[selectedCards[0]].disabled) {
       setSelectedCards([index]);
       return;
@@ -49,12 +54,6 @@ const GameBoard = ({ playerType, problems }: GameBoardProps) => {
       playerType,
       contents: [problems[cardIndex1].content, problems[cardIndex2].content],
     });
-
-    setTimeout(() => {
-      setShake(false);
-
-      setSelectedCards([]);
-    }, 400);
   };
 
   return (

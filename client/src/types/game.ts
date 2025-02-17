@@ -22,6 +22,7 @@ export interface PlayerResult {
 }
 
 export interface StompRoomInfo {
+  checkType: 'INIT' | 'SUBMIT' | 'TIME_OVER' | 'SESSION_OUT' | null;
   roomId: string;
   gameRoomStatus: RoomStatus;
   player1P: Player;

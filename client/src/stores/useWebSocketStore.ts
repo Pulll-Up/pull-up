@@ -18,6 +18,7 @@ interface WebSocketState {
 
 const INITIAL_ROOMSTATUS = null;
 const INITIAL_ROOMINFO: StompRoomInfo = {
+  checkType: null,
   roomId: '',
   gameRoomStatus: null,
   player1P: { memberId: 0, name: '', score: 0 },
@@ -102,9 +103,11 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
 
     if (pageType === 'game') {
       newSubscriptions['room'] = client.subscribe(`/topic/game/${roomId}`, (message) => {
-        const { roomId, gameRoomStatus, player1P, player2P, problemCardWithoutCardIds } = JSON.parse(message.body);
-        set({ roomInfo: { roomId, gameRoomStatus, player1P, player2P, problemCardWithoutCardIds } });
-        set({ isCheckedAnswer: true });
+        const { checkType, roomId, gameRoomStatus, player1P, player2P, problemCardWithoutCardIds } = JSON.parse(
+          message.body,
+        );
+        set({ roomInfo: { checkType, roomId, gameRoomStatus, player1P, player2P, problemCardWithoutCardIds } });
+        if (checkType === 'SUBMIT') set({ isCheckedAnswer: true });
       });
     }
 
