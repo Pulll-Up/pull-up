@@ -1,5 +1,3 @@
-//import ExamProblem from '@/components/exam/problem';
-//import ExamSolution from '@/components/exam/solution';
 import { useNavigate, useParams } from 'react-router-dom';
 import RouteHeader from '@/components/common/routeheader';
 import { lazy, Suspense, useEffect } from 'react';
@@ -29,6 +27,8 @@ const ProblemDetail = () => {
     return <div>문제를 불러오는 데 실패했습니다.</div>;
   }
 
+  console.log(data);
+
   const onHandleBack = () => {
     navigate(-1);
   };
@@ -51,6 +51,7 @@ const ProblemDetail = () => {
                 questionType: 'MULTIPLE_CHOICE',
                 options: data.options,
                 answer: data.answer,
+                bookmarkStatus: data.bookmarkStatus,
               }}
             />
           </Suspense>

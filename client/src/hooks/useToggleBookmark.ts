@@ -1,6 +1,5 @@
 import { toggleProblemBookmark } from '@/api/problem';
 import { queryClient } from '@/main';
-import { useExamStore } from '@/stores/examStore';
 import { ExamResultResponse } from '@/types/exam';
 import { ProblemDetail } from '@/types/problem';
 import { useMutation } from '@tanstack/react-query';
@@ -10,38 +9,7 @@ const QUERY_KEYS = {
   EXAM_RESULT: (examId: number) => ['examResult', examId],
 };
 
-export const useTogglProblemBookmark = (problemId: number, examId?: number) => {
-  const toggleBookmarkInStore = useExamStore((state) => state.toggleBookmark);
-
-  const updateCache = <T>(queryKey: (string | number)[], updateFn: (data: T | undefined) => T | undefined) => {
-    queryClient.setQueryData(queryKey, updateFn);
-  };
-
-  const handleOptimisticUpdate = () => {
-    toggleBookmarkInStore(problemId);
-
-    updateCache<ProblemDetail>(QUERY_KEYS.PROBLEM_DETAIL(problemId), (data) => {
-      if (data) {
-        return { ...data, bookmarkStatus: !data.bookmarkStatus };
-      }
-      return data;
-    });
-
-    if (examId) {
-      updateCache<ExamResultResponse>(QUERY_KEYS.EXAM_RESULT(examId), (data) => {
-        if (data) {
-          return {
-            ...data,
-            examResultDetailDtos: data.examResultDetailDtos.map((detail) =>
-              detail.problemId === problemId ? { ...detail, bookmarkStatus: !detail.bookmarkStatus } : detail,
-            ),
-          };
-        }
-        return data;
-      });
-    }
-  };
-
+export const useToggleProblemBookmark = (problemId: number, examId?: number) => {
   return useMutation({
     mutationFn: () => toggleProblemBookmark(problemId),
     onMutate: async () => {
@@ -50,14 +18,27 @@ export const useTogglProblemBookmark = (problemId: number, examId?: number) => {
         ? queryClient.getQueryData<ExamResultResponse>(QUERY_KEYS.EXAM_RESULT(examId))
         : undefined;
 
-      handleOptimisticUpdate();
-      //console.log('Optimistic Update 상태:', useExamStore.getState().bookmark);
-      await Promise.all(
-        [
-          queryClient.cancelQueries({ queryKey: QUERY_KEYS.PROBLEM_DETAIL(problemId) }),
-          examId && queryClient.cancelQueries({ queryKey: QUERY_KEYS.EXAM_RESULT(examId) }),
-        ].filter(Boolean),
+      queryClient.setQueryData<ProblemDetail>(QUERY_KEYS.PROBLEM_DETAIL(problemId), (data) =>
+        data ? { ...data, bookmarkStatus: !data.bookmarkStatus } : data,
       );
+
+      if (examId) {
+        queryClient.setQueryData<ExamResultResponse>(QUERY_KEYS.EXAM_RESULT(examId), (data) => {
+          if (!data) return data;
+          return {
+            ...data,
+            examResultDetailDtos: data.examResultDetailDtos.map((detail) =>
+              detail.problemId === problemId ? { ...detail, bookmarkStatus: !detail.bookmarkStatus } : detail,
+            ),
+          };
+        });
+      }
+
+      const cancelPromises = [queryClient.cancelQueries({ queryKey: QUERY_KEYS.PROBLEM_DETAIL(problemId) })];
+      if (examId) {
+        cancelPromises.push(queryClient.cancelQueries({ queryKey: QUERY_KEYS.EXAM_RESULT(examId) }));
+      }
+      await Promise.all(cancelPromises);
 
       return { previousProblemDetail, previousExamResult };
     },
@@ -66,17 +47,16 @@ export const useTogglProblemBookmark = (problemId: number, examId?: number) => {
       if (context?.previousProblemDetail) {
         queryClient.setQueryData(QUERY_KEYS.PROBLEM_DETAIL(problemId), context.previousProblemDetail);
       }
-
       if (examId && context?.previousExamResult) {
         queryClient.setQueryData(QUERY_KEYS.EXAM_RESULT(examId), context.previousExamResult);
       }
-      toggleBookmarkInStore(problemId);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PROBLEM_DETAIL(problemId) });
+      const invalidatePromises = [queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PROBLEM_DETAIL(problemId) })];
       if (examId) {
-        queryClient.invalidateQueries({ queryKey: QUERY_KEYS.EXAM_RESULT(examId) });
+        invalidatePromises.push(queryClient.invalidateQueries({ queryKey: QUERY_KEYS.EXAM_RESULT(examId) }));
       }
+      Promise.all(invalidatePromises);
     },
   });
 };

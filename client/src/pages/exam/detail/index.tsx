@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { postExamAnswer, useGetExamDetails } from '@/api/exam';
 import { useExamStore } from '@/stores/examStore';
-import { useShallow } from 'zustand/react/shallow';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import Timer from '@/components/exam/timer';
 import ExamProblem from '@/components/exam/problem';
@@ -17,7 +16,7 @@ const ExamDetailPage = () => {
   const navigate = useNavigate();
   const { examId } = useParams();
   const { data: examProblems } = useGetExamDetails(Number(examId));
-  const answers = useExamStore(useShallow((state) => state.answers));
+  const answers = useExamStore((state) => state.answers);
   const { resetExamState, setAnswer, setSolutionPage, initializeAndSetOptions } = useExamStore();
   const [isInitialized] = useState(false);
   const { isBlocked, handleProceed, handleCancel, setException } = usePrompt();

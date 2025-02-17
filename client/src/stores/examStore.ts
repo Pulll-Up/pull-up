@@ -9,11 +9,9 @@ interface ExamState {
   isSolutionPage: boolean;
   answers: Record<number, string>;
   options: Record<number, Option[]>;
-  bookmark: Record<number, boolean>;
   setSolutionPage: (isSolution: boolean) => void;
   setAnswer: (problemId: number, answer: string) => void;
   updateOptionState: (problemId: number, index: number, state: Option['state']) => void;
-  toggleBookmark: (problemId: number) => void;
   initializeAndSetOptions: (
     problemId: number,
     options: string[],
@@ -25,7 +23,6 @@ interface ExamState {
 export const useExamStore = create<ExamState>((set) => ({
   answers: {},
   options: {},
-  bookmark: {},
   isSolutionPage: false,
 
   setSolutionPage: (isSolution) => set({ isSolutionPage: isSolution }),
@@ -46,22 +43,14 @@ export const useExamStore = create<ExamState>((set) => ({
       },
     })),
 
-  toggleBookmark: (problemId) =>
-    set((state) => ({
-      bookmark: { ...state.bookmark, [problemId]: !state.bookmark[problemId] },
-    })),
-
   initializeAndSetOptions: (problemId, options, params) => {
-    const initializedOptions: Option[] = options.map((option) => ({
-      text: option,
-      state: params?.answer
-        ? option === params.answer
-          ? 'correct'
-          : option === params.chosenAnswer
-            ? 'wrong'
-            : 'default'
-        : 'default',
-    }));
+    const initializedOptions: Option[] = options.map((option) => {
+      if (!params?.answer) return { text: option, state: 'default' };
+      return {
+        text: option,
+        state: option === params.answer ? 'correct' : option === params.chosenAnswer ? 'wrong' : 'default',
+      };
+    });
 
     set((state) => ({
       options: {
@@ -70,5 +59,6 @@ export const useExamStore = create<ExamState>((set) => ({
       },
     }));
   },
-  resetExamState: () => set({ isSolutionPage: false, answers: {}, options: {}, bookmark: {} }),
+
+  resetExamState: () => set({ isSolutionPage: false, answers: {}, options: {} }),
 }));

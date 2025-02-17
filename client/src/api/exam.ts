@@ -94,8 +94,5 @@ export const useGetExamResult = (examId: number) => {
   return useSuspenseQuery({
     queryKey: ['examResult', examId],
     queryFn: () => getExamResult(examId),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    retry: false,
   });
 };

@@ -1,8 +1,10 @@
 import ExamAnswer from './examAnswer';
 import Icon from '@/components/common/icon';
-import { useTogglProblemBookmark } from '@/hooks/useToggleBookmark';
+import { useToggleProblemBookmark } from '@/hooks/useToggleBookmark';
 import { useExamStore } from '@/stores/examStore';
 import { convertSubject } from '@/utils/convertSubject';
+import { PageType } from '@/utils/pageType';
+import { useParams } from 'react-router-dom';
 
 interface ExamProblemProps {
   index?: number;
@@ -14,16 +16,19 @@ interface ExamProblemProps {
     chosenAnswer?: string;
     options?: string[];
     answer?: string;
+    bookmarkStatus?: boolean;
   };
 }
 
 const ExamProblem = ({ index, problem }: ExamProblemProps) => {
-  const { isSolutionPage, bookmark } = useExamStore();
-  const toggleBookmarkMutation = useTogglProblemBookmark(problem.problemId);
+  const { isSolutionPage } = useExamStore();
+  const { isExamResultPage } = PageType();
+  const { examId } = useParams();
+  const validExamId = isExamResultPage ? Number(examId) : undefined;
 
+  const toggleBookmarkMutation = useToggleProblemBookmark(problem.problemId, validExamId);
   const handleBookmark = () => {
     toggleBookmarkMutation.mutate();
-    console.log(useExamStore.getState().bookmark);
   };
 
   return (
@@ -34,8 +39,8 @@ const ExamProblem = ({ index, problem }: ExamProblemProps) => {
           <div className="flex cursor-pointer items-center gap-2">
             <span className="text-lg font-bold text-stone-900 md:text-xl lg:text-2xl">문제 {index}</span>
             {isSolutionPage && (
-              <button onClick={handleBookmark} aria-label={bookmark[problem.problemId] ? '북마크 해제' : '북마크 추가'}>
-                <Icon id={bookmark[problem.problemId] ? 'bookmark' : 'bookmark-empty'} size={24} />
+              <button onClick={handleBookmark} aria-label={problem.bookmarkStatus ? '북마크 해제' : '북마크 추가'}>
+                <Icon id={problem.bookmarkStatus ? 'bookmark' : 'bookmark-empty'} size={24} />
               </button>
             )}
           </div>

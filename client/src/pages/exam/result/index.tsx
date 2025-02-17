@@ -2,8 +2,6 @@ import { lazy, Suspense, useEffect } from 'react';
 import InfoSection from '@/components/exam/infoSection';
 import SubmitButton from '@/components/common/submitButton';
 import ProblemStatusButton from '@/components/exam/infoSection/problemStatusButton';
-//import ExamSolution from '@/components/exam/solution';
-//import ExamProblem from '@/components/exam/problem';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetExamResult } from '@/api/exam';
 import { useExamStore } from '@/stores/examStore';
@@ -16,7 +14,7 @@ const ExamSolution = lazy(() => import('@/components/exam/solution'));
 const ExamResultPage = () => {
   const navigate = useNavigate();
   const { examId } = useParams();
-  const { setSolutionPage, initializeAndSetOptions, setAnswer, toggleBookmark } = useExamStore();
+  const { setSolutionPage, initializeAndSetOptions, setAnswer } = useExamStore();
   const { data: examResult } = useGetExamResult(Number(examId));
 
   useEffect(() => {
@@ -31,13 +29,8 @@ const ExamResultPage = () => {
       if (problem.chosenAnswer) {
         setAnswer(problem.problemId, problem.chosenAnswer);
       }
-
-      // 북마크 상태 설정
-      if (problem.bookmarkStatus) {
-        toggleBookmark(problem.problemId);
-      }
     });
-  }, [examResult, initializeAndSetOptions, setAnswer, toggleBookmark, setSolutionPage]);
+  }, [examResult, initializeAndSetOptions, setAnswer, setSolutionPage]);
 
   if (!examResult) {
     return <div>시험 결과를 불러오는 데 실패했습니다.</div>;
@@ -49,7 +42,7 @@ const ExamResultPage = () => {
       title: '점수',
       icon: 'score',
       content: (
-        <div className="text-2xl text-3xl lg:text-3xl">
+        <div className="text-2xl lg:text-3xl">
           <span className="text-primary-500">{score}</span> / 100
         </div>
       ),
@@ -64,7 +57,7 @@ const ExamResultPage = () => {
             <ProblemStatusButton
               index={index + 1}
               key={problem.problemId}
-              status={problem.answerStatus ? 'correct' : 'wrong'} // 문제의 정답 여부를 기반으로 상태 설정
+              status={problem.answerStatus ? 'correct' : 'wrong'}
               onClick={() => {
                 document
                   .getElementById(`problem-${problem.problemId}`)
@@ -112,6 +105,7 @@ const ExamResultPage = () => {
                     questionType: problem.problemType,
                     options: problem.options,
                     chosenAnswer: problem.chosenAnswer,
+                    bookmarkStatus: problem.bookmarkStatus,
                   }}
                 />
                 <ExamSolution
