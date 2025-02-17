@@ -86,6 +86,10 @@ public class GameService {
     public JoinRoomResponse join(String roomId, Long memberId) {
         GameRoom gameRoom = findByRoomId(roomId);
 
+        if (gameRoom.getPlayer2() != null) {
+            throw new BadRequestException(ErrorMessage.ERR_GAME_ROOM_ALREADY_FULL);
+        }
+
         if (!gameRoom.getGameRoomStatus().equals(GameRoomStatus.WAITING)) {
             throw new BadRequestException(ErrorMessage.ERR_GAME_ROOM_NOT_WAITING);
         }

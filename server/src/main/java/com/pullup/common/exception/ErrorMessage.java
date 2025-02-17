@@ -40,6 +40,7 @@ public enum ErrorMessage {
     ERR_GAME_CHECK_TYPE_UNSUPPORTED("게임 체크 타입이 올바르지 않습니다. SUBMIT 또는 TIME_OUT만 허용됩니다"),
     ERR_GAME_CARD_ALREADY_SUBMITTED("이미 다른 사용자가 선택한 카드입니다"),
     ERR_GAME_CARD_NOT_FOUND("카드를 찾을 수 없습니다"),
+    ERR_GAME_ROOM_ALREADY_FULL("이미 방이 꽉 찼습니다"),
 
     //* Comment 관련 Exception
     ERR_COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다"),
