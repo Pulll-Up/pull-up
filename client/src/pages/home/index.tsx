@@ -30,6 +30,12 @@ const HomePage = () => {
 
   const onClick = () => {
     if (data) {
+      // 관심과목 미설정 시
+      if (!data.interestSubjects?.length) {
+        navigate('/signup');
+        return;
+      }
+
       if (isSolvedToday) {
         // 문제를 풀었을 경우
         navigate(`/interview/result/${interviewAnswerId}`);
@@ -113,7 +119,15 @@ const HomePage = () => {
             </div>
           </div>
           <SubmitButton
-            text={!data ? '알림 받으러 가기' : !isSolvedToday ? '오늘의 문제 풀러 가기' : '오늘의 문제 결과 보기'}
+            text={
+              !data
+                ? '알림 받으러 가기'
+                : !data.interestSubjects?.length
+                  ? '관심 과목 설정하러 가기'
+                  : !isSolvedToday
+                    ? '오늘의 문제 풀러 가기'
+                    : '오늘의 문제 결과 보기'
+            }
             color="secondary"
             onClick={onClick}
           />

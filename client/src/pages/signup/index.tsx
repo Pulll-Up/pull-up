@@ -26,7 +26,7 @@ const SignUpPage = () => {
       return;
     }
 
-    if (member.interestSubjects) {
+    if (member.interestSubjects.length > 0) {
       toast.info('이미 가입된 회원입니다.', {
         position: 'bottom-center',
         toastId: 'member-checked',

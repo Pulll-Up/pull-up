@@ -43,7 +43,7 @@ const RedirectPage = () => {
       }
 
       // 관심과목 미선택 시
-      if (!member.interestSubjects) {
+      if (!member.interestSubjects?.length) {
         navigate('/signup');
         return;
       }
