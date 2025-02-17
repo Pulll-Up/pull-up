@@ -12,14 +12,14 @@ const ExamSolution = lazy(() => import('@/components/exam/solution'));
 const ProblemDetail = () => {
   const navigate = useNavigate();
   const { problemId } = useParams();
-  const { data } = useGetProblemDetail(Number(problemId));
+  const { data } = useGetProblemDetail(problemId!);
   const { setSolutionPage, setAnswer, initializeAndSetOptions } = useExamStore();
 
   useEffect(() => {
     setSolutionPage(true);
     if (data) {
-      initializeAndSetOptions(Number(problemId), data.options);
-      setAnswer(Number(problemId), data.answer);
+      initializeAndSetOptions(problemId!, data.options);
+      setAnswer(problemId!, data.answer);
     }
   }, [data, problemId, setSolutionPage, setAnswer, initializeAndSetOptions]);
 
@@ -45,7 +45,7 @@ const ProblemDetail = () => {
           <Suspense fallback={<ExamProblemSkeleton />}>
             <ExamProblem
               problem={{
-                problemId: Number(problemId),
+                problemId: problemId!,
                 question: data.question,
                 subject: data.subject,
                 questionType: 'MULTIPLE_CHOICE',

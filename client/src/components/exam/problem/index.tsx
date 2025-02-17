@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 interface ExamProblemProps {
   index?: number;
   problem: {
-    problemId: number;
+    problemId: string;
     question: string;
     subject: string;
     questionType: 'SHORT_ANSWER' | 'MULTIPLE_CHOICE';

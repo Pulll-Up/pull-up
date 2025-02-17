@@ -1,7 +1,7 @@
 import { Subject } from './member';
 
 export interface Problem {
-  problemId: number;
+  problemId: string;
   question: string;
   subject: Subject;
   date: string;

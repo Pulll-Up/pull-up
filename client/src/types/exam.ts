@@ -8,7 +8,7 @@ export interface Exam {
 }
 
 export interface ExamDetail {
-  problemId: number;
+  problemId: string;
   problem: string;
   options: string[];
   subject: string;

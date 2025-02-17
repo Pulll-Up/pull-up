@@ -40,8 +40,8 @@ const ExamDetailPage = () => {
     try {
       const requestBody = {
         problemAndChosenAnswers: Object.keys(answers).map((problemId) => ({
-          problemId: Number(problemId),
-          chosenAnswer: answers[Number(problemId)] ?? '',
+          problemId: problemId,
+          chosenAnswer: answers[problemId] ?? '',
         })),
       };
       await postExamAnswer(validExamId, requestBody);
