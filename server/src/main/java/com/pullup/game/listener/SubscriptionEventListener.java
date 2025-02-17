@@ -45,7 +45,10 @@ public class SubscriptionEventListener {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String destination = accessor.getDestination();
 
-        if (destination != null && destination.startsWith("/topic/game/") && !destination.endsWith("/status")) {
+        if (destination != null && destination.startsWith("/topic/game/")
+                && !destination.endsWith("/status")
+                && !destination.endsWith("/result")
+        ) {
             String roomId = destination.substring("/topic/game/".length());
 
             // 구독자 수 증가
