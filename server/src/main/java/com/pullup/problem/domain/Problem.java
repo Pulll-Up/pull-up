@@ -29,7 +29,7 @@ public class Problem extends BaseTimeEntity {
     @Column(nullable = false)
     private String answer;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String explanation;
 
     @Column(nullable = false)
