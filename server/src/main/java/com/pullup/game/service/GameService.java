@@ -145,7 +145,8 @@ public class GameService {
                             gameRoom.getPlayer1().getScore()),
                     PlayerInfo.of(gameRoom.getPlayer2().getId(), gameRoom.getPlayer2().getName(),
                             gameRoom.getPlayer2().getScore()),
-                    convertToProblemCardWithoutCardIds(problemCards)
+                    convertToProblemCardWithoutCardIds(problemCards),
+                    CheckType.TIME_OVER
             );
         } else if (submitCardRequest.checkType().equals(CheckType.INIT)) {
             // 세션 처리
@@ -170,7 +171,8 @@ public class GameService {
                             gameRoom.getPlayer2().getId(),
                             gameRoom.getPlayer2().getName(),
                             gameRoom.getPlayer2().getScore()),
-                    convertToProblemCardWithoutCardIds(problemCards)
+                    convertToProblemCardWithoutCardIds(problemCards),
+                    CheckType.INIT
             );
         }
         throw new BadRequestException(ErrorMessage.ERR_GAME_CHECK_TYPE_UNSUPPORTED);
@@ -245,7 +247,8 @@ public class GameService {
                         gameRoom.getPlayer2().getId(),
                         gameRoom.getPlayer2().getName(),
                         gameRoom.getPlayer2().getScore()),
-                convertToProblemCardWithoutCardIds(problemCards)
+                convertToProblemCardWithoutCardIds(problemCards),
+                CheckType.SUBMIT
         );
     }
 
@@ -289,7 +292,8 @@ public class GameService {
                 gameRoom.getGameRoomStatus(),
                 PlayerInfo.from(gameRoom.getPlayer1()),
                 PlayerInfo.from(gameRoom.getPlayer2()),
-                convertToProblemCardWithoutCardIds(problemCards)
+                convertToProblemCardWithoutCardIds(problemCards),
+                CheckType.INIT
         );
     }
 

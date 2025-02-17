@@ -9,6 +9,7 @@ import com.pullup.game.domain.Player;
 import com.pullup.game.dto.PlayerInfo;
 import com.pullup.game.dto.PlayerSessionInfo;
 import com.pullup.game.dto.ProblemCard;
+import com.pullup.game.dto.request.CheckType;
 import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
 import com.pullup.game.dto.response.PlayerType;
 import com.pullup.game.repository.GameRoomRepository;
@@ -111,8 +112,11 @@ public class SubscriptionEventListener {
                                 gameRoom.getPlayer2().getId(),
                                 gameRoom.getPlayer2().getName(),
                                 gameRoom.getPlayer2().getScore()),
-                        gameService.convertToProblemCardWithoutCardIds(problemCards)
+                        gameService.convertToProblemCardWithoutCardIds(problemCards),
+                        CheckType.SESSION_OUT
                 );
+
+                log.info("세션이 끊어져서 기권 처리 합니다");
 
                 // 남은 유저에게 게임 종료 메시지 전송
                 messagingTemplate.convertAndSend(
