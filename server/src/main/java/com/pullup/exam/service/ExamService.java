@@ -359,7 +359,7 @@ public class ExamService {
         return GetExamScoresResponse.of(examScoreDtos);
     }
 
-    public GetAllExamResponse getAllExam(Long memberId) {
+    public GetAllExamResponse getAllExamOrderByCreatedAtDesc(Long memberId) {
         List<Exam> exams = examRepository.findAllByMemberIdOrderByCreatedAtDesc(memberId);
 
         List<GetExamResponse> examResponses = exams.stream()

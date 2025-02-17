@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/game")
 @RequiredArgsConstructor
-public class GameController {
+public class GameController implements GameApi {
 
     private final GameService gameService;
 
@@ -80,14 +80,5 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.OK)
                 .build();
     }
-
-//    @GetMapping("/room/{roomId}/result")
-//    public ResponseEntity<GameRoomResultResponse> getGameRoomResult(@PathVariable String roomId) {
-//        GameRoomResultResponse gameRoomResultResponse = gameService.getGameRoomResult(roomId);
-//        gameService.deleteGameRoom(roomId);
-//
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(gameRoomResultResponse);
-//    }
 
 }

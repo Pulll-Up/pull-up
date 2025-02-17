@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/exam")
 @RequiredArgsConstructor
-public class ExamController {
+public class ExamController implements ExamApi {
 
     private final ExamService examService;
 
@@ -51,10 +51,10 @@ public class ExamController {
     }
 
     @GetMapping("/me/all")
-    public ResponseEntity<GetAllExamResponse> getAllExam() {
+    public ResponseEntity<GetAllExamResponse> getAllExamOrderByCreatedAtDesc() {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
 
-        GetAllExamResponse getAllExamResponse = examService.getAllExam(memberId);
+        GetAllExamResponse getAllExamResponse = examService.getAllExamOrderByCreatedAtDesc(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(getAllExamResponse);
