@@ -45,7 +45,10 @@ public class SubscriptionEventListener {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String destination = accessor.getDestination();
 
-        if (destination != null && destination.startsWith("/topic/game/") && !destination.endsWith("/status")) {
+        if (destination != null && destination.startsWith("/topic/game/")
+                && !destination.endsWith("/status")
+                && !destination.endsWith("/result")
+        ) {
             String roomId = destination.substring("/topic/game/".length());
 
             // 구독자 수 증가
@@ -65,55 +68,62 @@ public class SubscriptionEventListener {
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        String sessionId = event.getSessionId();
-        PlayerSessionInfo sessionInfo = sessionManager.removeSession(sessionId); // 세션 삭제 후 roomId, playerType 반환
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+        String destination = accessor.getDestination();
+        if (destination != null && destination.startsWith("/topic/game/")
+                && !destination.endsWith("/status")
+                && !destination.endsWith("/result")
+        ) {
+            String sessionId = event.getSessionId();
+            PlayerSessionInfo sessionInfo = sessionManager.removeSession(sessionId); // 세션 삭제 후 roomId, playerType 반환
 
-        if (sessionInfo != null) {
-            String roomId = sessionInfo.roomId();
-            PlayerType playerType = sessionInfo.playerType();
+            if (sessionInfo != null) {
+                String roomId = sessionInfo.roomId();
+                PlayerType playerType = sessionInfo.playerType();
 
-            log.info("{}님이 {} 방에서 이탈 (세션 ID: {})", playerType, roomId, sessionId);
+                log.info("{}님이 {} 방에서 이탈 (세션 ID: {})", playerType, roomId, sessionId);
 
-            // 구독자 수 감소 처리
-            roomSubscribers.computeIfPresent(roomId, (key, count) -> {
-                int newCount = count.decrementAndGet();
-                log.info("⚠[{}번 방] 남은 구독자 수: {}", roomId, newCount);
-                return newCount > 0 ? count : null; // 구독자가 0명이면 삭제
-            });
+                // 구독자 수 감소 처리
+                roomSubscribers.computeIfPresent(roomId, (key, count) -> {
+                    int newCount = count.decrementAndGet();
+                    log.info("⚠[{}번 방] 남은 구독자 수: {}", roomId, newCount);
+                    return newCount > 0 ? count : null; // 구독자가 0명이면 삭제
+                });
 
-            // 게임 방 찾기
-            GameRoom gameRoom = gameRoomRepository.findByRoomId(sessionInfo.roomId())
-                    .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_GAME_ROOM_NOT_FOUND));
+                // 게임 방 찾기
+                GameRoom gameRoom = gameRoomRepository.findByRoomId(sessionInfo.roomId())
+                        .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_GAME_ROOM_NOT_FOUND));
 
-            if (gameRoom != null) {
-                // 상대방을 승자로 처리
-                Player opponent = gameRoom.getOpponentPlayerByPlayerType(playerType);
+                if (gameRoom != null) {
+                    // 상대방을 승자로 처리
+                    Player opponent = gameRoom.getOpponentPlayerByPlayerType(playerType);
 
-                gameRoom.updateStatusToFinished();
-                gameRoom.updateWinner(opponent);
-                gameRoom.updateToForfeitGame();
-                gameRoomRepository.save(gameRoom);
+                    gameRoom.updateStatusToFinished();
+                    gameRoom.updateWinner(opponent);
+                    gameRoom.updateToForfeitGame();
+                    gameRoomRepository.save(gameRoom);
 
-                List<ProblemCard> problemCards = gameService.getProblemsByRoomId(gameRoom.getRoomId());
+                    List<ProblemCard> problemCards = gameService.getProblemsByRoomId(gameRoom.getRoomId());
 
-                GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = GameRoomInfoWithProblemsResponse.of(
-                        gameRoom.getRoomId(),
-                        GameRoomStatus.FINISHED,
-                        PlayerInfo.of(
-                                gameRoom.getPlayer1().getId(),
-                                gameRoom.getPlayer1().getName(),
-                                gameRoom.getPlayer1().getScore()),
-                        PlayerInfo.of(
-                                gameRoom.getPlayer2().getId(),
-                                gameRoom.getPlayer2().getName(),
-                                gameRoom.getPlayer2().getScore()),
-                        gameService.convertToProblemCardWithoutCardIds(problemCards)
-                );
+                    GameRoomInfoWithProblemsResponse gameRoomInfoWithProblemsResponse = GameRoomInfoWithProblemsResponse.of(
+                            gameRoom.getRoomId(),
+                            GameRoomStatus.FINISHED,
+                            PlayerInfo.of(
+                                    gameRoom.getPlayer1().getId(),
+                                    gameRoom.getPlayer1().getName(),
+                                    gameRoom.getPlayer1().getScore()),
+                            PlayerInfo.of(
+                                    gameRoom.getPlayer2().getId(),
+                                    gameRoom.getPlayer2().getName(),
+                                    gameRoom.getPlayer2().getScore()),
+                            gameService.convertToProblemCardWithoutCardIds(problemCards)
+                    );
 
-                // 남은 유저에게 게임 종료 메시지 전송
-                messagingTemplate.convertAndSend(
-                        "/topic/game/" + roomId,
-                        gameRoomInfoWithProblemsResponse);
+                    // 남은 유저에게 게임 종료 메시지 전송
+                    messagingTemplate.convertAndSend(
+                            "/topic/game/" + roomId,
+                            gameRoomInfoWithProblemsResponse);
+                }
             }
         }
 
