@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import GameCard from './GameCard';
 import { Card, PlayerType } from '@/types/game';
 import { useWebSocketStore } from '@/stores/useWebSocketStore';
@@ -9,7 +9,7 @@ interface GameBoardProps {
 }
 
 const GameBoard = ({ playerType, problems }: GameBoardProps) => {
-  const { sendMessage, roomInfo } = useWebSocketStore();
+  const { sendMessage, roomInfo, isCheckedAnswer, completeCheckAnswer } = useWebSocketStore();
 
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [shake, setShake] = useState(false);
@@ -21,16 +21,19 @@ const GameBoard = ({ playerType, problems }: GameBoardProps) => {
       playerType,
       contents: [problems[cardIndex1].content, problems[cardIndex2].content],
     });
-
-    setTimeout(() => {
-      setShake(true);
-    }, 100);
-
-    setTimeout(() => {
-      setShake(false);
-      setSelectedCards([]);
-    }, 300);
   };
+
+  useEffect(() => {
+    if (isCheckedAnswer) {
+      setShake(true);
+
+      setTimeout(() => {
+        setShake(false);
+        completeCheckAnswer();
+        setSelectedCards([]);
+      }, 300);
+    }
+  }, [isCheckedAnswer]);
 
   const handleClickCard = (index: number) => {
     if (selectedCards.length === 1 && problems[selectedCards[0]].disabled) {

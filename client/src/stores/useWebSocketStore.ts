@@ -7,6 +7,8 @@ interface WebSocketState {
   roomStatus: RoomStatus;
   roomInfo: StompRoomInfo;
   gameResult: StompGameResult;
+  isCheckedAnswer: boolean;
+  completeCheckAnswer: () => void;
   subscriptions: Record<string, StompSubscription | null>;
   connectWebSocket: () => void;
   disconnectWebSocket: () => void;
@@ -42,6 +44,8 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
   roomStatus: INITIAL_ROOMSTATUS,
   roomInfo: INITIAL_ROOMINFO,
   gameResult: INITIAL_GAMERESULT,
+  isCheckedAnswer: false,
+  completeCheckAnswer: () => set({ isCheckedAnswer: false }),
   subscriptions: {},
 
   connectWebSocket: () => {
@@ -100,6 +104,7 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
       newSubscriptions['room'] = client.subscribe(`/topic/game/${roomId}`, (message) => {
         const { roomId, gameRoomStatus, player1P, player2P, problemCardWithoutCardIds } = JSON.parse(message.body);
         set({ roomInfo: { roomId, gameRoomStatus, player1P, player2P, problemCardWithoutCardIds } });
+        set({ isCheckedAnswer: true });
       });
     }
 
