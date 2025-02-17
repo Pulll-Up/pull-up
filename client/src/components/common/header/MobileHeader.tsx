@@ -34,6 +34,7 @@ const MobileHeader = () => {
       await logout();
       AuthStore.clearAccessToken();
       logoutMember();
+      window.location.reload();
     }
   };
 
