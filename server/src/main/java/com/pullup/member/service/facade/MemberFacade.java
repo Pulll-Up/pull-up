@@ -2,6 +2,7 @@ package com.pullup.member.service.facade;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pullup.common.util.IdEncryptionUtil;
 import com.pullup.interview.domain.Interview;
 import com.pullup.interview.domain.InterviewAnswer;
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
@@ -28,6 +29,7 @@ public class MemberFacade {
     private final ChatGptService chatGptService;
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final IdEncryptionUtil idEncryptionUtil;
 
     @Transactional
     public CompletableFuture<MyInterviewAnswerResponse> submitInterviewAnswer(
@@ -44,10 +46,7 @@ public class MemberFacade {
 
         return CompletableFuture.supplyAsync(() -> {
             ChatGptResponse gptResponse = chatGptService.analyzeAnswer(prompt);
-            String responseContent = gptResponse.getGptMessageContent();
-            System.out.println("GPT Response: " + responseContent);  // 응답 로그 찍기
-
-            return responseContent;
+            return gptResponse.getGptMessageContent();
         }, executorService).thenApply(responseContent -> {
             String strength = extractJsonField(responseContent, "strength");
             String weakness = extractJsonField(responseContent, "weakness");
@@ -60,7 +59,7 @@ public class MemberFacade {
                     myInterviewAnswerRequest.answer()
             );
 
-            return MyInterviewAnswerResponse.of(interviewId, interviewAnswer.getId());
+            return MyInterviewAnswerResponse.of(idEncryptionUtil.encrypt(interviewId), idEncryptionUtil.encrypt(interviewAnswer.getId()));
         });
     }
 

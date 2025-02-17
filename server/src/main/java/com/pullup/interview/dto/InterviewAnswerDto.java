@@ -8,7 +8,7 @@ import lombok.Builder;
 @Builder
 public record InterviewAnswerDto(
         @Schema(description = "오늘의 문제에 대한 답변 ID", example = "2")
-        Long interviewAnswerId,
+        String interviewAnswerId,
         @Schema(description = "문제 제목", example = "캐시 메모리는 어떻게 동작하나요?")
         String question,
         @Schema(description = "키워드", example = "캐시 메모리, 동작")
@@ -27,7 +27,7 @@ public record InterviewAnswerDto(
         Integer commentCount
 ) {
     public static InterviewAnswerDto of(
-            Long interviewAnswerId,
+            String interviewAnswerId,
             String question,
             List<String> keywords,
             String memberName,

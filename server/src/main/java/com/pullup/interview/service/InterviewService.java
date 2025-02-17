@@ -4,6 +4,7 @@ import static com.pullup.interview.domain.DailyQuiz.createDailyQuiz;
 
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
+import com.pullup.common.util.IdEncryptionUtil;
 import com.pullup.interview.domain.DailyQuiz;
 import com.pullup.interview.domain.Interview;
 import com.pullup.interview.domain.InterviewAnswer;
@@ -41,6 +42,7 @@ public class InterviewService {
     private final InterviewHintRepository interviewHintRepository;
     private final InterviewAnswerRepository interviewAnswerRepository;
     private final DailyQuizRepository dailyQuizRepository;
+    private final IdEncryptionUtil idEncryptionUtil;
 
     public Interview findInterviewById(Long interviewId) {
         return interviewRepository.findInterviewById(interviewId)
@@ -61,7 +63,9 @@ public class InterviewService {
                         interview,
                         strength,
                         weakness,
-                        answer));
+                        answer
+                )
+        );
     }
 
     public Long getTodayInterviewAnswerId(Long memberId) {
@@ -88,7 +92,9 @@ public class InterviewService {
 
         List<String> keywords = getKeywords(interviewId);
 
-        return InterviewResponse.of(interview.getId(), interview.getQuestion(), keywords);
+        String encryptedId = idEncryptionUtil.encrypt(interview.getId());
+
+        return InterviewResponse.of(encryptedId, interview.getQuestion(), keywords);
     }
 
     private InterviewResponse createNewDailyQuiz(Long memberId) {
@@ -96,7 +102,9 @@ public class InterviewService {
         saveDailyQuiz(interview.getQuestion(), memberId, interview.getId());
 
         List<String> keywords = getKeywords(interview.getId());
-        return InterviewResponse.of(interview.getId(), interview.getQuestion(), keywords);
+        String encryptedId = idEncryptionUtil.encrypt(interview.getId());
+
+        return InterviewResponse.of(encryptedId, interview.getQuestion(), keywords);
     }
 
     public Interview getRandomInterview(Long memberId) {
@@ -127,8 +135,8 @@ public class InterviewService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
 
         return MyInterviewAnswerResultResponse.of(
-                interviewAnswer.getInterview().getId(),
-                interviewAnswerId,
+                idEncryptionUtil.encrypt(interviewAnswer.getInterview().getId()),
+                idEncryptionUtil.encrypt(interviewAnswerId),
                 interviewAnswer.getInterview().getQuestion(),
                 interviewAnswer.getAnswer(),
                 getKeywords(interviewAnswer.getInterview().getId()),
@@ -148,8 +156,8 @@ public class InterviewService {
 
         List<MyInterviewAnswerDto> myInterviewAnswerDtos = interviewAnswers.stream()
                 .map(answer -> MyInterviewAnswerDto.of(
-                        answer.getInterview().getId(),
-                        answer.getId(),
+                        idEncryptionUtil.encrypt(answer.getInterview().getId()),
+                        idEncryptionUtil.encrypt(answer.getId()),
                         answer.getInterview().getQuestion()
                 ))
                 .collect(Collectors.toList());
@@ -196,7 +204,7 @@ public class InterviewService {
     private InterviewAnswerDto makeInterviewAnswerDto(InterviewAnswer interviewAnswer, List<String> keywords,
                                                       Long memberId) {
         return InterviewAnswerDto.of(
-                interviewAnswer.getId(),
+                idEncryptionUtil.encrypt(interviewAnswer.getId()),
                 interviewAnswer.getInterview().getQuestion(),
                 keywords,
                 interviewAnswer.getMember().getName(),
@@ -218,14 +226,9 @@ public class InterviewService {
 
         return SearchedInterviewQuestionsResponse.of((interviewAnswers.stream()
                 .map(interviewAnswer -> SearchedInterviewQuestionDto.of(
-                        interviewAnswer.getId(),
+                        idEncryptionUtil.encrypt(interviewAnswer.getId()),
                         interviewAnswer.getInterview().getQuestion()
                 )).toList()
         ));
-    }
-
-    private InterviewAnswer findInterviewAnswerById(Long interviewAnswerId) {
-        return interviewAnswerRepository.findById(interviewAnswerId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
     }
 }

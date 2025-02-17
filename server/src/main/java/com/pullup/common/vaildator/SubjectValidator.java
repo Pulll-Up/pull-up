@@ -1,5 +1,6 @@
 package com.pullup.common.vaildator;
 
+import com.pullup.common.annotation.ValidSubject;
 import com.pullup.problem.domain.Subject;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

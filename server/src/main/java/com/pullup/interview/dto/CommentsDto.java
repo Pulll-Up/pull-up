@@ -7,7 +7,7 @@ import lombok.Builder;
 @Builder
 public record CommentsDto(
         @Schema(description = "댓글 ID", example = "1")
-        Long commentId,
+        String commentId,
         @Schema(description = "댓글 작성자", example = "이석환")
         String writer,
         @Schema(description = "댓글 작성자 이메일", example = "im2sh@gmail.com")
@@ -19,7 +19,7 @@ public record CommentsDto(
 ) {
 
     public static CommentsDto of(
-            Long commentId,
+            String commentId,
             String writer,
             String email,
             String content,

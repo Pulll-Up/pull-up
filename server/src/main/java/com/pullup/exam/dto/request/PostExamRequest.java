@@ -1,7 +1,7 @@
 package com.pullup.exam.dto.request;
 
-import com.pullup.common.vaildator.ValidDifficultyLevel;
-import com.pullup.common.vaildator.ValidSubject;
+import com.pullup.common.annotation.ValidDifficultyLevel;
+import com.pullup.common.annotation.ValidSubject;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import java.util.List;
