@@ -3,6 +3,7 @@ package com.pullup.auth.oAuth.service;
 import com.pullup.auth.oAuth.domain.OAuth2UserInfo;
 import com.pullup.auth.oAuth.domain.OAuth2UserInfoFactory;
 import com.pullup.auth.oAuth.domain.PrincipalDetail;
+import com.pullup.auth.oAuth.domain.type.OAuthProvider;
 import com.pullup.member.domain.Member;
 import com.pullup.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,9 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2User, userRequest);
 
         String email = oAuth2UserInfo.getEmail();
-        Member member = memberRepository.findByEmail(email)
+        OAuthProvider oAuthProvider = oAuth2UserInfo.getProvider();
+
+        Member member = memberRepository.findByEmailAndOAuthProvider(email, oAuthProvider)
                 .orElseGet(() -> memberRepository.save(Member.createMember(oAuth2UserInfo)));
 
         return new PrincipalDetail(member, oAuth2User.getAttributes());
