@@ -47,7 +47,13 @@ public interface ProblemRepository extends CrudRepository<Problem, Long> {
             nativeQuery = true)
     List<Problem> findRandomShortAnswerProblemsBySubject(@Param("subject") String subject, @Param("limit") int limit);
 
-    @Query(value = "SELECT * FROM problem WHERE problem_type = 'SHORT_ANSWER' ORDER BY RAND() LIMIT :limit",
+    @Query(value = "SELECT * "
+            + "FROM problem "
+            + "WHERE problem_type = 'SHORT_ANSWER' "
+            + "AND CHAR_LENGTH(question) <= 30 "
+            + "AND CHAR_LENGTH(answer) <= 30 "
+            + "ORDER BY RAND() "
+            + "LIMIT :limit",
             nativeQuery = true)
     List<Problem> findRandomShortAnswerProblems(@Param("limit") int limit);
 
