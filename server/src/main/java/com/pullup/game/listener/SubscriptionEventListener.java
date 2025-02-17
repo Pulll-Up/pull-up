@@ -1,6 +1,7 @@
 package com.pullup.game.listener;
 
 import com.pullup.common.exception.ErrorMessage;
+import com.pullup.common.exception.IllegalArgumentException;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
 import com.pullup.game.domain.GameRoomStatus;
@@ -145,10 +146,12 @@ public class SubscriptionEventListener {
         }
     }
 
-    // 토픽에서 Room ID 추출
     private String extractRoomId(String topic) {
         String[] parts = topic.split("/");
-        return parts[parts.length - 2]; // "/topic/game/{roomId}/status" → roomId 추출
+        if (parts.length < 4) {
+            throw new IllegalArgumentException(ErrorMessage.ERR_INTERNAL_SERVER);
+        }
+        return parts[3];
     }
 
 

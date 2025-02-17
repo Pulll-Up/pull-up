@@ -6,6 +6,7 @@ import com.pullup.common.exception.InternalServerException;
 import com.pullup.common.exception.NotFoundException;
 import com.pullup.game.domain.GameRoom;
 import com.pullup.game.domain.GameRoomStatus;
+import com.pullup.game.domain.GameRoomType;
 import com.pullup.game.domain.Player;
 import com.pullup.game.dto.GameRoomResultStatus;
 import com.pullup.game.dto.PlayerInfo;
@@ -85,6 +86,10 @@ public class GameService {
     public JoinRoomResponse join(String roomId, Long memberId) {
         GameRoom gameRoom = findByRoomId(roomId);
 
+        if (gameRoom.getPlayer2() != null) {
+            throw new BadRequestException(ErrorMessage.ERR_GAME_ROOM_ALREADY_FULL);
+        }
+
         if (!gameRoom.getGameRoomStatus().equals(GameRoomStatus.WAITING)) {
             throw new BadRequestException(ErrorMessage.ERR_GAME_ROOM_NOT_WAITING);
         }
@@ -154,7 +159,7 @@ public class GameService {
             log.info("init 처리 되었습니다");
             return GameRoomInfoWithProblemsResponse.of(
                     gameRoom.getRoomId(),
-                    GameRoomStatus.PLAYING,
+                    gameRoom.getGameRoomStatus(),
                     PlayerInfo.of(
                             gameRoom.getPlayer1().getId(),
                             gameRoom.getPlayer1().getName(),
@@ -294,7 +299,7 @@ public class GameService {
         }
 
         for (GameRoom gameRoom : gameRooms) {
-            if ("RANDOM_MATCHING".equals(gameRoom.getGameRoomType())) {
+            if (gameRoom.getGameRoomType() == GameRoomType.RANDOM_MATCHING) {
                 return GetRandomMatchTypeResponse.createForJoinType(RandomMatchType.JOIN, gameRoom.getRoomId());
             }
         }
@@ -455,8 +460,6 @@ public class GameService {
             gameRoom.updateWinner(gameRoom.getPlayer1());
             gameRoom.updateStatusToFinished();
         }
-
-
     }
 }
 
