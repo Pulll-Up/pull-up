@@ -1,9 +1,10 @@
 import Header from '@/components/common/header/Header';
 import MobileHeader from '@/components/common/header/MobileHeader';
+import PageSpinner from '@/components/fallbacks/spinners/PageSpinner';
 import { cn } from '@/lib/utils';
 import { memberStore } from '@/stores/memberStore';
 import { useWebSocketStore } from '@/stores/useWebSocketStore';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 
@@ -37,7 +38,9 @@ const GameLayout = () => {
       <Header />
       {hideHeader ? <></> : <MobileHeader />}
       <main className="h-full w-full">
-        <Outlet />
+        <Suspense fallback={<PageSpinner />}>
+          <Outlet />
+        </Suspense>
       </main>
     </div>
   );

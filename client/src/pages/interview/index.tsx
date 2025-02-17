@@ -9,7 +9,7 @@ import { memberStore } from '@/stores/memberStore';
 
 const InterviewPage = () => {
   const navigate = useNavigate();
-  const { member } = memberStore();
+  const { member, setInterviewAnswerId, setIsSolvedToday } = memberStore();
   const { data } = useGetInterview();
 
   const [hint, setHint] = useState(false);
@@ -29,9 +29,9 @@ const InterviewPage = () => {
       answer,
     });
 
+    setInterviewAnswerId(response.interviewAnswerId);
+    setIsSolvedToday(true);
     navigate(`/interview/result/${response.interviewAnswerId}`);
-
-    setAnswer('');
   };
 
   const onKeyDown = (e: TextAreaKeyboardEvent) => {

@@ -1,8 +1,10 @@
+import { lazy } from 'react';
 import DashBoardLayout from '@/layouts/dashboardLayout';
 import DashBoardPage from '@/pages/dashboard';
-import Recent from '@/pages/dashboard/recent';
-import Wrong from '@/pages/dashboard/wrong';
-import Archive from '@/pages/dashboard/archive';
+
+const Recent = lazy(() => import('@/pages/dashboard/recent'));
+const Wrong = lazy(() => import('@/pages/dashboard/wrong'));
+const Archive = lazy(() => import('@/pages/dashboard/archive'));
 
 const dashBoardRoutes = [
   {
