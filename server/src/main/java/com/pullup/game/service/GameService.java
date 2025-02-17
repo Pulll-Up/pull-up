@@ -297,20 +297,15 @@ public class GameService {
         );
     }
 
-    public GetRandomMatchTypeResponse getRandomMatchType() {
+    public synchronized GetRandomMatchTypeResponse getRandomMatchType() {
         List<GameRoom> gameRooms = new ArrayList<>(gameRoomRepository.findAll());
 
-        if (gameRooms.isEmpty()) {
-            return GetRandomMatchTypeResponse.createForCreateType(RandomMatchType.CREATE);
-        }
-
         for (GameRoom gameRoom : gameRooms) {
-            if (gameRoom.getGameRoomType() == GameRoomType.RANDOM_MATCHING) {
+            if (gameRoom.getPlayer2() == null && gameRoom.getGameRoomType() == GameRoomType.RANDOM_MATCHING) {
                 return GetRandomMatchTypeResponse.createForJoinType(RandomMatchType.JOIN, gameRoom.getRoomId());
             }
         }
-
-        throw new BadRequestException(ErrorMessage.ERR_GAME_ROOM_NOT_FOUND);
+        return GetRandomMatchTypeResponse.createForCreateType(RandomMatchType.CREATE);
     }
 
     private Long getProblemCardIdByContent(List<ProblemCard> problemCards, String content) {
