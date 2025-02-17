@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 interface ExamProblemProps {
   index?: number;
   problem: {
-    problemId: number;
+    problemId: string;
     question: string;
     subject: string;
     questionType: 'SHORT_ANSWER' | 'MULTIPLE_CHOICE';
@@ -24,7 +24,7 @@ const ExamProblem = ({ index, problem }: ExamProblemProps) => {
   const { isSolutionPage } = useExamStore();
   const { isExamResultPage } = PageType();
   const { examId } = useParams();
-  const validExamId = isExamResultPage ? Number(examId) : undefined;
+  const validExamId = isExamResultPage ? examId : '';
 
   const toggleBookmarkMutation = useToggleProblemBookmark(problem.problemId, validExamId);
   const handleBookmark = () => {

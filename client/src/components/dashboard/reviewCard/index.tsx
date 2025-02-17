@@ -3,7 +3,7 @@ import ExamTag from '@/components/common/examTag';
 import { Link } from 'react-router';
 
 interface ReviewCardProps {
-  id: number;
+  id: number | string;
   title: string;
   subtitle: string;
   tags: string[] | string;

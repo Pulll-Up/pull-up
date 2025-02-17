@@ -3,7 +3,7 @@ import convertDate from '@/utils/convertDate';
 
 interface ReviewListProps {
   data: {
-    id: number;
+    id: number | string;
     title: string;
     date: string;
     tags: string[] | string;
