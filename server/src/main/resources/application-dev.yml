@@ -66,3 +66,7 @@ spring:
               - name
               - email
               - profile_image
+
+openai:
+  api:
+    key: ${OPEN_API_KEY}
