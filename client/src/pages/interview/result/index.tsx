@@ -2,24 +2,41 @@ import { useGetInterviewList, useGetInterviewResult } from '@/api/interview';
 import SearchModal from '@/components/interview/searchModal';
 import SideMenu from '@/components/interview/sideMenu';
 import InterviewFeedback from '@/components/interview/interviewFeedback';
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import InterviewMyAnswer from '@/components/interview/myAnswer';
 import convertDate from '@/utils/convertDate';
 import Icon from '@/components/common/icon';
-import InterviewFeedbackSkeleton from '@/components/interview/interviewFeedback/interviewFeedbackSkeleton';
+import { toast } from 'react-toastify';
+import LoadingLayout from '@/layouts/loadingLayout';
 
 const InterviewResultPage = () => {
   const navigate = useNavigate();
   const { interviewAnswerId } = useParams();
-  const { data: result } = useGetInterviewResult(Number(interviewAnswerId));
+  const { data: result, isLoading, isError } = useGetInterviewResult(Number(interviewAnswerId));
   const { data: interviewList } = useGetInterviewList();
 
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  if (!result || !interviewList) return null;
+  // 결과 분석 오류
+  if (isError) {
+    navigate('/');
+    toast.error('존재하지 않는 페이지입니다.', {
+      position: 'bottom-center',
+      toastId: 'not-found',
+    });
+
+    return;
+  }
+
+  // 결과 분석 로딩
+  if (isLoading) {
+    return <LoadingLayout />;
+  } else {
+    if (!result || !interviewList) return null;
+  }
 
   const handleMenuClick = () => {
     setIsSideMenuOpen(!isSideMenuOpen);
@@ -110,14 +127,12 @@ const InterviewResultPage = () => {
               />
             </TabsContent>
             <TabsContent value="analyze">
-              <Suspense fallback={<InterviewFeedbackSkeleton />}>
-                <InterviewFeedback
-                  keywords={result.keywords}
-                  strength={result.strength}
-                  weakness={result.weakness}
-                  answer={result.answer}
-                />
-              </Suspense>
+              <InterviewFeedback
+                keywords={result.keywords}
+                strength={result.strength}
+                weakness={result.weakness}
+                answer={result.answer}
+              />
             </TabsContent>
           </Tabs>
         </div>
