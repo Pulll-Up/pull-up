@@ -31,7 +31,7 @@ const CsConditionSelector = ({ isExam = false, title, text, onClick }: CsConditi
   const isDisabled = selectedSubjects.length === 0 || (isExam && !selectedLevel);
 
   return (
-    <div className="flex h-auto w-[300px] flex-col gap-2 rounded-2xl bg-white p-5 shadow-md md:min-w-[400px] md:p-8 xl:min-w-[450px]">
+    <div className="flex h-auto w-[300px] flex-col gap-2 rounded-2xl bg-white p-5 shadow-sm md:min-w-[400px] md:p-8 xl:min-w-[450px]">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <div className="font-semibold text-stone-700 md:text-lg">{title}</div>
