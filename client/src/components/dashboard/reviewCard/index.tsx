@@ -22,14 +22,14 @@ const ReviewCard = ({ id, title, subtitle, tags, isProblem }: ReviewCardProps) =
   return (
     <Link
       to={isProblem ? `/exam/problem/${id}` : `/exam/${id}/result`}
-      className="flex flex-col gap-3 rounded-lg px-3 py-2 shadow-sm"
+      className="flex flex-col gap-3 rounded-lg py-2 pl-4 pr-3 shadow-sm"
     >
       <div className="flex w-full items-start justify-between">
-        <div className="flex flex-col items-start">
-          <span className="break-keep font-semibold text-stone-800">{title}</span>
+        <div className="flex w-[90%] flex-col items-start">
+          <span className="line-clamp-2 break-keep font-semibold text-stone-800">{title}</span>
           <span className="text-sm font-semibold text-stone-400">{subtitle}</span>
         </div>
-        <Icon id="list" size={32} />
+        <Icon id="list" size={24} />
       </div>
       <div className="flex flex-wrap gap-2">{renderTags()}</div>
     </Link>
