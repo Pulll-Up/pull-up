@@ -18,7 +18,7 @@ const ProfileModal = () => {
   const updateInterestSubjectsMutation = useUpdateInterestSubjects();
 
   const onSubmit = () => {
-    updateInterestSubjectsMutation.mutate(selectedSubjects, {
+    updateInterestSubjectsMutation(selectedSubjects, {
       onSuccess: () => {
         toast.success('관심 과목이 수정되었습니다.', { position: 'bottom-center' });
       },
