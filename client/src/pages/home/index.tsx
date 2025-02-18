@@ -1,3 +1,4 @@
+import { getAuthInfo } from '@/api/auth';
 import { getMember } from '@/api/member';
 import SmallChip from '@/components/common/smallchip';
 import SubmitButton from '@/components/common/submitButton';
@@ -10,17 +11,20 @@ import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { isSolvedToday, interviewAnswerId, isLoggedIn } = memberStore();
+  const { isSolvedToday, interviewAnswerId, isLoggedIn, setInterviewAnswerId, setIsSolvedToday } = memberStore();
   const [data, setData] = useState<Member>();
 
   useEffect(() => {
     const fetchMember = async () => {
+      const authInfo = await getAuthInfo();
       const member = await queryClient.fetchQuery({
         queryKey: ['member'],
         queryFn: getMember,
       });
 
       setData(member);
+      setInterviewAnswerId(authInfo.interviewAnswerId);
+      setIsSolvedToday(authInfo.isSolvedToday);
     };
 
     fetchMember();
