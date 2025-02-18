@@ -11,7 +11,7 @@ interface HeaderItem {
 
 const Header = () => {
   const location = useLocation();
-  const isExamInProgress = /^\/exam\/\d+$/.test(location.pathname);
+  const isExamInProgress = /^\/exam\/[^/]+$/.test(location.pathname);
   const isGameInProgress = /^\/game\/(?!$).+$/.test(location.pathname);
 
   const { isLoggedIn, logoutMember, isSolvedToday, interviewAnswerId } = memberStore();
