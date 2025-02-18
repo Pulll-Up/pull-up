@@ -49,11 +49,11 @@ const Card = ({ link, title, dataList }: CardProps) => {
         </Link>
       </nav>
 
-      <Link to={generatedLink} className="flex h-full w-full flex-col items-center">
+      <Link to={generatedLink} className="flex h-full w-full flex-col items-center md:h-[140px] lg:h-full">
         <div className="flex h-full w-full rounded-2xl bg-white p-5 shadow-sm md:px-3 md:py-4">
           <div key={index} className="animate-slide-fade-up flex w-full flex-col gap-2">
             <div className="relative h-[50px] w-full overflow-hidden">
-              <div className="absolute inset-0 flex flex-col justify-center">
+              <div className="flex flex-col justify-center">
                 <span className="line-clamp-2 break-keep text-left text-base font-medium text-stone-800 md:text-xs lg:text-base">
                   {currentData.content}
                 </span>

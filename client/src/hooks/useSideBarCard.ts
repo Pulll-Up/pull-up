@@ -22,16 +22,22 @@ function useSideBarCard(limit: number = 10) {
     }));
   }
 
-  // examData 가공
-  const recentExamList =
-    Array.isArray(examAll?.getExamResponses) && examAll.getExamResponses.length > 0
-      ? examAll.getExamResponses.slice(0, 1).map((item) => ({
-          id: item.examId,
-          content: item.examName,
-          subjects: convertSubject(item.subjects),
-        }))
-      : [{ id: 0, content: '최근 푼 모의고사 기록이 없습니다.', subjects: [] }];
+  // examData 가공 (최대 10개까지 가져오도록 수정)
+  function getProcessedExamList(
+    examDtos?: { examId: string; examName: string; subjects: string[] }[],
+    defaultMessage: string = '최근 푼 모의고사 기록이 없습니다.',
+  ) {
+    if (!examDtos || examDtos.length === 0) {
+      return [{ id: 0, content: defaultMessage, subjects: [] }];
+    }
+    return examDtos.slice(0, Math.min(examDtos.length, limit)).map((item) => ({
+      id: item.examId,
+      content: item.examName,
+      subjects: convertSubject(item.subjects),
+    }));
+  }
 
+  const recentExamList = getProcessedExamList(examAll?.getExamResponses);
   const wrongProblemList = getProcessedProblemList(recentWrongProblems?.recentWrongQuestionDtos);
   const archiveProblemList = getProcessedProblemList(archivedProblems?.bookmarkedProblemDtos);
 
