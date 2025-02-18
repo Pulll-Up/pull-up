@@ -36,7 +36,7 @@ public class OAuthService {
         return getLoginResponse(memberId);
     }
 
-    private LoginResponse getLoginResponse(Long memberId) {
+    public LoginResponse getLoginResponse(Long memberId) {
         if (!memberService.isExistInterestSubjects(memberId)) {
             memberService.saveMemberExamStatistic(memberId);
             return LoginResponse.isFirstLogin();

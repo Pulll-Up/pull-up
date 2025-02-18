@@ -83,4 +83,39 @@ public interface OAuthApi {
             }
     )
     ResponseEntity<Void> signUp(SignUpRequest signUpRequest);
+
+    @Operation(
+            summary = "로그인 상태 확인",
+            description = "로그인 상태를 확인합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "로그인 상태 확인",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "계정 존재하지 않은 경우",
+                                                    value = "{\"isSignedUp\": false, \"isSolvedToday\": false}"
+                                            ),
+                                            @ExampleObject(
+                                                    name = "계정은 있지만 문제를 풀지 않은 경우",
+                                                    value = "{\"isSignedUp\": true, \"isSolvedToday\": false}"
+                                            ),
+                                            @ExampleObject(
+                                                    name = "계정도 있고 문제도 푼 경우",
+                                                    value = "{\"isSignedUp\": true, \"isSolvedToday\": true}"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = LoginResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "로그인 상태 확인 실패",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    ResponseEntity<LoginResponse> checkSignIn(HttpServletRequest request, HttpServletResponse response);
 }
