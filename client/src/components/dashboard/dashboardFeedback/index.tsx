@@ -1,14 +1,14 @@
-import { useAuth } from '@/api/auth';
 import { useGetInterviewResult } from '@/api/interview';
 import Icon from '@/components/common/icon';
+import { memberStore } from '@/stores/memberStore';
 import { InterviewResultResponse } from '@/types/response/interview';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const DashboardFeedback = () => {
   const navigate = useNavigate();
-  const { authInfo } = useAuth();
-  const { data: result, isLoading } = useGetInterviewResult(authInfo?.interviewAnswerId ?? '0');
+  const { isSolvedToday, interviewAnswerId } = memberStore();
+  const { data: result, isLoading } = useGetInterviewResult(interviewAnswerId);
 
   const [resultData, setResultData] = useState<InterviewResultResponse>({
     interviewId: '1',
@@ -26,10 +26,10 @@ const DashboardFeedback = () => {
   });
 
   useEffect(() => {
-    if (authInfo?.isSolvedToday && result) {
+    if (isSolvedToday && result) {
       setResultData(result);
     }
-  }, [authInfo?.isSolvedToday, result]);
+  }, [isSolvedToday, result]);
 
   if (isLoading) return <>불러오는 중...</>;
 
@@ -59,7 +59,7 @@ const DashboardFeedback = () => {
           </div>
 
           <button
-            onClick={() => navigate(`/interview/result/${authInfo?.interviewAnswerId}`)}
+            onClick={() => navigate(`/interview/result/${interviewAnswerId}`)}
             className="flex w-fit items-center justify-center gap-2 rounded-lg border border-primary-500 bg-primary-50 px-2 py-1 font-semibold text-primary-500"
           >
             <div>자세히 보기</div>
@@ -76,7 +76,7 @@ const DashboardFeedback = () => {
         </section>
       </div>
 
-      {!authInfo?.isSolvedToday && (
+      {!isSolvedToday && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80">
           <p className="text-lg font-bold text-primary-500">아직 문제를 풀지 않았어요!</p>
           <button

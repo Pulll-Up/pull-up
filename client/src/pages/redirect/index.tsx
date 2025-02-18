@@ -1,4 +1,4 @@
-import { getAuthInfo, login } from '@/api/auth';
+import { login } from '@/api/auth';
 import { getMember } from '@/api/member';
 import { queryClient } from '@/main';
 import { memberStore } from '@/stores/memberStore';
@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 
 const RedirectPage = () => {
   const navigate = useNavigate();
-  const { setMember } = memberStore();
+  const { setMember, setIsLoggedIn, setIsSolvedToday, setInterviewAnswerId } = memberStore();
 
   useEffect(() => {
     const handleRedirect = async () => {
@@ -30,6 +30,10 @@ const RedirectPage = () => {
       // 알림 설정
       setupNotification();
 
+      // 사용자 정보 설정
+      setIsSolvedToday(auth.isSolvedToday);
+      setInterviewAnswerId(auth.interviewAnswerId);
+
       const member = await getMember();
 
       // 비회원가입 시
@@ -44,12 +48,8 @@ const RedirectPage = () => {
         return;
       }
 
-      await queryClient.fetchQuery({
-        queryKey: ['authInfo'],
-        queryFn: getAuthInfo,
-      });
-
       setMember(member);
+      setIsLoggedIn(true);
       navigate('/');
     };
 

@@ -1,16 +1,17 @@
-import { useAuth } from '@/api/auth';
+import { getAuthInfo } from '@/api/auth';
 import { getMember } from '@/api/member';
 import SmallChip from '@/components/common/smallchip';
 import SubmitButton from '@/components/common/submitButton';
 import { useChipAnimation } from '@/hooks/useChipAnimation';
 import { queryClient } from '@/main';
+import { memberStore } from '@/stores/memberStore';
 import { Member } from '@/types/member';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { authInfo, isLoggedIn } = useAuth();
+  const { isSolvedToday, interviewAnswerId, isLoggedIn, setInterviewAnswerId, setIsSolvedToday } = memberStore();
   const [data, setData] = useState<Member>();
 
   useEffect(() => {
@@ -20,7 +21,10 @@ const HomePage = () => {
         queryFn: getMember,
       });
 
+      const authInfo = await getAuthInfo();
       setData(member);
+      setIsSolvedToday(authInfo.isSolvedToday);
+      setInterviewAnswerId(authInfo.interviewAnswerId);
     };
 
     fetchMember();
@@ -34,9 +38,9 @@ const HomePage = () => {
         return;
       }
 
-      if (authInfo?.isSolvedToday) {
+      if (isSolvedToday) {
         // 문제를 풀었을 경우
-        navigate(`/interview/result/${authInfo.interviewAnswerId}`);
+        navigate(`/interview/result/${interviewAnswerId}`);
         return;
       } else {
         navigate('/interview');
@@ -122,7 +126,7 @@ const HomePage = () => {
                 ? '알림 받으러 가기'
                 : !data.interestSubjects?.length
                   ? '관심 과목 설정하러 가기'
-                  : !authInfo?.isSolvedToday
+                  : !isSolvedToday
                     ? '오늘의 문제 풀러 가기'
                     : '오늘의 문제 결과 보기'
             }

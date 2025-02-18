@@ -1,9 +1,8 @@
-import { useAuth } from '@/api/auth';
-import { useGetMember } from '@/api/member';
 import Header from '@/components/common/header/Header';
 import MobileHeader from '@/components/common/header/MobileHeader';
 import PageSpinner from '@/components/fallbacks/spinners/PageSpinner';
 import { cn } from '@/lib/utils';
+import { memberStore } from '@/stores/memberStore';
 import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
@@ -14,15 +13,9 @@ const BASIC_STYLE = 'sm:mx-0 sm:max-w-full w-full h-screen';
 const MainLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { data: member, isLoading } = useGetMember();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn } = memberStore();
 
   useEffect(() => {
-    if (!isLoading && isLoggedIn && !member?.interestSubjects.length) {
-      navigate('/signup');
-      return;
-    }
-
     if (
       location.pathname !== '/' &&
       location.pathname !== '/signin' &&
@@ -34,7 +27,7 @@ const MainLayout = () => {
       navigate('/signin');
       return;
     }
-  }, [isLoggedIn, location.pathname, isLoading]);
+  }, [isLoggedIn, location.pathname]);
 
   return (
     <div className={cn(SM_STYLE, BASIC_STYLE)}>
