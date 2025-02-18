@@ -231,4 +231,8 @@ public class InterviewService {
                 )).toList()
         ));
     }
+
+    public boolean isAnswered(Member member, Interview interview) {
+        return interviewAnswerRepository.existsByMemberAndInterview(member, interview);
+    }
 }

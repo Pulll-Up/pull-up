@@ -2,6 +2,8 @@ package com.pullup.member.service.facade;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pullup.common.exception.BadRequestException;
+import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.util.IdEncryptionUtil;
 import com.pullup.interview.domain.Interview;
 import com.pullup.interview.domain.InterviewAnswer;
@@ -39,6 +41,10 @@ public class MemberFacade {
     ) {
         Member member = memberService.findMemberById(memberId);
         Interview interview = interviewService.findInterviewById(interviewId);
+
+        if(interviewService.isAnswered(member, interview)) {
+            throw new BadRequestException(ErrorMessage.ERR_INTERVIEW_ALREADY_ANSWERED);
+        }
 
         memberService.updateSolveStatus(member);
 
