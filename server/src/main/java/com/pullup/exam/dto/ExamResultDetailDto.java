@@ -3,13 +3,13 @@ package com.pullup.exam.dto;
 import com.pullup.exam.domain.ExamProblem;
 import com.pullup.problem.domain.Problem;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public record ExamResultDetailDto(
         String problemId,
         String problem,
-        List<String> options,
+        Set<String> options,
         String chosenAnswer,
         String answer,
         boolean answerStatus,
@@ -23,13 +23,13 @@ public record ExamResultDetailDto(
             String problemId,
             Problem problem,
             ExamProblem examProblem,
-            Map<Long, List<String>> problemOptionsMap,
+            Map<Long, Set<String>> problemOptionsMap,
             Map<Long, Boolean> bookmarkStatusMap
     ) {
         return new ExamResultDetailDto(
                 problemId,
                 problem.getQuestion(),
-                problemOptionsMap.getOrDefault(problem.getId(), Collections.emptyList()),
+                problemOptionsMap.getOrDefault(problem.getId(), Collections.emptySet()), // 변경: List 변환 제거
                 examProblem.getMemberCheckedAnswer(),
                 problem.getAnswer(),
                 examProblem.getAnswerStatus(),
@@ -40,5 +40,4 @@ public record ExamResultDetailDto(
                 problem.getProblemType().name()
         );
     }
-
 }
