@@ -5,10 +5,10 @@ interface GameCardProps {
   card: Card;
   isSelected: boolean;
   onClick: () => void;
-  shake: boolean;
+  isShake: boolean;
 }
 
-const GameCard = ({ card, isSelected, shake, onClick }: GameCardProps) => {
+const GameCard = ({ card, isSelected, isShake, onClick }: GameCardProps) => {
   return (
     <>
       {card.disabled ? (
@@ -19,7 +19,7 @@ const GameCard = ({ card, isSelected, shake, onClick }: GameCardProps) => {
             {
               [`border-[#65efb6]`]: isSelected,
               'border-white': !isSelected,
-              'animate-shake border-[#ff716c]': shake && isSelected,
+              'animate-shake border-[#ff716c]': isShake && isSelected,
             },
             'm-1 flex cursor-pointer select-none items-center justify-center rounded-md border-4 bg-white p-2 text-sm sm:text-base',
           )}

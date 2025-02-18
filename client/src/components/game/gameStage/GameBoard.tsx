@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import GameCard from './GameCard';
 import { Card, PlayerType } from '@/types/game';
 import { useWebSocketStore } from '@/stores/useWebSocketStore';
@@ -9,25 +9,27 @@ interface GameBoardProps {
 }
 
 const GameBoard = ({ playerType, problems }: GameBoardProps) => {
-  const { sendMessage, roomInfo } = useWebSocketStore();
+  const { sendMessage, roomInfo, isCheckedAnswer, completeCheckAnswer } = useWebSocketStore();
 
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
-  const [shake, setShake] = useState(false);
+  const [isCardSent, setIsCardSent] = useState(false);
+  const [isShake, setIsShake] = useState(false);
 
-  const checkCardPair = (cardIndex1: number, cardIndex2: number) => {
-    sendMessage('/app/card/check', {
-      checkType: 'SUBMIT',
-      roomId: roomInfo.roomId,
-      playerType,
-      contents: [problems[cardIndex1].content, problems[cardIndex2].content],
-    });
+  useEffect(() => {
+    if (isCheckedAnswer && isCardSent) {
+      handleWrongAnswer();
+    }
+  }, [isCheckedAnswer, isCardSent]);
+
+  const handleWrongAnswer = () => {
+    setIsShake(true);
+
+    setIsCardSent(false);
+    completeCheckAnswer();
 
     setTimeout(() => {
-      setShake(true);
-    }, 100);
+      setIsShake(false);
 
-    setTimeout(() => {
-      setShake(false);
       setSelectedCards([]);
     }, 300);
   };
@@ -52,12 +54,23 @@ const GameBoard = ({ playerType, problems }: GameBoardProps) => {
     }
   };
 
+  const checkCardPair = (cardIndex1: number, cardIndex2: number) => {
+    sendMessage('/app/card/check', {
+      checkType: 'SUBMIT',
+      roomId: roomInfo.roomId,
+      playerType,
+      contents: [problems[cardIndex1].content, problems[cardIndex2].content],
+    });
+
+    setIsCardSent(true);
+  };
+
   return (
     <div className="grid grid-cols-4 grid-rows-4 rounded-md bg-primary-400 p-1 shadow-sm">
       {problems.map((card, i) => (
         <GameCard
           key={i}
-          shake={shake}
+          isShake={isShake}
           card={card}
           isSelected={selectedCards.includes(i)}
           onClick={() => handleClickCard(i)}

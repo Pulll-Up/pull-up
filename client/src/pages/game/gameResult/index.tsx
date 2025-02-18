@@ -119,19 +119,19 @@ const GameResultPage = () => {
             {gameResult[playerTypeData.playerType].status}
           </h3>
           {!gameResult.isForfeit && (
-            <div className="grid grid-cols-[1fr_auto_1fr] grid-rows-2 items-center justify-center rounded-xl bg-white p-6">
-              <div className="flex max-w-[110px] flex-col items-center justify-center">
+            <div className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_auto] items-center justify-center rounded-xl bg-white p-4">
+              <div className="flex max-w-[120px] flex-col items-start justify-center">
                 <span className="text-lg font-medium">{gameResult[playerTypeData.playerType].name}</span>
               </div>
-              <span className="px-8 text-xl font-bold text-primary-400">vs</span>
+              <span className="px-6 text-xl font-bold text-primary-400">vs</span>
               <div className="flex max-w-[100px] flex-col items-center justify-center">
                 <span className="text-lg font-medium">{gameResult[OPPONENT[playerTypeData.playerType]].name}</span>
               </div>
-              <div className="flex flex-col items-center justify-center">
-                <span className="text-3xl font-semibold text-primary-700">{animatedScore}</span>
+              <div className="flex flex-col items-center justify-center pt-6">
+                <span className="text-4xl font-semibold text-primary-700">{animatedScore}</span>
               </div>
               <div></div>
-              <div className="flex flex-col items-center justify-center">
+              <div className="flex flex-col items-center justify-center pt-6">
                 <span className="text-4xl font-semibold text-primary-700">{animatedOpponentScore}</span>
               </div>
             </div>

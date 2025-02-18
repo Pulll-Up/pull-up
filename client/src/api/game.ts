@@ -41,19 +41,18 @@ export const usePostCreateGame = () => {
 };
 
 const postJoinGame = async (roomId: string) => {
-  const response = await api.post<PostJoinGameResponse>('game/room/join', { json: { roomId } });
-  const data = await response.json();
+  const data = await api.post<PostJoinGameResponse>('game/room/join', { json: { roomId } }).json();
   return data;
 };
 
 export const usePostJoinGame = () => {
   const { mutateAsync } = useMutation({
     mutationFn: (roomId: string) => postJoinGame(roomId),
-    onError: (error) => {
-      toast.error(error.message || '다시 시도해주세요!', {
+    onError: () => {
+      toast.error('올바른 코드를 입력해주세요', {
         position: 'bottom-center',
+        toastId: 'code-error',
       });
-      throw new Error();
     },
   });
 
@@ -98,6 +97,8 @@ export const useGetRandomType = () =>
   useQuery({
     queryKey: ['randomType'],
     queryFn: () => getRandomType(),
+    staleTime: 0,
+    gcTime: 0,
   });
 
 const postCreateRoomRandom = async () => {
@@ -127,5 +128,7 @@ export const useGetGameResult = () => {
   return useQuery({
     queryKey: ['gameResult'],
     queryFn: () => getGameResult(roomId),
+    staleTime: 0,
+    gcTime: 0,
   });
 };

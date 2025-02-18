@@ -1,6 +1,6 @@
 import { Bot } from 'lucide-react';
 
-const LoadingLayout = () => {
+const LoadingPage = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-2">
       <div className="animate-bounce">
@@ -14,4 +14,4 @@ const LoadingLayout = () => {
   );
 };
 
-export default LoadingLayout;
+export default LoadingPage;
