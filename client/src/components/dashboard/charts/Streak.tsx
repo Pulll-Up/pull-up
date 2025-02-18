@@ -34,7 +34,7 @@ const Streak = () => {
       <ActivityCalendar
         data={streakData.dailySolvedHistories || []}
         weekStart={weekStart}
-        blockSize={23}
+        blockSize={17}
         blockMargin={4}
         hideColorLegend={true}
         hideMonthLabels={true}
