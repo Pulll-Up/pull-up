@@ -32,10 +32,10 @@ const Card = ({ link, title, data }: CardProps) => {
         </Link>
       </nav>
 
-      <Link to={generatedLink} className="flex w-full flex-col items-center">
-        <button className="flex w-[99%] flex-col gap-6 rounded-2xl bg-white p-5 shadow-sm md:px-3 md:py-4">
-          <div className="flex h-[30px] w-full justify-between md:h-[45px] lg:h-auto">
-            <span className="text:base text-left font-medium text-stone-800 md:text-xs lg:text-base">
+      <Link to={generatedLink} className="flex h-full w-full flex-col items-center">
+        <div className="flex h-full w-[99%] flex-col gap-6 rounded-2xl bg-white p-5 shadow-sm md:px-3 md:py-4">
+          <div className="flex h-[30px] w-full flex-wrap justify-between md:h-[px] lg:h-auto">
+            <span className="text:base line-clamp-2 break-keep text-left font-medium text-stone-800 md:text-xs lg:text-base">
               {data.content}
             </span>
             <span className="text-xs text-stone-400 lg:text-base">{data.date}</span>
@@ -43,7 +43,7 @@ const Card = ({ link, title, data }: CardProps) => {
           <div className="flex flex-wrap gap-2">
             {data.subjects && data.subjects.map((subject, id) => <ExamTag key={id} title={subject} />)}
           </div>
-        </button>
+        </div>
       </Link>
     </div>
   );
