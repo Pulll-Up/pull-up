@@ -12,13 +12,27 @@ const GameBoard = ({ playerType, problems }: GameBoardProps) => {
   const { sendMessage, roomInfo, isCheckedAnswer, completeCheckAnswer } = useWebSocketStore();
 
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
-  const [shake, setShake] = useState(false);
+  const [isCardSent, setIsCardSent] = useState(false);
+  const [isShake, setIsShake] = useState(false);
 
   useEffect(() => {
-    if (isCheckedAnswer) {
-      setShake(true);
+    if (isCheckedAnswer && isCardSent) {
+      handleWrongAnswer();
     }
-  }, [isCheckedAnswer]);
+  }, [isCheckedAnswer, isCardSent]);
+
+  const handleWrongAnswer = () => {
+    setIsShake(true);
+
+    setIsCardSent(false);
+    completeCheckAnswer();
+
+    setTimeout(() => {
+      setIsShake(false);
+
+      setSelectedCards([]);
+    }, 300);
+  };
 
   const handleClickCard = (index: number) => {
     if (selectedCards.length === 1 && problems[selectedCards[0]].disabled) {
@@ -48,12 +62,7 @@ const GameBoard = ({ playerType, problems }: GameBoardProps) => {
       contents: [problems[cardIndex1].content, problems[cardIndex2].content],
     });
 
-    setTimeout(() => {
-      setShake(false);
-
-      completeCheckAnswer();
-      setSelectedCards([]);
-    }, 500);
+    setIsCardSent(true);
   };
 
   return (
@@ -61,7 +70,7 @@ const GameBoard = ({ playerType, problems }: GameBoardProps) => {
       {problems.map((card, i) => (
         <GameCard
           key={i}
-          shake={shake}
+          isShake={isShake}
           card={card}
           isSelected={selectedCards.includes(i)}
           onClick={() => handleClickCard(i)}
