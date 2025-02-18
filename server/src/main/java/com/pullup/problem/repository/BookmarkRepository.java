@@ -32,4 +32,6 @@ public interface BookmarkRepository extends CrudRepository<Bookmark, Long> {
             + "ORDER BY b.modifiedAt DESC")
     List<Bookmark> searchBookmarkedProblemsByMemberIdOrderByModifiedAtDesc(@Param("memberId") Long memberId,
                                                                            @Param("title") String title);
+
+    boolean existsByProblemIdAndMemberId(Long problemId, Long memberId);
 }

@@ -146,7 +146,11 @@ public class ExamService {
         Exam savedExam = examRepository.save(exam);
         saveExamProblems(savedExam, selectedProblems);
 
-        selectedProblems.forEach(problem -> bookmarkRepository.save(Bookmark.initBookmark(problem, member)));
+        selectedProblems.forEach(problem -> {
+            if (!bookmarkRepository.existsByProblemIdAndMemberId(problem.getId(), member.getId())) {
+                bookmarkRepository.save(Bookmark.initBookmark(problem, member));
+            }
+        });
 
         return PostExamResponse.of(idEncryptionUtil.encrypt(savedExam.getId()));
     }
@@ -239,12 +243,20 @@ public class ExamService {
     }
 
     private Map<Long, List<String>> getProblemOptionsMap(List<Long> problemIds) {
-        return problemOptionRepository.findAllByProblemIdIn(problemIds)
+        Map<Long, List<String>> result = problemOptionRepository.findAllByProblemIdIn(problemIds)
                 .stream()
                 .collect(Collectors.groupingBy(
                         option -> option.getProblem().getId(),
                         Collectors.mapping(ProblemOption::getContent, Collectors.toList())
                 ));
+
+        // 디버깅용 로그 추가
+        result.forEach((problemId, options) -> {
+            System.out.println("Problem ID: " + problemId + ", Options count: " + options.size());
+            System.out.println("Options: " + options);
+        });
+
+        return result;
     }
 
 
