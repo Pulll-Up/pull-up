@@ -131,7 +131,7 @@ const SignUpPage = () => {
         }}
       >
         {/* 프로그레스바 컨테이너 */}
-        <div className="flex h-full w-full flex-1 flex-col items-center justify-start gap-10">
+        <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-10">
           <div className="sticky">
             <ProgressSteps currentStep={progress} totalStep={2} />
           </div>
