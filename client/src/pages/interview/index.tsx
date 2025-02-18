@@ -10,6 +10,7 @@ import { getMember } from '@/api/member';
 import { queryClient } from '@/main';
 import { Member } from '@/types/member';
 import LoadingPage from '@/pages/loading';
+import { getAuthInfo } from '@/api/auth';
 
 const InterviewPage = () => {
   const navigate = useNavigate();
@@ -22,23 +23,24 @@ const InterviewPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (isSolvedToday) {
-      navigate('/');
-      toast.info('오늘의 문제를 이미 풀었습니다. 결과를 확인하세요!', {
-        position: 'bottom-center',
-        toastId: 'interview-solved',
-      });
-
-      return;
-    }
-
     const fetchMember = async () => {
+      const authInfo = await getAuthInfo();
       const data = await queryClient.fetchQuery({
         queryKey: ['member'],
         queryFn: getMember,
       });
 
       if (!data) return null;
+
+      if (authInfo?.isSolvedToday || isSolvedToday) {
+        navigate('/');
+        toast.info('오늘의 문제를 이미 풀었습니다. 결과를 확인하세요!', {
+          position: 'bottom-center',
+          toastId: 'interview-solved',
+        });
+
+        return;
+      }
 
       setMember(data);
     };

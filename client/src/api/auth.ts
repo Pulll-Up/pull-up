@@ -36,6 +36,7 @@ export const reissue = async () => {
 export const logout = async () => {
   await api.post('auth/logout');
   queryClient.setQueryData(['member'], null);
+  queryClient.setQueryData(['authInfo'], null);
 };
 
 // 회원가입
@@ -57,4 +58,10 @@ export const useSignUpMutation = (subjectNames: Subject[]) => {
   });
 
   return mutate;
+};
+
+// 사용자 정보 확인
+export const getAuthInfo = async () => {
+  const response = await api.get('auth/check').json<AuthResponseType>();
+  return response;
 };
