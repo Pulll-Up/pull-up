@@ -46,7 +46,7 @@ const ExamDetailPage = () => {
       };
       await postExamAnswer(validExamId, requestBody);
       setException();
-      navigate(`/exam/${examId}/result`);
+      navigate(`/exam/${examId}/result`, { state: { fromExamPage: true } });
     } catch (error) {
       console.error('답안 제출 실패:', error);
     }
@@ -135,7 +135,7 @@ const ExamDetailPage = () => {
             {/* 답안 제출 */}
             <SubmitDialog
               onSubmit={onSubmit}
-              isDisabled={!isAllSolved}
+              //isDisabled={!isAllSolved}
               title="정말 시험을 제출하시겠습니까?"
               description="제출 후에는 더 이상 답안을 수정할 수 없습니다."
             />
