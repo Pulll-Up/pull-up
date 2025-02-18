@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.InternalServerException;
+import com.pullup.external.gpt.client.ChatGptClient;
+import com.pullup.external.gpt.config.GptProperties;
 import com.pullup.external.gpt.dto.Message;
 import com.pullup.external.gpt.dto.request.ChatGptRequest;
 import com.pullup.external.gpt.dto.response.ChatGptResponse;
@@ -12,13 +14,13 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @RequiredArgsConstructor
 public class ChatGptService {
 
-    private final WebClient webClient;
+    private final ChatGptClient chatGptClient;
+    private final GptProperties gptProperties;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public ChatGptResponse analyzeAnswer(String prompt) {
@@ -31,22 +33,17 @@ public class ChatGptService {
                 )
         );
 
-        String rawResponse = webClient.post()
-                .bodyValue(request)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        String rawResponse = chatGptClient.getPrediction(request, "Bearer " + gptProperties.getKey());
 
         return parseGptResponse(rawResponse);
     }
 
     private ChatGptResponse parseGptResponse(String rawResponse) {
         try {
-            System.out.println("GPT Raw Response: " + rawResponse);
             JsonNode rootNode = objectMapper.readTree(rawResponse);
             JsonNode choicesNode = rootNode.path("choices");
 
-            if (choicesNode.isArray() && choicesNode.size() > 0) {
+            if (choicesNode.isArray() && !choicesNode.isEmpty()) {
                 String content = choicesNode.get(0).path("message").path("content").asText();
                 JsonNode contentJson = objectMapper.readTree(content);
 
