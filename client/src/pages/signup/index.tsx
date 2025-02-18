@@ -1,4 +1,4 @@
-import { signup } from '@/api/auth';
+import { getAuthInfo, signup } from '@/api/auth';
 import { getMember } from '@/api/member';
 import CsConditionSelector from '@/components/common/csConditionSelector';
 import ProgressSteps from '@/components/common/progressSteps';
@@ -67,6 +67,7 @@ const SignUpPage = () => {
       return;
     }
 
+    await getAuthInfo();
     setMember(member);
 
     setTimeout(() => {

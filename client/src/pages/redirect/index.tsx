@@ -1,4 +1,4 @@
-import { login } from '@/api/auth';
+import { getAuthInfo, login } from '@/api/auth';
 import { getMember } from '@/api/member';
 import { queryClient } from '@/main';
 import { memberStore } from '@/stores/memberStore';
@@ -44,6 +44,7 @@ const RedirectPage = () => {
         return;
       }
 
+      await getAuthInfo();
       setMember(member);
       navigate('/');
     };
