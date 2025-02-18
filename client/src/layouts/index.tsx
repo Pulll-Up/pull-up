@@ -14,12 +14,11 @@ const BASIC_STYLE = 'sm:mx-0 sm:max-w-full w-full h-screen';
 const MainLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { data, isLoading } = useGetMember();
-
+  const { data: member, isLoading } = useGetMember();
   const { isLoggedIn } = useAuth();
 
   useEffect(() => {
-    if (!isLoading && isLoggedIn && !data?.interestSubjects.length) {
+    if (!isLoading && isLoggedIn && !member?.interestSubjects.length) {
       navigate('/signup');
       return;
     }
