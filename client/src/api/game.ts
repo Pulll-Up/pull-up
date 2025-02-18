@@ -129,5 +129,7 @@ export const useGetGameResult = () => {
   return useQuery({
     queryKey: ['gameResult'],
     queryFn: () => getGameResult(roomId),
+    staleTime: 0,
+    gcTime: 0,
   });
 };

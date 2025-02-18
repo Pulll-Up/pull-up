@@ -50,7 +50,10 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
   subscriptions: {},
 
   connectWebSocket: () => {
+    console.log('소켓 확인');
     if (get().client) return;
+
+    console.log('새로운 소켓 생성');
 
     const client = new Client({
       webSocketFactory: () => new WebSocket(`${import.meta.env.VITE_WEBSOCKET_URL}`),
@@ -75,6 +78,8 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
     });
 
     if (client) {
+      console.log('종료');
+
       client.deactivate();
       set({ client: null, subscriptions: {} });
     }

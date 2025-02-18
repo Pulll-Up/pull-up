@@ -28,7 +28,7 @@ const GameModals = () => {
   const createRoomTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { roomId, setRoomId } = useRoomStore();
-  const { roomStatus, sendMessage } = useWebSocketStore();
+  const { roomStatus, sendMessage, connectWebSocket } = useWebSocketStore();
 
   const postCreateGame = usePostCreateGame();
   const postJoinGame = usePostJoinGame();
@@ -92,6 +92,9 @@ const GameModals = () => {
   const handleJoinRoom = async (event: FormFormEvent) => {
     event.preventDefault();
 
+    // 웹소켓 연결 체크
+    connectWebSocket();
+
     setIsPlayerReady(true);
 
     try {
@@ -106,6 +109,9 @@ const GameModals = () => {
 
   const handleRandomRoom = async ({ randomMatchType, roomId: randomRoomId }: GetRandomTypeResponse) => {
     setIsPlayerReady(true);
+
+    // 웹소켓 연결 체크
+    connectWebSocket();
 
     if (randomMatchType === 'CREATE') {
       setIsCreateMode(true);
