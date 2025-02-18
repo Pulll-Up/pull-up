@@ -19,7 +19,7 @@ const MainLayout = () => {
   const { isLoggedIn } = useAuth();
 
   useEffect(() => {
-    if (!isLoading && !data?.interestSubjects.length) {
+    if (!isLoading && isLoggedIn && !data?.interestSubjects.length) {
       navigate('/signup');
       return;
     }
