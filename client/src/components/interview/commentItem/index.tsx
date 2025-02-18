@@ -4,11 +4,11 @@ import { TextAreaChangeEvent } from '@/types/event';
 interface CommentItemProps {
   userEmail: string;
   comment: Comment;
-  handleUpdate: (comment: string, commentId: number) => void;
-  handleDelete: (commentId: number) => void;
-  onChange: (e: TextAreaChangeEvent, commentId: number) => void;
-  onCancelClick: (commentId: number) => void;
-  onConfirmClick: (commentId: number) => void;
+  handleUpdate: (comment: string, commentId: string) => void;
+  handleDelete: (commentId: string) => void;
+  onChange: (e: TextAreaChangeEvent, commentId: string) => void;
+  onCancelClick: (commentId: string) => void;
+  onConfirmClick: (commentId: string) => void;
   value: string;
   updated: boolean;
 }
