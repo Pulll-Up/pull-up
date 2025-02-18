@@ -1,7 +1,9 @@
 package com.pullup.exam.dto;
 
+import com.pullup.common.annotation.DecryptedId;
+
 public record ProblemAndChosenAnswer(
-        Long problemId,
+        @DecryptedId Long problemId,
         String chosenAnswer
 ) {
 }
