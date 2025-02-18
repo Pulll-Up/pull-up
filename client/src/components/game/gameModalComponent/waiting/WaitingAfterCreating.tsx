@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { throttle } from 'lodash';
 import { useRoomStore } from '@/stores/roomStore';
@@ -18,10 +18,6 @@ const WaitingAfterCreating = () => {
     ),
     [roomId],
   );
-
-  useEffect(() => {
-    if (roomId.length) handleClipboard();
-  }, [roomId]);
 
   return (
     <div className="flex w-full flex-col items-center gap-4">
