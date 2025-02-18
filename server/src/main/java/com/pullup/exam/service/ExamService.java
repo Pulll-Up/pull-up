@@ -13,7 +13,7 @@ import com.pullup.exam.dto.ExamScoreDto;
 import com.pullup.exam.dto.ExamStrengthDto;
 import com.pullup.exam.dto.ProblemAndChosenAnswer;
 import com.pullup.exam.dto.request.PostExamRequest;
-import com.pullup.exam.dto.request.PostExamWithAnswerReqeust;
+import com.pullup.exam.dto.request.PostExamWithAnswerRequest;
 import com.pullup.exam.dto.response.GetAllExamResponse;
 import com.pullup.exam.dto.response.GetExamDetailsResponse;
 import com.pullup.exam.dto.response.GetExamPageResponse;
@@ -157,7 +157,7 @@ public class ExamService {
     }
 
     @Transactional
-    public void postExamWithAnswer(Long examId, PostExamWithAnswerReqeust request, Long memberId) {
+    public void postExamWithAnswer(Long examId, PostExamWithAnswerRequest request, Long memberId) {
         // 시험 존재 여부 확인
         Exam exam = findExamById(examId);
         // 시험 문제 mapping
@@ -165,7 +165,7 @@ public class ExamService {
 
         // 각 답안 처리
         for (ProblemAndChosenAnswer answer : request.problemAndChosenAnswers()) {
-            ExamProblem examProblem = examProblemMap.get(answer.problemId());
+            ExamProblem examProblem = examProblemMap.get(idEncryptionUtil.decrypt(answer.problemId()));
             if (examProblem == null) {
                 throw new NotFoundException(ErrorMessage.ERR_EXAM_PROBLEM_NOT_FOUND);
             }
