@@ -3,7 +3,7 @@ package com.pullup.exam.controller;
 import com.pullup.common.annotation.DecryptedId;
 import com.pullup.common.util.SecurityUtil;
 import com.pullup.exam.dto.request.PostExamRequest;
-import com.pullup.exam.dto.request.PostExamWithAnswerReqeust;
+import com.pullup.exam.dto.request.PostExamWithAnswerRequest;
 import com.pullup.exam.dto.response.GetAllExamResponse;
 import com.pullup.exam.dto.response.GetExamDetailsResponse;
 import com.pullup.exam.dto.response.GetExamPageResponse;
@@ -62,10 +62,10 @@ public class ExamController implements ExamApi {
     @PostMapping("/{examId}")
     public ResponseEntity<Void> postExamWithAnswer(
             @PathVariable("examId") @DecryptedId Long id,
-            @RequestBody PostExamWithAnswerReqeust postExamWithAnswerReqeust
+            @RequestBody PostExamWithAnswerRequest postExamWithAnswerRequest
     ) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-        examService.postExamWithAnswer(id, postExamWithAnswerReqeust, memberId);
+        examService.postExamWithAnswer(id, postExamWithAnswerRequest, memberId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .build();

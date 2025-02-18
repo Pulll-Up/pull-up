@@ -1,7 +1,7 @@
 package com.pullup.exam.controller;
 
 import com.pullup.exam.dto.request.PostExamRequest;
-import com.pullup.exam.dto.request.PostExamWithAnswerReqeust;
+import com.pullup.exam.dto.request.PostExamWithAnswerRequest;
 import com.pullup.exam.dto.response.GetAllExamResponse;
 import com.pullup.exam.dto.response.GetExamDetailsResponse;
 import com.pullup.exam.dto.response.GetExamPageResponse;
@@ -105,7 +105,7 @@ public interface ExamApi {
     )
     public ResponseEntity<Void> postExamWithAnswer(
             @PathVariable("examId") Long id,
-            @RequestBody PostExamWithAnswerReqeust postExamWithAnswerReqeust
+            @RequestBody PostExamWithAnswerRequest postExamWithAnswerRequest
     );
 
     @Operation(
