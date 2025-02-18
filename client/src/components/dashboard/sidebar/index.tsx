@@ -19,9 +19,9 @@ const SideBar = ({ image, name, email, subjects }: SideBarProps) => {
       <Profile image={image} name={name} email={email} subjects={convertSubject(subjects)} />
       <hr className="hidden border border-stone-100 lg:block" />
       <div className="flex w-full flex-row gap-4 lg:flex-col">
-        <Card link="recent" title="최근 모의고사" data={recentExamList[0]} />
-        <Card link="wrong" title="내가 틀린 문제" data={wrongProblemList[0]} />
-        <Card link="archive" title="아카이브" data={archiveProblemList[0]} />
+        <Card link="recent" title="최근 모의고사" dataList={recentExamList} />
+        <Card link="wrong" title="내가 틀린 문제" dataList={wrongProblemList} />
+        <Card link="archive" title="아카이브" dataList={archiveProblemList} />
       </div>
     </div>
   );
