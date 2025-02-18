@@ -117,7 +117,7 @@ public class MemberService {
         LocalDate today = LocalDate.now();
         List<DailySolvedHistoryDto> dailySolvedHistoryDtos = new ArrayList<>();
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 49; i++) {
             LocalDate date = today.minusDays(i);
 
             boolean isSolved = (solvedDays & (1L << i)) > 0;
