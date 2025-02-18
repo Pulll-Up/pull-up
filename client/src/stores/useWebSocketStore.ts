@@ -7,6 +7,8 @@ interface WebSocketState {
   roomStatus: RoomStatus;
   roomInfo: StompRoomInfo;
   gameResult: StompGameResult;
+  isCheckedAnswer: boolean;
+  completeCheckAnswer: () => void;
   subscriptions: Record<string, StompSubscription | null>;
   connectWebSocket: () => void;
   disconnectWebSocket: () => void;
@@ -16,6 +18,7 @@ interface WebSocketState {
 
 const INITIAL_ROOMSTATUS = null;
 const INITIAL_ROOMINFO: StompRoomInfo = {
+  checkType: null,
   roomId: '',
   gameRoomStatus: null,
   player1P: { memberId: 0, name: '', score: 0 },
@@ -42,6 +45,8 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
   roomStatus: INITIAL_ROOMSTATUS,
   roomInfo: INITIAL_ROOMINFO,
   gameResult: INITIAL_GAMERESULT,
+  isCheckedAnswer: false,
+  completeCheckAnswer: () => set({ isCheckedAnswer: false }),
   subscriptions: {},
 
   connectWebSocket: () => {
@@ -98,8 +103,11 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
 
     if (pageType === 'game') {
       newSubscriptions['room'] = client.subscribe(`/topic/game/${roomId}`, (message) => {
-        const { roomId, gameRoomStatus, player1P, player2P, problemCardWithoutCardIds } = JSON.parse(message.body);
-        set({ roomInfo: { roomId, gameRoomStatus, player1P, player2P, problemCardWithoutCardIds } });
+        const { checkType, roomId, gameRoomStatus, player1P, player2P, problemCardWithoutCardIds } = JSON.parse(
+          message.body,
+        );
+        set({ roomInfo: { checkType, roomId, gameRoomStatus, player1P, player2P, problemCardWithoutCardIds } });
+        if (checkType === 'SUBMIT') set({ isCheckedAnswer: true });
       });
     }
 
