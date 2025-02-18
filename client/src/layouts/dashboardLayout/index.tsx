@@ -1,6 +1,7 @@
 import { useGetMember } from '@/api/member';
 import SideBar from '@/components/dashboard/sidebar';
 import useResponsive from '@/hooks/useResponsive';
+import { registerServiceWorker, requestPermission } from '@/utils/serviceWorker';
 import { lazy } from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -13,6 +14,11 @@ const DashBoardLayout = () => {
 
   if (!member) return null;
 
+  const onClick = async () => {
+    await registerServiceWorker();
+    await requestPermission();
+  };
+
   return (
     <div className="flex min-h-screen bg-Main pt-[94px] sm:pt-16">
       {isMobile || isTabletMd ? (
@@ -22,6 +28,7 @@ const DashBoardLayout = () => {
             name={member.name}
             email={member.email}
             subjects={member.interestSubjects}
+            onClick={onClick}
           />
           <Outlet />
         </div>
@@ -35,6 +42,7 @@ const DashBoardLayout = () => {
             name={member.name}
             email={member.email}
             subjects={member.interestSubjects}
+            onClick={onClick}
           />
         </div>
       )}
