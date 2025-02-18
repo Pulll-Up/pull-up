@@ -1,6 +1,5 @@
-import { logout } from '@/api/auth';
+import { logout, useAuth } from '@/api/auth';
 import { cn } from '@/lib/utils';
-import { memberStore } from '@/stores/memberStore';
 import { AuthStore } from '@/utils/authService';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -14,10 +13,13 @@ const Header = () => {
   const isExamInProgress = /^\/exam\/\d+$/.test(location.pathname);
   const isGameInProgress = /^\/game\/(?!$).+$/.test(location.pathname);
 
-  const { isLoggedIn, logoutMember, isSolvedToday, interviewAnswerId } = memberStore();
+  const { authInfo, isLoggedIn } = useAuth();
 
   const headerItems: HeaderItem[] = [
-    { label: '오늘의 문제', path: !isSolvedToday ? '/interview' : `/interview/result/${interviewAnswerId}` },
+    {
+      label: '오늘의 문제',
+      path: !authInfo?.isSolvedToday ? '/interview' : `/interview/result/${authInfo.interviewAnswerId}`,
+    },
     { label: '시험모드', path: '/exam' },
     { label: '게임모드', path: '/game' },
     { label: '대시보드', path: '/dashboard' },
@@ -34,7 +36,6 @@ const Header = () => {
       //console.log('로그아웃 시도');
       await logout();
       AuthStore.clearAccessToken();
-      logoutMember();
       window.location.reload();
     }
   };

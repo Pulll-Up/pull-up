@@ -1,16 +1,16 @@
+import { useAuth } from '@/api/auth';
 import { getMember } from '@/api/member';
 import SmallChip from '@/components/common/smallchip';
 import SubmitButton from '@/components/common/submitButton';
 import { useChipAnimation } from '@/hooks/useChipAnimation';
 import { queryClient } from '@/main';
-import { memberStore } from '@/stores/memberStore';
 import { Member } from '@/types/member';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { isSolvedToday, interviewAnswerId, isLoggedIn } = memberStore();
+  const { authInfo, isLoggedIn } = useAuth();
   const [data, setData] = useState<Member>();
 
   useEffect(() => {
@@ -34,9 +34,9 @@ const HomePage = () => {
         return;
       }
 
-      if (isSolvedToday) {
+      if (authInfo?.isSolvedToday) {
         // 문제를 풀었을 경우
-        navigate(`/interview/result/${interviewAnswerId}`);
+        navigate(`/interview/result/${authInfo.interviewAnswerId}`);
         return;
       } else {
         navigate('/interview');
@@ -122,7 +122,7 @@ const HomePage = () => {
                 ? '알림 받으러 가기'
                 : !data.interestSubjects?.length
                   ? '관심 과목 설정하러 가기'
-                  : !isSolvedToday
+                  : !authInfo?.isSolvedToday
                     ? '오늘의 문제 풀러 가기'
                     : '오늘의 문제 결과 보기'
             }

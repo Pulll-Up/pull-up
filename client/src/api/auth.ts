@@ -3,7 +3,7 @@ import api from './instance';
 import { Subject } from '@/types/member';
 import { AuthStore } from '@/utils/authService';
 import { queryClient } from '@/main';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 
 // 로그인
@@ -57,4 +57,26 @@ export const useSignUpMutation = (subjectNames: Subject[]) => {
   });
 
   return mutate;
+};
+
+// 사용자 정보 확인
+export const getAuthInfo = async () => {
+  try {
+    const data = await api.get('auth/check').json<AuthResponseType>();
+    return { authInfo: data, isLoggedIn: true };
+  } catch (error) {
+    return { authInfo: undefined, isLoggedIn: false };
+  }
+};
+
+export const useAuth = () => {
+  const { data } = useSuspenseQuery({
+    queryKey: ['authInfo'],
+    queryFn: getAuthInfo,
+  });
+
+  return {
+    authInfo: data.authInfo,
+    isLoggedIn: data.isLoggedIn,
+  };
 };

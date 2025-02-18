@@ -12,7 +12,7 @@ import CompleteMessage from '@/components/common/completeMessage';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
-  const { setMember, setIsLoggedIn } = memberStore();
+  const { setMember } = memberStore();
   const [progress, setProgress] = useState(1);
   const [showLoginComplete, setShowLoginComplete] = useState(false);
   const [showSelector, setShowSelector] = useState(false);
@@ -68,7 +68,6 @@ const SignUpPage = () => {
     }
 
     setMember(member);
-    setIsLoggedIn(true);
 
     setTimeout(() => {
       navigate('/');

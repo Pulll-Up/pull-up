@@ -1,8 +1,8 @@
+import { useAuth } from '@/api/auth';
 import Header from '@/components/common/header/Header';
 import MobileHeader from '@/components/common/header/MobileHeader';
 import PageSpinner from '@/components/fallbacks/spinners/PageSpinner';
 import { cn } from '@/lib/utils';
-import { memberStore } from '@/stores/memberStore';
 import { useWebSocketStore } from '@/stores/useWebSocketStore';
 import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
@@ -16,7 +16,7 @@ const GameLayout = () => {
   const location = useLocation();
 
   const { connectWebSocket, disconnectWebSocket } = useWebSocketStore();
-  const { isLoggedIn } = memberStore();
+  const { isLoggedIn } = useAuth();
   useEffect(() => {
     if (!isLoggedIn) {
       toast.error('로그인이 필요합니다.', { position: 'bottom-center', toastId: 'login-required' });

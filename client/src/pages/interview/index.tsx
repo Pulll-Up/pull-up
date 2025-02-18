@@ -5,14 +5,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { TextAreaChangeEvent, TextAreaKeyboardEvent } from '@/types/event';
-import { memberStore } from '@/stores/memberStore';
 import { getMember } from '@/api/member';
 import { queryClient } from '@/main';
 import { Member } from '@/types/member';
+import { useAuth } from '@/api/auth';
 
 const InterviewPage = () => {
   const navigate = useNavigate();
-  const { setInterviewAnswerId, setIsSolvedToday, isSolvedToday } = memberStore();
+  const { authInfo } = useAuth();
   const [member, setMember] = useState<Member>();
   const { data } = useGetInterview();
 
@@ -20,7 +20,7 @@ const InterviewPage = () => {
   const [answer, setAnswer] = useState('');
 
   useEffect(() => {
-    if (isSolvedToday) {
+    if (authInfo?.isSolvedToday) {
       navigate('/');
       toast.info('오늘의 문제를 이미 풀었습니다. 결과를 확인하세요!', {
         position: 'bottom-center',
@@ -59,8 +59,6 @@ const InterviewPage = () => {
       answer,
     });
 
-    setInterviewAnswerId(response.interviewAnswerId);
-    setIsSolvedToday(true);
     navigate(`/interview/result/${response.interviewAnswerId}`);
   };
 

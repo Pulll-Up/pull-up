@@ -1,6 +1,5 @@
-import { logout } from '@/api/auth';
+import { logout, useAuth } from '@/api/auth';
 import { cn } from '@/lib/utils';
-import { memberStore } from '@/stores/memberStore';
 import { AuthStore } from '@/utils/authService';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -11,15 +10,20 @@ interface HeaderItem {
 
 const MobileHeader = () => {
   const location = useLocation();
-  const { isLoggedIn, logoutMember, isSolvedToday, interviewAnswerId } = memberStore();
   const isExamInProgress = /^\/exam\/\d+$/.test(location.pathname);
   const isGameInProgress = /^\/game\/(?!$).+$/.test(location.pathname);
 
+  const { authInfo, isLoggedIn } = useAuth();
+
   const headerItems: HeaderItem[] = [
-    { label: '오늘의 문제', path: !isSolvedToday ? '/interview' : `/interview/result/${interviewAnswerId}` },
+    {
+      label: '오늘의 문제',
+      path: !authInfo?.isSolvedToday ? '/interview' : `/interview/result/${authInfo.interviewAnswerId}`,
+    },
     { label: '시험모드', path: '/exam' },
     { label: '게임모드', path: '/game' },
     { label: '대시보드', path: '/dashboard' },
+    { label: isLoggedIn ? '로그아웃' : '로그인', path: isLoggedIn ? '/' : '/signin' },
   ];
   const loginItem: HeaderItem = { label: isLoggedIn ? '로그아웃' : '로그인', path: isLoggedIn ? '/' : '/signin' };
 
@@ -33,7 +37,6 @@ const MobileHeader = () => {
       //console.log('로그아웃 시도');
       await logout();
       AuthStore.clearAccessToken();
-      logoutMember();
       window.location.reload();
     }
   };

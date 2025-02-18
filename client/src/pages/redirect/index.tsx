@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 
 const RedirectPage = () => {
   const navigate = useNavigate();
-  const { setMember, setIsLoggedIn, setIsSolvedToday, setInterviewAnswerId } = memberStore();
+  const { setMember } = memberStore();
 
   useEffect(() => {
     const handleRedirect = async () => {
@@ -30,10 +30,6 @@ const RedirectPage = () => {
       // 알림 설정
       setupNotification();
 
-      // 사용자 정보 설정
-      setIsSolvedToday(auth.isSolvedToday);
-      setInterviewAnswerId(auth.interviewAnswerId);
-
       const member = await getMember();
 
       // 비회원가입 시
@@ -49,7 +45,6 @@ const RedirectPage = () => {
       }
 
       setMember(member);
-      setIsLoggedIn(true);
       navigate('/');
     };
 
