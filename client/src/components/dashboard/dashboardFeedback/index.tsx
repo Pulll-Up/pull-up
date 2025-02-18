@@ -37,11 +37,13 @@ const DashboardFeedback = () => {
     <div className="relative flex h-full w-full flex-col gap-3 lg:flex-row">
       <div className="flex w-full flex-1 flex-col gap-3">
         {/* 문제 */}
-        <div className="flex flex-1 items-center justify-center rounded-xl border border-stone-200 p-6">
-          <span className="break-keep text-center text-lg font-bold">{resultData.question}</span>
+        <div className="flex flex-1 items-center justify-center rounded-xl border border-stone-200 p-4">
+          <p className="text-md line-clamp-2 overflow-hidden text-ellipsis break-keep text-center font-bold">
+            {resultData.question}
+          </p>
         </div>
         {/* 키워드 */}
-        <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border border-stone-200 p-6">
+        <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border border-stone-200 p-4">
           <div className="w-fit rounded-md bg-primary-500 px-3 py-1 text-sm text-white">키워드</div>
           <div className="flex flex-wrap justify-center gap-3">
             {resultData.keywords.map((keyword, id) => (
@@ -51,29 +53,26 @@ const DashboardFeedback = () => {
         </div>
       </div>
       {/* 강점. 약점 */}
-      <div className="flex flex-1 flex-col gap-3 rounded-xl border border-stone-200 p-5">
-        <div className="flex items-center justify-between">
-          <div className="flex gap-1">
-            <Icon id={'ai'} size={24} />
-            <span className="text-xl font-semibold text-stone-950">AI 피드백</span>
-          </div>
-
-          <button
-            onClick={() => navigate(`/interview/result/${interviewAnswerId}`)}
-            className="flex w-fit items-center justify-center gap-2 rounded-lg border border-primary-500 bg-primary-50 px-2 py-1 font-semibold text-primary-500"
-          >
-            <div>자세히 보기</div>
-            <Icon id={'list'} size={16}></Icon>
-          </button>
+      <div className="flex flex-1 flex-col gap-5 rounded-xl border border-stone-200 p-5">
+        <div className="flex gap-1">
+          <Icon id={'ai'} size={24} />
+          <span className="text-xl font-semibold text-stone-950">AI 피드백</span>
         </div>
         <section>
           <span className="text-lg font-semibold text-primary-500">강점</span>
-          <p>{resultData.strength}</p>
+          <p className="line-clamp-2 overflow-hidden text-ellipsis">{resultData.strength}</p>
         </section>
         <section>
           <span className="text-lg font-semibold text-primary-500">개선점</span>
-          <p>{resultData.weakness}</p>
+          <p className="line-clamp-2 overflow-hidden text-ellipsis">{resultData.weakness}</p>
         </section>
+        <button
+          onClick={() => navigate(`/interview/result/${interviewAnswerId}`)}
+          className="flex w-fit items-center justify-center gap-2 self-end rounded-lg border border-primary-500 bg-primary-50 px-2 py-1 font-semibold text-primary-500"
+        >
+          <span className="text-sm">자세히 보기</span>
+          <Icon id={'list'} size={16}></Icon>
+        </button>
       </div>
 
       {!isSolvedToday && (
