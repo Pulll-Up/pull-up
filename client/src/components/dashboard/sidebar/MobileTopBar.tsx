@@ -4,6 +4,7 @@ import Card from './card';
 import { Subject } from '@/types/member';
 import { convertSubject } from '@/utils/convertSubject';
 import useSideBarCard from '@/hooks/useSideBarCard';
+import { Button } from '@/components/ui/button';
 
 interface MobileTopBarProps {
   image: string;
@@ -24,6 +25,12 @@ const MobileTopBar = ({ image, name, email, subjects }: MobileTopBarProps) => {
   return (
     <div className="flex flex-col gap-4">
       <MobileProfile image={image} name={name} email={email} subjects={convertSubject(subjects)} />
+      <div className="flex w-full items-center justify-between rounded-md bg-primary-50 p-2 text-xs">
+        <span>오늘의 문제를 알림으로 받을래요</span>
+        <Button size="fit" className="px-2 py-1 text-[10px]">
+          알림 받기
+        </Button>
+      </div>
       <SwipeCard components={examComponents} dots={true} />
     </div>
   );
