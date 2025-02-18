@@ -51,6 +51,7 @@ const GameModals = () => {
 
         toast.error('방을 다시 만들어주세요!', {
           position: 'bottom-center',
+          toastId: 'retry',
         });
       }
     }, 1000 * 60);
@@ -147,6 +148,7 @@ const GameModals = () => {
 
       toast.success('매칭 성공! 3초 뒤 이동합니다.', {
         position: 'bottom-center',
+        toastId: 'match-success',
       });
 
       setTimeout(() => {
