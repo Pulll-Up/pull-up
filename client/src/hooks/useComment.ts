@@ -32,18 +32,18 @@ export const useComment = ({ interviewAnswerId }: useCommentProps) => {
 
   // 댓글 수정
   const [updatedComment, setUpdatedComment] = useState<{
-    id: number;
+    id: string;
     content: string;
   }>();
   const updateComment = useUpdateComment(interviewAnswerId);
 
   // 댓글칸 활성화
-  const handleCommentUpdate = (comment: string, commentId: number) => {
+  const handleCommentUpdate = (comment: string, commentId: string) => {
     setUpdatedComment({ id: commentId, content: comment });
   };
 
   // 댓글 수정 중
-  const onCommentChange = (e: TextAreaChangeEvent, commentId: number) => {
+  const onCommentChange = (e: TextAreaChangeEvent, commentId: string) => {
     setUpdatedComment((prev) => ({
       ...prev,
       id: commentId,
@@ -53,7 +53,7 @@ export const useComment = ({ interviewAnswerId }: useCommentProps) => {
 
   // 수정 취소
   const onCancelClick = () => {
-    setUpdatedComment({ id: 0, content: '' });
+    setUpdatedComment({ id: '0', content: '' });
   };
 
   // 수정 완료
@@ -68,15 +68,15 @@ export const useComment = ({ interviewAnswerId }: useCommentProps) => {
     }
 
     updateComment({
-      commentId: Number(updatedComment.id),
+      commentId: updatedComment.id,
       content: updatedComment.content,
     });
-    setUpdatedComment({ id: 0, content: '' });
+    setUpdatedComment({ id: '0', content: '' });
   };
 
   // 댓글 삭제
   const deleteComment = useDeleteComment(interviewAnswerId);
-  const handleCommentDelete = async (commentId: number) => {
+  const handleCommentDelete = async (commentId: string) => {
     deleteComment(commentId);
   };
 

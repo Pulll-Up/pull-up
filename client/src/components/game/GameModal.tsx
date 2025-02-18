@@ -28,7 +28,7 @@ const GameModals = () => {
   const createRoomTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { roomId, setRoomId } = useRoomStore();
-  const { roomStatus, sendMessage } = useWebSocketStore();
+  const { roomStatus, sendMessage, connectWebSocket } = useWebSocketStore();
 
   const postCreateGame = usePostCreateGame();
   const postJoinGame = usePostJoinGame();
@@ -51,6 +51,7 @@ const GameModals = () => {
 
         toast.error('방을 다시 만들어주세요!', {
           position: 'bottom-center',
+          toastId: 'retry',
         });
       }
     }, 1000 * 60);
@@ -92,6 +93,9 @@ const GameModals = () => {
   const handleJoinRoom = async (event: FormFormEvent) => {
     event.preventDefault();
 
+    // 웹소켓 연결 체크
+    connectWebSocket();
+
     setIsPlayerReady(true);
 
     try {
@@ -106,6 +110,9 @@ const GameModals = () => {
 
   const handleRandomRoom = async ({ randomMatchType, roomId: randomRoomId }: GetRandomTypeResponse) => {
     setIsPlayerReady(true);
+
+    // 웹소켓 연결 체크
+    connectWebSocket();
 
     if (randomMatchType === 'CREATE') {
       setIsCreateMode(true);
@@ -140,7 +147,9 @@ const GameModals = () => {
       }
 
       toast.success('매칭 성공! 3초 뒤 이동합니다.', {
+        autoClose: 2000,
         position: 'bottom-center',
+        toastId: 'match-success',
       });
 
       setTimeout(() => {

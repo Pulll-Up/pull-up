@@ -9,7 +9,7 @@ import InterviewMyAnswer from '@/components/interview/myAnswer';
 import convertDate from '@/utils/convertDate';
 import Icon from '@/components/common/icon';
 import { toast } from 'react-toastify';
-import LoadingLayout from '@/layouts/loadingLayout';
+import LoadingPage from '@/pages/loading';
 
 const InterviewResultPage = () => {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const InterviewResultPage = () => {
 
   // 결과 분석 로딩
   if (isLoading) {
-    return <LoadingLayout />;
+    return <LoadingPage />;
   } else {
     if (!result || !interviewList) return null;
   }
