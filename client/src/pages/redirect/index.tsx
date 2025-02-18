@@ -44,7 +44,11 @@ const RedirectPage = () => {
         return;
       }
 
-      await getAuthInfo();
+      await queryClient.fetchQuery({
+        queryKey: ['authInfo'],
+        queryFn: getAuthInfo,
+      });
+
       setMember(member);
       navigate('/');
     };
