@@ -75,6 +75,7 @@ const SignUpPage = () => {
       toast.success('회원가입이 완료되었습니다. 대시보드에서 알림을 설정해보세요!', {
         position: 'top-center',
         toastId: 'signed-up',
+        autoClose: 3000,
       });
     }, 300);
   };

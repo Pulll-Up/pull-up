@@ -53,7 +53,7 @@ export async function requestPermission() {
     toast.info('알림 권한이 필요합니다. 사이트 알림 허용 후 다시 시도해주세요!', {
       position: 'top-center',
       toastId: 'noti-error',
-      autoClose: false,
+      autoClose: 3000,
     });
   }
 }
