@@ -1,6 +1,8 @@
 package com.pullup.interview.repository;
 
+import com.pullup.interview.domain.Interview;
 import com.pullup.interview.domain.InterviewAnswer;
+import com.pullup.member.domain.Member;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,4 +33,6 @@ public interface InterviewAnswerRepository extends JpaRepository<InterviewAnswer
             "JOIN FETCH ia.member m " +
             "WHERE m.id = :memberId AND i.id = :todayInterviewId")
     Optional<InterviewAnswer> findByMemberIdAndInterviewId(Long memberId, Long todayInterviewId);
+
+    boolean existsByMemberAndInterview(Member member, Interview interview);
 }

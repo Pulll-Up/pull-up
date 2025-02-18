@@ -23,6 +23,7 @@ public enum ErrorMessage {
     ERR_INTERVIEW_NOT_FOUND("면접 질문을 찾을 수 없습니다."),
     ERR_INTERVIEW_ANSWER_NOT_FOUND("면접 답변을 찾을 수 없습니다."),
     ERR_INTERVIEW_NOT_ENOUGH("면접 질문이 충분하지 않습니다."),
+    ERR_INTERVIEW_ALREADY_ANSWERED("이미 답변한 면접 질문입니다."),
 
     //* OAuth2 관련 Exception
     ERR_UNSUPPORTED_OAUTH2_PROVIDER("지원하지 않는 OAUTH2 제공자입니다."),
