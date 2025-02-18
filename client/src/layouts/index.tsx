@@ -3,8 +3,9 @@ import MobileHeader from '@/components/common/header/MobileHeader';
 import PageSpinner from '@/components/fallbacks/spinners/PageSpinner';
 import { cn } from '@/lib/utils';
 import { memberStore } from '@/stores/memberStore';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
 
 const SM_STYLE = 'mx-auto max-w-[430px]';
 const BASIC_STYLE = 'sm:mx-0 sm:max-w-full w-full h-screen';
@@ -14,19 +15,19 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = memberStore();
 
-  // useEffect(() => {
-  //   if (
-  //     location.pathname !== '/' &&
-  //     location.pathname !== '/signin' &&
-  //     location.pathname !== '/signup' &&
-  //     location.pathname !== '/redirect' &&
-  //     !isLoggedIn
-  //   ) {
-  //     toast.error('로그인이 필요합니다.', { position: 'bottom-center', toastId: 'login-required' });
-  //     navigate('/signin');
-  //     return;
-  //   }
-  // }, [isLoggedIn, location.pathname]);
+  useEffect(() => {
+    if (
+      location.pathname !== '/' &&
+      location.pathname !== '/signin' &&
+      location.pathname !== '/signup' &&
+      location.pathname !== '/redirect' &&
+      !isLoggedIn
+    ) {
+      toast.error('로그인이 필요합니다.', { position: 'bottom-center', toastId: 'login-required' });
+      navigate('/signin');
+      return;
+    }
+  }, [isLoggedIn, location.pathname]);
 
   return (
     <div className={cn(SM_STYLE, BASIC_STYLE)}>
