@@ -1,35 +1,59 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useCallback, useEffect } from 'react';
 import InfoSection from '@/components/exam/infoSection';
 import SubmitButton from '@/components/common/submitButton';
 import ProblemStatusButton from '@/components/exam/infoSection/problemStatusButton';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useGetExamResult } from '@/api/exam';
 import { useExamStore } from '@/stores/examStore';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import Icon from '@/components/common/icon';
-
 const ExamProblem = lazy(() => import('@/components/exam/problem'));
 const ExamSolution = lazy(() => import('@/components/exam/solution'));
 
 const ExamResultPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { examId } = useParams();
   const { setSolutionPage, initializeAndSetOptions, setAnswer } = useExamStore();
   const { data: examResult } = useGetExamResult(examId!);
+
+  // 뒤로가기 방지를 위한 핸들러
+  const blockNavigation = useCallback(() => {
+    // 현재 URL로 다시 이동하여 뒤로가기 방지
+    window.history.pushState({ fromExamPage: true }, '', window.location.href);
+    return false;
+  }, []);
+
   useEffect(() => {
     setSolutionPage(true); // 결과 페이지로 설정
-    // 각 문제에 대해 상태 초기화
-    examResult.examResultDetailDtos.forEach((problem) => {
-      initializeAndSetOptions(problem.problemId, problem.options, {
-        answer: problem.answer,
-        chosenAnswer: problem.chosenAnswer,
+    if (examResult) {
+      // 문제 상태 초기화
+      examResult.examResultDetailDtos.forEach((problem) => {
+        initializeAndSetOptions(problem.problemId, problem.options, {
+          answer: problem.answer,
+          chosenAnswer: problem.chosenAnswer,
+        });
+        // 선택한 답변 저장
+        if (problem.chosenAnswer) {
+          setAnswer(problem.problemId, problem.chosenAnswer);
+        }
       });
-      // 선택한 답변 저장
-      if (problem.chosenAnswer) {
-        setAnswer(problem.problemId, problem.chosenAnswer);
-      }
-    });
+    }
   }, [examResult, initializeAndSetOptions, setAnswer, setSolutionPage]);
+
+  // 뒤로가기 방지 로직
+  useEffect(() => {
+    const isFromExamPage = location.state?.fromExamPage === true;
+    if (isFromExamPage) {
+      // 초기 히스토리 상태 설정
+      window.history.pushState({ fromExamPage: true }, '', window.location.href);
+      // popstate 이벤트 리스너 등록
+      window.addEventListener('popstate', blockNavigation);
+      return () => {
+        window.removeEventListener('popstate', blockNavigation);
+      };
+    }
+  }, [location.state, blockNavigation]);
 
   if (!examResult) {
     return <div>시험 결과를 불러오는 데 실패했습니다.</div>;
