@@ -1,31 +1,15 @@
-import { getMember } from '@/api/member';
+import { useGetMember } from '@/api/member';
 import SideBar from '@/components/dashboard/sidebar';
 import useResponsive from '@/hooks/useResponsive';
-import { queryClient } from '@/main';
-import { Member } from '@/types/member';
-import { lazy, useEffect, useState } from 'react';
+import { lazy } from 'react';
 import { Outlet } from 'react-router-dom';
 
 const MobileTopBar = lazy(() => import('@/components/dashboard/sidebar/MobileTopBar'));
 
 const DashBoardLayout = () => {
   const { isMobile, isTabletMd } = useResponsive();
-  const [member, setMember] = useState<Member>();
 
-  useEffect(() => {
-    const fetchMember = async () => {
-      const data = await queryClient.fetchQuery({
-        queryKey: ['member'],
-        queryFn: getMember,
-      });
-
-      if (!data) return null;
-
-      setMember(data);
-    };
-
-    fetchMember();
-  }, []);
+  const { data: member } = useGetMember();
 
   if (!member) return null;
 
