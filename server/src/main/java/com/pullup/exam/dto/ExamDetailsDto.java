@@ -1,14 +1,14 @@
 package com.pullup.exam.dto;
 
 import com.pullup.problem.domain.ProblemType;
-import java.util.List;
+import java.util.Set;
 import lombok.Builder;
 
 @Builder
 public record ExamDetailsDto(
         String problemId,
         String problem,
-        List<String> options,
+        Set<String> options,
         String subject,
         ProblemType problemType,
         Boolean bookmarkStatus
@@ -16,7 +16,7 @@ public record ExamDetailsDto(
     public static ExamDetailsDto of(
             String problemId,
             String problem,
-            List<String> options,
+            Set<String> options,
             String subject,
             ProblemType problemType,
             Boolean bookmarkStatus

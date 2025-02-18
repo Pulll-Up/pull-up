@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -76,13 +77,13 @@ public class ExamService {
                 .toList();
 
         Map<Long, Boolean> bookmarkStatusMap = getBookmarkStatusMap(problemIds, exam.getMember().getId());
-        Map<Long, List<String>> problemOptionsMap = getProblemOptionsMap(problemIds);
+        Map<Long, Set<String>> problemOptionsMap = getProblemOptionsMap(problemIds);
 
         List<ExamDetailsDto> examDetailsDtos = examProblems.stream()
                 .map(examProblem -> ExamDetailsDto.of(
                         encryptId(examProblem.getProblem().getId()),
                         examProblem.getProblem().getQuestion(),
-                        problemOptionsMap.getOrDefault(examProblem.getProblem().getId(), Collections.emptyList()),
+                        problemOptionsMap.getOrDefault(examProblem.getProblem().getId(), Collections.emptySet()),
                         examProblem.getProblem().getSubject().name(),
                         examProblem.getProblem().getProblemType(),
                         bookmarkStatusMap.getOrDefault(examProblem.getProblem().getId(), false)
@@ -201,7 +202,7 @@ public class ExamService {
         // 북마크 여부 조회
         Map<Long, Boolean> bookmarkStatusMap = getBookmarkStatusMap(problemIds, exam.getMember().getId());
         // 시험 문제 선택옵션 조회
-        Map<Long, List<String>> problemOptionsMap = getProblemOptionsMap(problemIds);
+        Map<Long, Set<String>> problemOptionsMap = getProblemOptionsMap(problemIds);
 
         List<ExamResultDetailDto> examResultDetailDtos = examProblems.stream()
                 .map(examProblem -> ExamResultDetailDto.of(
@@ -242,21 +243,13 @@ public class ExamService {
                 ));
     }
 
-    private Map<Long, List<String>> getProblemOptionsMap(List<Long> problemIds) {
-        Map<Long, List<String>> result = problemOptionRepository.findAllByProblemIdIn(problemIds)
+    private Map<Long, Set<String>> getProblemOptionsMap(List<Long> problemIds) {
+        return problemOptionRepository.findAllByProblemIdIn(problemIds)
                 .stream()
                 .collect(Collectors.groupingBy(
                         option -> option.getProblem().getId(),
-                        Collectors.mapping(ProblemOption::getContent, Collectors.toList())
+                        Collectors.mapping(ProblemOption::getContent, Collectors.toSet()) // Set 사용하여 중복 제거
                 ));
-
-        // 디버깅용 로그 추가
-        result.forEach((problemId, options) -> {
-            System.out.println("Problem ID: " + problemId + ", Options count: " + options.size());
-            System.out.println("Options: " + options);
-        });
-
-        return result;
     }
 
 
