@@ -98,6 +98,8 @@ export const useGetRandomType = () =>
   useQuery({
     queryKey: ['randomType'],
     queryFn: () => getRandomType(),
+    staleTime: 0,
+    gcTime: 0,
   });
 
 const postCreateRoomRandom = async () => {
