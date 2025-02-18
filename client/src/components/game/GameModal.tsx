@@ -147,6 +147,7 @@ const GameModals = () => {
       }
 
       toast.success('매칭 성공! 3초 뒤 이동합니다.', {
+        autoClose: 2000,
         position: 'bottom-center',
         toastId: 'match-success',
       });
