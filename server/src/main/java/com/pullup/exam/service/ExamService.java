@@ -80,7 +80,7 @@ public class ExamService {
 
         List<ExamDetailsDto> examDetailsDtos = examProblems.stream()
                 .map(examProblem -> ExamDetailsDto.of(
-                        idEncryptionUtil.encrypt(examProblem.getProblem().getId()),
+                        encryptId(examProblem.getProblem().getId()),
                         examProblem.getProblem().getQuestion(),
                         problemOptionsMap.getOrDefault(examProblem.getProblem().getId(), Collections.emptyList()),
                         examProblem.getProblem().getSubject().name(),
@@ -205,7 +205,7 @@ public class ExamService {
 
         List<ExamResultDetailDto> examResultDetailDtos = examProblems.stream()
                 .map(examProblem -> ExamResultDetailDto.of(
-                        idEncryptionUtil.encrypt(examProblem.getProblem().getId()),
+                        encryptId(examProblem.getProblem().getId()),
                         examProblem.getProblem(),
                         examProblem,
                         problemOptionsMap,
@@ -357,7 +357,7 @@ public class ExamService {
 
         List<GetExamResponse> content = examPage.stream()
                 .map(exam -> GetExamResponse.of(
-                        idEncryptionUtil.encrypt(exam.getId()),
+                        encryptId(exam.getId()),
                         exam,
                         findSubjectsOfExam(exam.getId())
                 ))
@@ -385,7 +385,7 @@ public class ExamService {
 
         List<GetExamResponse> examResponses = exams.stream()
                 .map(exam -> GetExamResponse.of(
-                        idEncryptionUtil.encrypt(exam.getId()),
+                        encryptId(exam.getId()),
                         exam,
                         findSubjectsOfExam(exam.getId()) // 시험의 과목 목록 조회
                 ))
@@ -396,5 +396,9 @@ public class ExamService {
 
     private List<ExamProblem> findAllExamProblemByExamId(Long examId) {
         return examProblemRepository.findAllByExamId(examId);
+    }
+
+    private String encryptId(Long id) {
+        return idEncryptionUtil.encrypt(id);
     }
 }
