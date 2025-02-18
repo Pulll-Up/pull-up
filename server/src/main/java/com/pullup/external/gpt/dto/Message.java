@@ -1,4 +1,4 @@
-package com.pullup.interview.dto;
+package com.pullup.external.gpt.dto;
 
 public record Message(
         String role,
