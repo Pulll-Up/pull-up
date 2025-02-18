@@ -7,6 +7,7 @@ import { useGetExamResult } from '@/api/exam';
 import { useExamStore } from '@/stores/examStore';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import Icon from '@/components/common/icon';
+
 const ExamProblem = lazy(() => import('@/components/exam/problem'));
 const ExamSolution = lazy(() => import('@/components/exam/solution'));
 
@@ -96,8 +97,8 @@ const ExamResultPage = () => {
   return (
     <div className="flex min-h-screen gap-12 bg-Main md:px-8 md:py-10">
       <div className="relative flex w-full flex-col gap-4 sm:mt-16 md:flex-row md:justify-center">
-        {/* Info Section*/}
-        <section className="sticky top-2 border border-b-2 bg-white px-10 pb-2 pt-[86px] sm:pt-[8px] md:hidden">
+        {/* Mobile Info Section*/}
+        <section className="sticky top-2 border border-b-2 bg-white px-10 pb-2 pt-[86px] sm:top-16 sm:pt-[8px] md:hidden">
           <Accordion type="single" defaultValue="score" collapsible>
             {infoSections.map(({ id, title, icon, content }) => (
               <AccordionItem key={id} value={id}>
@@ -142,7 +143,7 @@ const ExamResultPage = () => {
         </section>
         {/* Info Section - Web View */}
         <aside className="relative min-w-[280px] flex-1 flex-shrink-0 px-10 py-4 md:p-0 lg:min-w-[340px] xl:max-w-[380px]">
-          <div className="sticky top-10 flex flex-col gap-10">
+          <div className="sticky top-24 flex flex-col gap-10">
             <div className="hidden flex-col gap-10 md:flex">
               <InfoSection>
                 <span className="text-xl md:text-2xl lg:text-3xl">{round}</span>
