@@ -118,14 +118,14 @@ export const useUpdateComment = (interviewAnswerId: string) => {
 };
 
 // 댓글 삭제
-const deleteComment = async (commentId: number) => {
+const deleteComment = async (commentId: string) => {
   return await api.delete(`interview/interview-answer/comment/${commentId}`);
 };
 
 export const useDeleteComment = (interviewAnswerId: string) => {
   const { mutate } = useMutation({
-    mutationFn: (commentId: number) => deleteComment(commentId),
-    onMutate: async (commentId: number) => {
+    mutationFn: (commentId: string) => deleteComment(commentId),
+    onMutate: async (commentId: string) => {
       await queryClient.cancelQueries({ queryKey: ['interviewAnswerDetail', interviewAnswerId] });
       await queryClient.cancelQueries({ queryKey: ['comments', interviewAnswerId] });
 
