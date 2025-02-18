@@ -192,41 +192,40 @@ public class GameService {
         Long problemId1 = getProblemCardIdByContent(problemCards, contents.get(0));
         Long problemId2 = getProblemCardIdByContent(problemCards, contents.get(1));
 
-        // 틀림
-        if (problemId1 != problemId2) {
-            throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_SUBMIT_WRONG);
-        }
         // 정답
-        List<ProblemCard> selectedCards = new ArrayList<>();
-        for (ProblemCard problemCard : problemCards) {
-            if (problemCard.getCardId() == problemId1) {
-                selectedCards.add(problemCard);
+        if (problemId1 == problemId2) {
+
+            List<ProblemCard> selectedCards = new ArrayList<>();
+            for (ProblemCard problemCard : problemCards) {
+                if (problemCard.getCardId() == problemId1) {
+                    selectedCards.add(problemCard);
+                }
             }
-        }
 
-        if (selectedCards.isEmpty()) {
-            throw new NotFoundException(ErrorMessage.ERR_GAME_CARD_NOT_FOUND);
-        }
+//            if (selectedCards.isEmpty()) {
+//                throw new NotFoundException(ErrorMessage.ERR_GAME_CARD_NOT_FOUND);
+//            }
 
-        // 이미 처리된 카드면, 무시하기
-        for (ProblemCard problemCard : selectedCards) {
-            if (problemCard.getDisabled()) {
-                throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_ALREADY_SUBMITTED);
+//            // 이미 처리된 카드면, 무시하기
+//            for (ProblemCard problemCard : selectedCards) {
+//                if (problemCard.getDisabled()) {
+//                    throw new BadRequestException(ErrorMessage.ERR_GAME_CARD_ALREADY_SUBMITTED);
+//                }
+//            }
+
+            // 처리되지 않았다면, 처리하기
+            for (ProblemCard problemCard : selectedCards) {
+                problemCard.disableCard();
             }
+
+            gameRoomRepository.saveProblems(gameRoom.getRoomId(), problemCards);
+
+            // 플레이어 점수 업데이트
+            Player player = gameRoom.getPlayerByPlayerType(submitCardRequest.playerType());
+            player.increaseScore();
+
+            gameRoomRepository.save(gameRoom);
         }
-
-        // 처리되지 않았다면, 처리하기
-        for (ProblemCard problemCard : selectedCards) {
-            problemCard.disableCard();
-        }
-
-        gameRoomRepository.saveProblems(gameRoom.getRoomId(), problemCards);
-
-        // 플레이어 점수 업데이트
-        Player player = gameRoom.getPlayerByPlayerType(submitCardRequest.playerType());
-        player.increaseScore();
-
-        gameRoomRepository.save(gameRoom);
 
         // 끝났는지 확인
         // 게임룸 정보 (상태) 업데이트
@@ -329,6 +328,7 @@ public class GameService {
 
     public void deleteGameRoom(String roomId) {
         gameRoomRepository.deleteGameRoomAndProblems(roomId);
+        log.info("게임 방이 삭제되었습니다!!!!!!!!! {} ", roomId);
     }
 
     // 현재 room에 있는 player가 속한 모든 gameroom 삭제
