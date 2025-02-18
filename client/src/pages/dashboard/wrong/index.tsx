@@ -64,7 +64,11 @@ const Wrong = () => {
       <Suspense fallback={<ReviewListSkeleton />}>
         <div className="flex flex-1 flex-col gap-4 rounded-xl bg-white p-4 md:gap-8 md:p-8">
           <SearchBar value={inputValue} onChange={onChange} />
-          <ReviewList data={displayedData} />
+          {displayedData.length > 0 ? (
+            <ReviewList data={displayedData} />
+          ) : (
+            <div className="flex h-full items-center justify-center text-gray-500">틀린 문제가 없습니다.</div>
+          )}
         </div>
       </Suspense>
     </section>
