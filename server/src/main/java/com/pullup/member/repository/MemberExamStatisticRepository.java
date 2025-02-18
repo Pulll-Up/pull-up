@@ -12,4 +12,6 @@ public interface MemberExamStatisticRepository extends CrudRepository<MemberExam
     List<MemberExamStatistic> findAllByMemberId(Long memberId);
 
     Optional<MemberExamStatistic> findByMemberIdAndSubject(Long memberId, Subject subject);
+
+    Boolean existsByMemberId(Long memberId);
 }

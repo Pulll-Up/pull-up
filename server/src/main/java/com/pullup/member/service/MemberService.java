@@ -47,7 +47,9 @@ public class MemberService {
                 .map(subject -> MemberExamStatistic.of(subject, member))
                 .collect(Collectors.toList());
 
-        memberExamStatisticRepository.saveAll(statistics);
+        if (!memberExamStatisticRepository.existsByMemberId(memberId)) {
+            memberExamStatisticRepository.saveAll(statistics);
+        }
     }
 
     @Transactional
