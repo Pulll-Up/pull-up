@@ -1,3 +1,4 @@
+import { useGetAuthInfo } from '@/api/auth';
 import { useGetComments } from '@/api/comment';
 import { useCreateInterviewAnswerLike, useGetInterviewAnswerDetail } from '@/api/interview';
 import RouteHeader from '@/components/common/routeheader';
@@ -5,14 +6,13 @@ import CommentItem from '@/components/interview/commentItem';
 import InputForm from '@/components/interview/inputForm';
 import InterviewAnswerItem from '@/components/interview/interviewAnswerItem';
 import { useComment } from '@/hooks/useComment';
-import { memberStore } from '@/stores/memberStore';
 import convertDate from '@/utils/convertDate';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const InterviewAnswerDetail = () => {
   const navigate = useNavigate();
   const { interviewId, interviewAnswerId } = useParams();
-  const { member } = memberStore();
+  const { authInfo } = useGetAuthInfo();
   const { data: interviewAnswer } = useGetInterviewAnswerDetail(interviewAnswerId!);
   const { data: comments } = useGetComments(interviewAnswerId!);
 
@@ -41,7 +41,7 @@ const InterviewAnswerDetail = () => {
     likeMutation(interviewAnswerId!);
   };
 
-  if (!member || !interviewAnswer || !comments) return null;
+  if (!authInfo || !interviewAnswer || !comments) return null;
 
   return (
     <div className="min-h-full bg-Main px-6 py-10 md:px-10 xl:px-20">
@@ -71,7 +71,7 @@ const InterviewAnswerDetail = () => {
             comments.map((comment, index) => (
               <div key={index}>
                 <CommentItem
-                  userEmail={member.email}
+                  userEmail={authInfo.email}
                   comment={comment}
                   handleDelete={handleCommentDelete}
                   handleUpdate={handleCommentUpdate}

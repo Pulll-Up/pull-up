@@ -1,6 +1,5 @@
-import { logout } from '@/api/auth';
+import { logout, useGetAuthInfo } from '@/api/auth';
 import { cn } from '@/lib/utils';
-import { memberStore } from '@/stores/memberStore';
 import { AuthStore } from '@/utils/authService';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -11,21 +10,27 @@ interface HeaderItem {
 
 const MobileHeader = () => {
   const location = useLocation();
-  const { isLoggedIn, logoutMember, isSolvedToday, interviewAnswerId } = memberStore();
   const isExamInProgress = /^\/exam\/\d+$/.test(location.pathname);
   const isGameInProgress = /^\/game\/(?!$).+$/.test(location.pathname);
 
+  const { authInfo, isAuthorized } = useGetAuthInfo();
+
   const headerItems: HeaderItem[] = [
-    { label: '오늘의 문제', path: !isSolvedToday ? '/interview' : `/interview/result/${interviewAnswerId}` },
+    {
+      label: '오늘의 문제',
+      path: !authInfo?.isSolvedToday ? '/interview' : `/interview/result/${authInfo.interviewAnswerId}`,
+    },
     { label: '시험모드', path: '/exam' },
     { label: '게임모드', path: '/game' },
     { label: '대시보드', path: '/dashboard' },
+    { label: isAuthorized ? '로그아웃' : '로그인', path: isAuthorized ? '/' : '/signin' },
   ];
-  const loginItem: HeaderItem = { label: isLoggedIn ? '로그아웃' : '로그인', path: isLoggedIn ? '/' : '/signin' };
+
+  const loginItem: HeaderItem = { label: isAuthorized ? '로그아웃' : '로그인', path: isAuthorized ? '/' : '/signin' };
 
   const handleAuthClick = async () => {
     //console.log('로그아웃 클릭');
-    if (isLoggedIn) {
+    if (isAuthorized) {
       if (isExamInProgress || isGameInProgress) {
         //console.log('시험 / 게임 페이지 로그아웃 차단.');
         return;
@@ -33,7 +38,6 @@ const MobileHeader = () => {
       //console.log('로그아웃 시도');
       await logout();
       AuthStore.clearAccessToken();
-      logoutMember();
       window.location.reload();
     }
   };

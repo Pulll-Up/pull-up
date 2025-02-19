@@ -1,14 +1,11 @@
 import { login } from '@/api/auth';
-import { getMember } from '@/api/member';
 import { queryClient } from '@/main';
-import { memberStore } from '@/stores/memberStore';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const RedirectPage = () => {
   const navigate = useNavigate();
-  const { setMember, setIsLoggedIn, setIsSolvedToday, setInterviewAnswerId } = memberStore();
 
   useEffect(() => {
     const handleRedirect = async () => {
@@ -26,26 +23,12 @@ const RedirectPage = () => {
         return;
       }
 
-      // 사용자 정보 설정
-      setIsSolvedToday(auth.isSolvedToday);
-      setInterviewAnswerId(auth.interviewAnswerId);
-
-      const member = await getMember();
-
-      // 비회원가입 시
+      // 관심과목 미설정 시
       if (!auth.isSignedUp) {
         navigate('/signup');
         return;
       }
 
-      // 관심과목 미선택 시
-      if (!member.interestSubjects?.length) {
-        navigate('/signup');
-        return;
-      }
-
-      setMember(member);
-      setIsLoggedIn(true);
       navigate('/');
     };
 
