@@ -4,7 +4,6 @@ import CreateRoom from './gameModalComponent/CreateRoom';
 import JoinGame from './gameModalComponent/JoinGame';
 import Waiting from './gameModalComponent/waiting/Waiting';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import WaitingAfterCreating from './gameModalComponent/waiting/WaitingAfterCreating';
 import { toast } from 'react-toastify';
 import { useRoomStore } from '@/stores/roomStore';
@@ -13,6 +12,7 @@ import WaitingRamdom from './gameModalComponent/waiting/WaitingRandom';
 import { useWebSocketStore } from '@/stores/useWebSocketStore';
 import { FormFormEvent } from '@/types/event';
 import { SubjectSelect } from '@/types/game';
+import { useSafeNavigate } from '@/hooks/useSafeNavigate';
 
 const INITIAL_SELECT = {
   algorithm: false,
@@ -24,7 +24,7 @@ const INITIAL_SELECT = {
 };
 
 const GameModals = () => {
-  const navigate = useNavigate();
+  const { safeNavigate } = useSafeNavigate();
   const createRoomTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { roomId, setRoomId } = useRoomStore();
@@ -153,7 +153,7 @@ const GameModals = () => {
       });
 
       setTimeout(() => {
-        navigate(`/game/${roomId}`);
+        safeNavigate(`/game/${roomId}`);
       }, 3000);
     }
   }, [roomStatus]);
