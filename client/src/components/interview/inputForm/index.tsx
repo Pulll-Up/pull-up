@@ -20,7 +20,7 @@ const InputForm = ({ id, placeholder, value, limit, onChange, onSubmit, onKeyDow
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}
-        className="h-full flex-1 resize-none border-none placeholder:text-stone-400 focus:outline-none lg:text-lg"
+        className="h-full flex-1 resize-none overflow-y-auto border-none placeholder:text-stone-400 focus:outline-none lg:text-lg [&::-webkit-scrollbar]:hidden"
       ></textarea>
       <div className="flex h-full items-end gap-1">
         {limit ? (

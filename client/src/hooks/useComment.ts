@@ -14,11 +14,24 @@ export const useComment = ({ interviewAnswerId }: useCommentProps) => {
   const createComment = useCreateComment(interviewAnswerId);
 
   const onChange = (e: TextAreaChangeEvent) => {
+    if (e.target.value.length > 1000) {
+      toast.error('입력 가능한 글자수를 초과했습니다.', { position: 'bottom-center', toastId: 'comment-length' });
+      return;
+    }
+
     setInputValue(e.target.value);
   };
 
   const onSubmit = debounce(async () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim()) {
+      toast.error('댓글을 입력해주세요.', {
+        position: 'bottom-center',
+        toastId: 'comment-required',
+      });
+
+      return;
+    }
+
     createComment({ interviewAnswerId, content: inputValue });
     setInputValue('');
   }, 300);
@@ -44,6 +57,11 @@ export const useComment = ({ interviewAnswerId }: useCommentProps) => {
 
   // 댓글 수정 중
   const onCommentChange = (e: TextAreaChangeEvent, commentId: string) => {
+    if (e.target.value.length > 1000) {
+      toast.error('입력 가능한 글자수를 초과했습니다.', { position: 'bottom-center', toastId: 'comment-length' });
+      return;
+    }
+
     setUpdatedComment((prev) => ({
       ...prev,
       id: commentId,
@@ -58,11 +76,7 @@ export const useComment = ({ interviewAnswerId }: useCommentProps) => {
 
   // 수정 완료
   const onConfirmClick = async () => {
-    if (!updatedComment) {
-      return;
-    }
-
-    if (updatedComment.content === '') {
+    if (!updatedComment?.content.trim()) {
       toast.error('댓글을 입력하세요.', { position: 'bottom-center', toastId: 'comment-required' });
       return;
     }
