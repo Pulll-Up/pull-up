@@ -166,7 +166,7 @@ public class MemberService {
         Member member = findMemberById(memberId);
         MemberGameResult memberGameResult = MemberGameResult.createMemberGameResult(member);
 
-        if (!memberGameResultRepository.existsById(memberGameResult.getId())) {
+        if (!memberGameResultRepository.existsByMemberId(memberId)) {
             memberGameResultRepository.save(memberGameResult);
         }
     }
