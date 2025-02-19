@@ -6,6 +6,8 @@ import com.pullup.game.dto.response.GameRoomInfoWithProblemsResponse;
 import com.pullup.game.dto.response.GameRoomResultResponse;
 import com.pullup.game.dto.response.GetGameRoomStatusResponse;
 import com.pullup.game.service.GameService;
+import com.pullup.member.repository.MemberGameResultRepository;
+import com.pullup.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,6 +23,8 @@ public class GameWebSocketController {
 
     private final GameService gameService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final MemberService memberService;
+    private final MemberGameResultRepository memberGameResultRepository;
 
     @MessageMapping("/game/{roomId}/status")
     @SendTo("/topic/game/{roomId}/status")
@@ -55,5 +59,8 @@ public class GameWebSocketController {
         String destination = "/topic/game/" + roomId + "/result";
         messagingTemplate.convertAndSend(destination, gameRoomResultResponse);
     }
+
+    // 게임 방이 finish 로 바뀌면, 무승부, 승자, 패자를 찾을 수 있다
+    // 그때 win, lose, draw count 저장하기
 
 }

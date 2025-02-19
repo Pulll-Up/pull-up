@@ -7,6 +7,7 @@ import com.pullup.external.fcm.repository.DeviceTokenRepository;
 import com.pullup.member.domain.InterestSubject;
 import com.pullup.member.domain.Member;
 import com.pullup.member.domain.MemberExamStatistic;
+import com.pullup.member.domain.MemberGameResult;
 import com.pullup.member.dto.DailySolvedHistoryDto;
 import com.pullup.member.dto.request.DeviceTokenRequest;
 import com.pullup.member.dto.request.InterestSubjectsRequest;
@@ -14,6 +15,7 @@ import com.pullup.member.dto.response.DailySolvedHistoryResponse;
 import com.pullup.member.dto.response.MemberProfileResponse;
 import com.pullup.member.repository.InterestSubjectRepository;
 import com.pullup.member.repository.MemberExamStatisticRepository;
+import com.pullup.member.repository.MemberGameResultRepository;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.problem.domain.Subject;
 import java.time.LocalDate;
@@ -36,6 +38,7 @@ public class MemberService {
     private final InterestSubjectRepository interestSubjectRepository;
     private final MemberExamStatisticRepository memberExamStatisticRepository;
     private final DeviceTokenRepository deviceTokenRepository;
+    private final MemberGameResultRepository memberGameResultRepository;
 
     @Transactional
     public void saveMemberExamStatistic(Long memberId) {
@@ -156,5 +159,15 @@ public class MemberService {
     public String getMemberEmail(Long memberId) {
         return memberRepository.findEmailById(memberId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
+    }
+
+    @Transactional
+    public void saveMemberGameResult(Long memberId) {
+        Member member = findMemberById(memberId);
+        MemberGameResult memberGameResult = MemberGameResult.createMemberGameResult(member);
+
+        if (!memberGameResultRepository.existsById(memberGameResult.getId())) {
+            memberGameResultRepository.save(memberGameResult);
+        }
     }
 }

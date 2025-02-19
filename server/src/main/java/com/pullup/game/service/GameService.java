@@ -26,6 +26,8 @@ import com.pullup.game.dto.response.PlayerType;
 import com.pullup.game.repository.GameRoomRepository;
 import com.pullup.game.repository.WebSocketSessionManager;
 import com.pullup.member.domain.Member;
+import com.pullup.member.domain.MemberGameResult;
+import com.pullup.member.repository.MemberGameResultRepository;
 import com.pullup.member.repository.MemberRepository;
 import com.pullup.member.service.MemberService;
 import com.pullup.problem.service.ProblemService;
@@ -48,6 +50,7 @@ public class GameService {
     private final MemberService memberService;
     private final WebSocketSessionManager sessionManager;
     private final MemberRepository memberRepository;
+    private final MemberGameResultRepository memberGameResultRepository;
 
 
     public CreateRoomResponse createRoom(Long memberId, CreateRoomWithSubjectsRequest request) {
@@ -350,10 +353,21 @@ public class GameService {
         GameRoom gameRoom = findByRoomId(roomId);
 
         Player winner = gameRoom.getWinner();
+
         if (winner != null) {
             // 1. 방 이탈한 경우
             if (gameRoom.getIsForfeitGame()) {
                 if (winner.getId() == gameRoom.getPlayer1().getId()) { // 1P가 승자인 경우
+
+                    MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
+                            gameRoom.getPlayer1().getId());
+
+                    MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
+                            gameRoom.getPlayer2().getId());
+
+                    memberGameResultWithPlayer1.addWinCount();
+                    memberGameResultWithPlayer2.addLoseCount();
+
                     return GameRoomResultResponse.of(
                             false,
                             true,
@@ -369,6 +383,15 @@ public class GameService {
                             )
                     );
                 } else {
+                    MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
+                            gameRoom.getPlayer1().getId());
+
+                    MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
+                            gameRoom.getPlayer2().getId());
+
+                    memberGameResultWithPlayer1.addLoseCount();
+                    memberGameResultWithPlayer2.addWinCount();
+
                     return GameRoomResultResponse.of( // 2P가 승자인 경우
                             false,
                             true,
@@ -389,6 +412,15 @@ public class GameService {
             // 2. 방 이탈 아닌 경우 - 정상 종료 or 타임 아웃
             // 2-1. 1P 승리
             else if (!gameRoom.getIsForfeitGame() && winner.getId() == gameRoom.getPlayer1().getId()) {
+                MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
+                        gameRoom.getPlayer1().getId());
+
+                MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
+                        gameRoom.getPlayer2().getId());
+
+                memberGameResultWithPlayer1.addWinCount();
+                memberGameResultWithPlayer2.addLoseCount();
+
                 return GameRoomResultResponse.of(
                         false,
                         false,
@@ -406,6 +438,16 @@ public class GameService {
             }
             // 2P가 승자인 경우
             else if (!gameRoom.getIsForfeitGame() && winner.getId() == gameRoom.getPlayer2().getId()) {
+
+                MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
+                        gameRoom.getPlayer1().getId());
+
+                MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
+                        gameRoom.getPlayer2().getId());
+
+                memberGameResultWithPlayer1.addLoseCount();
+                memberGameResultWithPlayer2.addWinCount();
+
                 return GameRoomResultResponse.of(
                         false,
                         false,
@@ -424,6 +466,15 @@ public class GameService {
         }
         // 무승부인 경우
         else {
+            MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
+                    gameRoom.getPlayer1().getId());
+
+            MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
+                    gameRoom.getPlayer2().getId());
+
+            memberGameResultWithPlayer1.addDrawCount();
+            memberGameResultWithPlayer2.addDrawCount();
+
             if (gameRoom.getIsForfeitGame()) {
                 return GameRoomResultResponse.of(
                         true,
@@ -479,6 +530,12 @@ public class GameService {
             gameRoom.updateWinner(gameRoom.getPlayer1());
             gameRoom.updateStatusToFinished();
         }
+    }
+
+
+    private MemberGameResult findMemberGameResultByMemberId(Long memberId) {
+        return memberGameResultRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_GAME_RESULT_NOT_FOUND));
     }
 }
 

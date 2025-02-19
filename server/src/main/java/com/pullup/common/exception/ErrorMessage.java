@@ -42,6 +42,7 @@ public enum ErrorMessage {
     ERR_GAME_CARD_ALREADY_SUBMITTED("이미 다른 사용자가 선택한 카드입니다"),
     ERR_GAME_CARD_NOT_FOUND("카드를 찾을 수 없습니다"),
     ERR_GAME_ROOM_ALREADY_FULL("이미 방이 꽉 찼습니다"),
+    ERR_MEMBER_GAME_RESULT_NOT_FOUND("게임 결과 테이블을 찾을 수 없습니다"),
 
     //* Comment 관련 Exception
     ERR_COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다"),

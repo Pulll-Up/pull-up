@@ -40,6 +40,7 @@ public class OAuthService {
         String email = memberService.getMemberEmail(memberId);
         if (!memberService.isExistInterestSubjects(memberId)) {
             memberService.saveMemberExamStatistic(memberId);
+            memberService.saveMemberGameResult(memberId);
             return LoginResponse.isFirstLogin(email);
         }
         if (!memberService.isSolvedToday(memberId)) {
