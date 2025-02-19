@@ -74,7 +74,16 @@ export const getAuthInfo = async () => {
 export const useGetAuthInfo = () => {
   const { data, isSuccess, isError } = useSuspenseQuery({
     queryKey: ['authInfo'],
-    queryFn: getAuthInfo,
+    queryFn: async () => {
+      // redirect 페이지에서는 API 호출하지 않고 기본값 반환
+      if (window.location.pathname === '/redirect') {
+        return {
+          authInfo: undefined,
+          isAuthorized: false,
+        };
+      }
+      return getAuthInfo();
+    },
   });
 
   return { authInfo: data.authInfo, isAuthorized: data.isAuthorized, isSuccess, isError };
