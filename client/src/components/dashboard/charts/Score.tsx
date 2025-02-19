@@ -10,22 +10,35 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+const DEFAULT_SCORES = [
+  { round: '', score: 1 },
+  { round: '', score: 1 },
+  { round: '', score: 1 },
+  { round: '', score: 1 },
+  { round: '', score: 1 },
+];
+
 const Score = () => {
   const { data: scoreData, isLoading, isError } = useGetScore();
 
   if (isLoading) return <>불러오는 중...</>;
   if (isError || !scoreData) return <>차트 불러오기에 실패했어요</>;
-  if (!scoreData.examScoreDtos.length) return <>모의고사를 풀고 점수를 확인하세요!</>;
+
+  const mergedData = DEFAULT_SCORES.map((item, index) => ({
+    ...item,
+    ...(scoreData.examScoreDtos[4 - index] || {}),
+  }));
+
   return (
-    <ChartContainer config={chartConfig} className="w-full">
-      <BarChart accessibilityLayer data={scoreData.examScoreDtos}>
+    <ChartContainer config={chartConfig} className="w-[80%] overflow-hidden">
+      <BarChart accessibilityLayer data={mergedData}>
         <CartesianGrid vertical={false} />
         <XAxis
-          dataKey="time"
+          tickFormatter={(value) => (value ? `${value}회` : '')}
+          dataKey="round"
           tickLine={false}
           tickMargin={10}
           axisLine={false}
-          tickFormatter={(value) => value.slice(0, 3)}
         />
         <ChartTooltip content={<ChartTooltipContent />} />
         <Bar dataKey="score" fill={chartConfig.score.color} radius={4} />
