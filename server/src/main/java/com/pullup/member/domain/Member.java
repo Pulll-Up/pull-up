@@ -8,12 +8,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,12 +49,9 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private Long solvedDays;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_game_result_id")
-    private MemberGameResult memberGameResult;
-
     @Builder
-    private Member(String name, String email, Role role, OAuthProvider oAuthProvider, String providerId, String profileImageUrl) {
+    private Member(String name, String email, Role role, OAuthProvider oAuthProvider, String providerId,
+                   String profileImageUrl) {
         this.name = name;
         this.email = email;
         this.role = role;
@@ -67,7 +61,7 @@ public class Member extends BaseTimeEntity {
         this.solvedDays = 0L;
     }
 
-    public static Member createMember(OAuth2UserInfo oAuth2UserInfo){
+    public static Member createMember(OAuth2UserInfo oAuth2UserInfo) {
         return Member.builder()
                 .name(oAuth2UserInfo.getName())
                 .email(oAuth2UserInfo.getEmail())
