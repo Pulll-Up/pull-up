@@ -8,9 +8,9 @@ import ExamProblem from '@/components/exam/problem';
 import InfoSection from '@/components/exam/infoSection';
 import ProblemStatusButton from '@/components/exam/infoSection/problemStatusButton';
 import Icon from '@/components/common/icon';
-import usePrompt from '@/hooks/useNavigationBlocker';
 import NavigationDialog from '@/components/common/navigationDialog';
 import SubmitDialog from '@/components/exam/submitDialog';
+import usePrompt from '@/hooks/useNavigationBlocker';
 
 const ExamDetailPage = () => {
   const navigate = useNavigate();
@@ -35,6 +35,42 @@ const ExamDetailPage = () => {
       setAnswer(problem.problemId, '');
     });
   }, [examProblems, isInitialized, resetExamState, initializeAndSetOptions, setSolutionPage, setAnswer]);
+
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+
+  // 새로고침 감지 및 리디렉션
+  useEffect(() => {
+    if (sessionStorage.getItem('redirectOnRefresh') === 'true') {
+      sessionStorage.removeItem('redirectOnRefresh');
+      navigate('/exam');
+    } else {
+      setIsLoading(false); // 리디렉션 없으면 렌더링 허용
+    }
+  }, [navigate]);
+
+  // 새로고침 감지 이벤트 등록
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+      sessionStorage.setItem('redirectOnRefresh', 'true'); // 새로고침 플래그 설정
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
+  // 초기 로딩 상태를 처리하는 조건부 렌더링
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p>로딩 중...</p>
+      </div>
+    );
+  }
 
   const onSubmit = async () => {
     try {
@@ -142,7 +178,7 @@ const ExamDetailPage = () => {
           </div>
         </aside>
       </div>
-      {/* 페이지 이동 경고 모달 */}
+      {/* 페이지 이동 및 새로고침 경고 모달 */}
       <NavigationDialog
         isOpen={isBlocked}
         onProceed={handleProceed}
