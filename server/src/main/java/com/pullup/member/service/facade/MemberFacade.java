@@ -46,8 +46,6 @@ public class MemberFacade {
             throw new BadRequestException(ErrorMessage.ERR_INTERVIEW_ALREADY_ANSWERED);
         }
 
-        memberService.updateSolveStatus(member);
-
         String prompt = PromptGenerator.generatePrompt(interview, myInterviewAnswerRequest);
 
         return CompletableFuture.supplyAsync(() -> {
@@ -64,6 +62,8 @@ public class MemberFacade {
                     weakness,
                     myInterviewAnswerRequest.answer()
             );
+
+            memberService.updateSolveStatus(member);
 
             return MyInterviewAnswerResponse.of(idEncryptionUtil.encrypt(interviewId), idEncryptionUtil.encrypt(interviewAnswer.getId()));
         });

@@ -26,7 +26,7 @@ public class InterviewAnswer extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String answer;
 
     private String strength;
