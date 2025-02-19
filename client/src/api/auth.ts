@@ -3,7 +3,7 @@ import api from './instance';
 import { Subject } from '@/types/member';
 import { AuthStore } from '@/utils/authService';
 import { queryClient } from '@/main';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 
 // 로그인
@@ -62,19 +62,19 @@ export const useSignUpMutation = (subjectNames: Subject[]) => {
 
 // 사용자 정보 확인
 export const getAuthInfo = async () => {
-  const response = await api.get('auth/check').json<AuthResponseType>();
-  return response;
+  try {
+    const response = await api.get('auth/check').json<AuthResponseType>();
+    return { authInfo: response, isAuthorized: true };
+  } catch (error) {
+    return { authInfo: undefined, isAuthorized: false };
+  }
 };
 
 export const useGetAuthInfo = () => {
-  const { data, error, isLoading } = useQuery({
+  const { data, isSuccess, isError } = useSuspenseQuery({
     queryKey: ['authInfo'],
     queryFn: getAuthInfo,
   });
 
-  if (error) {
-    return { authInfo: undefined, isAuthorized: false, isLoading: false, error };
-  }
-
-  return { authInfo: data, isAuthorized: !!data, isLoading };
+  return { authInfo: data.authInfo, isAuthorized: data.isAuthorized, isSuccess, isError };
 };
