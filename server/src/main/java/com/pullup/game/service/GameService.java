@@ -351,7 +351,7 @@ public class GameService {
     }
 
     @Transactional
-    public GameRoomResultResponse getGameRoomResult(String roomId) {
+    public synchronized GameRoomResultResponse getGameRoomResult(String roomId) {
         GameRoom gameRoom = findByRoomId(roomId);
         Player winner = gameRoom.getWinner();
 
