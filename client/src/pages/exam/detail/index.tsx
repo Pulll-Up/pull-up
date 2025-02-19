@@ -135,7 +135,7 @@ const ExamDetailPage = () => {
             {/* 답안 제출 */}
             <SubmitDialog
               onSubmit={onSubmit}
-              //isDisabled={!isAllSolved}
+              isDisabled={!isAllSolved}
               title="정말 시험을 제출하시겠습니까?"
               description="제출 후에는 더 이상 답안을 수정할 수 없습니다."
             />
@@ -148,7 +148,7 @@ const ExamDetailPage = () => {
         onProceed={handleProceed}
         onCancel={handleCancel}
         title="시험을 중단하시겠습니까?"
-        description="페이지를 이동할 경우 시험이 무효화되고 선택한 답안이 모두 사라집니다."
+        description="페이지를 이동할 경우 시험은 0점으로 처리되며 선택한 답안이 모두 사라집니다."
       />
     </div>
   );
