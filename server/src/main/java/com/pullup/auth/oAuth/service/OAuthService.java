@@ -37,15 +37,16 @@ public class OAuthService {
     }
 
     public LoginResponse getLoginResponse(Long memberId) {
+        String email = memberService.getMemberEmail(memberId);
         if (!memberService.isExistInterestSubjects(memberId)) {
             memberService.saveMemberExamStatistic(memberId);
-            return LoginResponse.isFirstLogin();
+            return LoginResponse.isFirstLogin(email);
         }
         if (!memberService.isSolvedToday(memberId)) {
-            return LoginResponse.isNotFirstLoginAndNotSolvedToday();
+            return LoginResponse.isNotFirstLoginAndNotSolvedToday(email);
         }
         String encryptedTodayInterviewAnswerId = memberFacade.getEncryptedTodayInterviewAnswerId(memberId);
-        return LoginResponse.isNotFirstLoginAndSolvedToday(encryptedTodayInterviewAnswerId);
+        return LoginResponse.isNotFirstLoginAndSolvedToday(email, encryptedTodayInterviewAnswerId);
     }
 
     public void signUp(Long memberId, SignUpRequest singUpRequest) {
