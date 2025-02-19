@@ -4,11 +4,11 @@ import com.pullup.common.util.SecurityUtil;
 import com.pullup.game.dto.request.CreateRoomWithSubjectsRequest;
 import com.pullup.game.dto.request.JoinRoomRequest;
 import com.pullup.game.dto.response.CreateRoomResponse;
+import com.pullup.game.dto.response.GameWinLoseDrawResultResponse;
 import com.pullup.game.dto.response.GetPlayerTypeResponse;
 import com.pullup.game.dto.response.GetRandomMatchTypeResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
 import com.pullup.game.dto.response.PlayerType;
-import com.pullup.game.dto.response.WinningRateResponse;
 import com.pullup.game.service.GameService;
 import com.pullup.member.service.MemberGameResultService;
 import lombok.RequiredArgsConstructor;
@@ -88,14 +88,13 @@ public class GameController implements GameApi {
     }
 
     @GetMapping("/me/winning-rate")
-    public ResponseEntity<WinningRateResponse> getWinningRate() {
+    public ResponseEntity<GameWinLoseDrawResultResponse> getWinningRate() {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
 
-        WinningRateResponse winningRateResponse = memberGameResultService.getWinningRate(memberId);
+        GameWinLoseDrawResultResponse gameWinLoseDrawResultResponse = memberGameResultService.getWinningRate(memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(winningRateResponse);
+                .body(gameWinLoseDrawResultResponse);
     }
-
 
 }
