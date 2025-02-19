@@ -77,10 +77,10 @@ const DashboardFeedback = () => {
 
       {!isSolvedToday && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80">
-          <p className="text-lg font-bold text-primary-500">아직 문제를 풀지 않았어요!</p>
+          <p className="text-base font-bold text-primary-500">아직 문제를 풀지 않았어요!</p>
           <button
             onClick={() => navigate('/interview')}
-            className="mt-4 w-[80%] rounded-xl bg-primary-500 p-3 text-lg font-semibold text-white lg:text-xl lg:font-bold"
+            className="lg:text-md mt-[6px] w-[50%] rounded-xl bg-primary-500 p-3 text-lg font-semibold text-white lg:font-bold"
           >
             오늘의 문제 풀러 가기
           </button>

@@ -39,22 +39,22 @@ const Card = ({ link, title, dataList }: CardProps) => {
   return (
     <div className="flex w-full flex-col gap-2 pb-2">
       <nav>
-        <Link to={link} className="flex items-center justify-between px-2 py-1">
-          <span className="text-md font-bold text-stone-900 lg:text-lg">{title}</span>
+        <Link to={link} className="flex items-center justify-between pl-2">
+          <span className="text-sm font-bold text-stone-900">{title}</span>
           {isMobile || isTabletMd ? (
             <Icon id="list" size={20} aria-label={`${title}로 이동`} />
           ) : (
-            <Icon id="list" size={30} aria-label={`${title}로 이동`} />
+            <Icon id="list" size={25} aria-label={`${title}로 이동`} />
           )}
         </Link>
       </nav>
 
       <Link to={generatedLink} className="flex h-full w-full flex-col items-center md:h-[140px] lg:h-full">
-        <div className="flex h-full w-full rounded-2xl bg-white p-5 shadow-sm md:px-3 md:py-4">
+        <div className="flex h-full w-full rounded-2xl bg-white p-3 shadow-sm md:p-4">
           <div key={index} className="animate-slide-fade-up flex w-full flex-col gap-2">
-            <div className="relative h-[50px] w-full overflow-hidden">
-              <div className="flex flex-col justify-center">
-                <span className="line-clamp-2 break-keep text-left text-base font-medium text-stone-800 md:text-xs lg:text-base">
+            <div className="relative h-[50px] w-full lg:h-auto">
+              <div className="flex h-full flex-col justify-center">
+                <span className="line-clamp-2 overflow-hidden text-ellipsis text-left text-base font-medium text-stone-800 md:text-xs lg:mb-2 lg:line-clamp-1 lg:text-sm">
                   {currentData.content}
                 </span>
                 <span className="text-xs text-stone-400 lg:text-base">{currentData.date}</span>
