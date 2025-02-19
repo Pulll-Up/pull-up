@@ -39,8 +39,6 @@ public class OAuthService {
     public LoginResponse getLoginResponse(Long memberId) {
         String email = memberService.getMemberEmail(memberId);
         if (!memberService.isExistInterestSubjects(memberId)) {
-            memberService.saveMemberExamStatistic(memberId);
-            memberService.saveMemberGameResult(memberId);
             return LoginResponse.isFirstLogin(email);
         }
         if (!memberService.isSolvedToday(memberId)) {
@@ -52,5 +50,7 @@ public class OAuthService {
 
     public void signUp(Long memberId, SignUpRequest singUpRequest) {
         memberService.saveInterestSubjects(memberId, singUpRequest.subjectNames());
+        memberService.saveMemberExamStatistic(memberId);
+        memberService.saveMemberGameResult(memberId);
     }
 }

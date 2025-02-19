@@ -10,4 +10,5 @@ public interface MemberGameResultRepository extends CrudRepository<MemberGameRes
 
     Optional<MemberGameResult> findByMemberId(Long memberId);
 
+    boolean existsByMemberId(Long memberId);
 }
