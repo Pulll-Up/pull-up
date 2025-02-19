@@ -51,7 +51,7 @@ const InterviewPage = () => {
   if (!data || !member) return null;
 
   const onSubmit = async () => {
-    if (!answer) {
+    if (!answer.trim()) {
       toast.error('답변을 입력해주세요.', { position: 'bottom-center', toastId: 'answer-required' });
 
       return;
@@ -80,6 +80,10 @@ const InterviewPage = () => {
   };
 
   const onChange = (e: TextAreaChangeEvent) => {
+    if (e.target.value.length > 500) {
+      return;
+    }
+
     setAnswer(e.target.value);
   };
 
