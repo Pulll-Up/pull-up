@@ -10,9 +10,10 @@ interface Modalprops {
   children: ReactNode;
   onOpenChange?: (isOpen: boolean) => void;
   isOutsideClickable?: boolean;
+  buttonSize?: 'default' | 'xs' | 'sm' | 'lg' | 'fit' | 'icon' | null | undefined;
 }
 
-const Modal = ({ triggerName, triggerColor, children, onOpenChange, isOutsideClickable }: Modalprops) => {
+const Modal = ({ triggerName, triggerColor, children, onOpenChange, isOutsideClickable, buttonSize }: Modalprops) => {
   const handlePointerDownOutside = (event: Event) => {
     if (isOutsideClickable) return;
     event.preventDefault();
@@ -21,7 +22,9 @@ const Modal = ({ triggerName, triggerColor, children, onOpenChange, isOutsideCli
   return (
     <Dialog onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button variant={triggerColor}>{triggerName}</Button>
+        <Button size={buttonSize} variant={triggerColor}>
+          {triggerName}
+        </Button>
       </DialogTrigger>
       <DialogContent
         className="max-w-[300px] bg-white sm:max-w-[425px]"

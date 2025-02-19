@@ -1,9 +1,11 @@
 import { useGetStreak } from '@/api/interview';
+import useResponsive from '@/hooks/useResponsive';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import ActivityCalendar, { DayIndex } from 'react-activity-calendar';
 
 const Streak = () => {
+  const { isMobile } = useResponsive();
   const { data: streakData, isLoading, isError } = useGetStreak();
 
   const tomorrow = new Date();
@@ -34,7 +36,7 @@ const Streak = () => {
       <ActivityCalendar
         data={streakData.dailySolvedHistories || []}
         weekStart={weekStart}
-        blockSize={17}
+        blockSize={isMobile ? 22 : 17}
         blockMargin={4}
         hideColorLegend={true}
         hideMonthLabels={true}
