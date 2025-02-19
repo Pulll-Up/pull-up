@@ -23,7 +23,6 @@ const MobileHeader = () => {
     { label: '시험모드', path: '/exam' },
     { label: '게임모드', path: '/game' },
     { label: '대시보드', path: '/dashboard' },
-    { label: isAuthorized ? '로그아웃' : '로그인', path: isAuthorized ? '/' : '/signin' },
   ];
 
   const loginItem: HeaderItem = { label: isAuthorized ? '로그아웃' : '로그인', path: isAuthorized ? '/' : '/signin' };
