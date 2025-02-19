@@ -15,9 +15,10 @@ const SignUpPage = () => {
 
   useEffect(() => {
     const fetchMember = async () => {
-      const authInfo = await getAuthInfo();
+      const data = await getAuthInfo();
+      const authInfo = data.authInfo;
 
-      if (authInfo.isSignedUp) {
+      if (authInfo?.isSignedUp) {
         navigate('/');
         toast.info('이미 가입된 회원입니다.', {
           position: 'bottom-center',
