@@ -16,7 +16,7 @@ const DashBoardPage = () => {
         <MobileDashboardContainer />
       ) : (
         <div className="grid h-full w-full grid-cols-[2fr_1fr] gap-4 bg-Main">
-          <div className="grid grid-rows-[1.5fr_1fr] gap-4 rounded-2xl">
+          <div className="grid grid-rows-[1.6fr_1fr] gap-4 rounded-2xl">
             <div className="flex flex-col rounded-2xl bg-white p-5">
               <ChartContainer icon="feedback" title="오늘의 문제 및 피드백">
                 <DashboardFeedback />
@@ -35,7 +35,7 @@ const DashBoardPage = () => {
               </div>
             </div>
           </div>
-          <div className="grid grid-rows-[1.5fr_1fr] gap-4">
+          <div className="grid grid-rows-[1.6fr_1fr] gap-4">
             <div className="flex flex-col rounded-2xl bg-white p-5">
               <ChartContainer icon="smile" title="나의 강점 분석">
                 <Analysis />

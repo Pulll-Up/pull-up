@@ -29,10 +29,10 @@ const SideBar = ({ image, name, email, subjects, onClick }: SideBarProps) => {
           </Button>
         </div>
       )}
-      <div className="flex flex-row gap-2 rounded-2xl bg-white p-5 shadow-sm sm:w-full sm:gap-6 lg:w-[351px] lg:flex-col">
+      <div className="flex flex-row gap-2 rounded-2xl bg-white p-4 shadow-sm sm:w-full sm:gap-6 lg:w-[330px] lg:flex-col lg:gap-1">
         <Profile image={image} name={name} email={email} subjects={convertSubject(subjects)} />
         {!isTabletLg && (
-          <div className="flex w-full items-center justify-between rounded-md bg-primary-50 p-2 text-xs">
+          <div className="flex w-full items-center justify-between rounded-md bg-primary-50 p-2 text-xs lg:mb-[4px]">
             <span>오늘의 문제를 알림으로 받을래요</span>
             <Button size="fit" className="px-2 py-1 text-[10px]" onClick={onClick}>
               알림 받기
@@ -40,7 +40,7 @@ const SideBar = ({ image, name, email, subjects, onClick }: SideBarProps) => {
           </div>
         )}
 
-        <div className="flex w-full flex-row gap-4 lg:flex-col">
+        <div className="flex w-full flex-row gap-3 lg:flex-col lg:gap-1">
           <Card link="recent" title="최근 모의고사" dataList={recentExamList} />
           <Card link="wrong" title="내가 틀린 문제" dataList={wrongProblemList} />
           <Card link="archive" title="아카이브" dataList={archiveProblemList} />
