@@ -1,7 +1,7 @@
 import { Subject } from './member';
 
 export interface Score {
-  time: string;
+  round: string;
   score: number;
 }
 
