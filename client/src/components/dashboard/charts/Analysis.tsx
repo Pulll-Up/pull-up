@@ -16,7 +16,6 @@ const Analysis = () => {
 
   if (isPending) return <>불러오는 중...</>;
   if (isError) return <>차트 불러오기에 실패했어요</>;
-  if (!analysisData.examStrengthDtos.length) return <>모의고사를 풀고 장점과 약점을 확인하세요!</>;
 
   return (
     <div className="flex aspect-[16/13] w-full justify-center overflow-hidden p-2">

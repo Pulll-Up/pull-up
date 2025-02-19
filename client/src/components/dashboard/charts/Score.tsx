@@ -11,11 +11,11 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const DEFAULT_SCORES = [
-  { round: '', score: 1 },
-  { round: '', score: 1 },
-  { round: '', score: 1 },
-  { round: '', score: 1 },
-  { round: '', score: 1 },
+  { round: '', score: 0 },
+  { round: '', score: 0 },
+  { round: '', score: 0 },
+  { round: '', score: 0 },
+  { round: '', score: 0 },
 ];
 
 const Score = () => {
