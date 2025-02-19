@@ -71,7 +71,9 @@ const GameStage = () => {
       setException();
       navigate('/game');
 
-      toast('게임이 종료되어 대기 화면으로 이동합니다.');
+      toast('게임이 종료되어 대기 화면으로 이동합니다.', {
+        toastId: 'blocked-path',
+      });
     }
   }, [getPlayerTypeError, navigate]);
 
