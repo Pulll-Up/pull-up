@@ -14,7 +14,7 @@ const DashBoardLayout = () => {
   if (!member) return null;
 
   return (
-    <div className="flex min-h-screen bg-Main pt-[94px] sm:pt-16">
+    <div className="box-border flex min-h-screen bg-Main pt-[94px] sm:pt-16">
       {isMobile || isTabletMd ? (
         <div className="flex flex-col gap-5 p-2 py-4 sm:p-4">
           <MobileTopBar
@@ -26,7 +26,7 @@ const DashBoardLayout = () => {
           <Outlet />
         </div>
       ) : (
-        <div className="box-border flex flex-1 flex-col gap-4 p-8 md:flex-col-reverse lg:flex-row">
+        <div className="box-border flex flex-1 flex-col gap-4 p-6 md:flex-col-reverse lg:flex-row">
           <main className="flex h-full flex-1 overflow-y-auto">
             <Outlet />
           </main>
