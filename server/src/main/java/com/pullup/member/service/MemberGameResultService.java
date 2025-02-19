@@ -17,9 +17,11 @@ public class MemberGameResultService {
     public WinningRateResponse getWinningRate(Long memberId) {
         MemberGameResult memberGameResult = findMemberGameResultByMemberId(memberId);
 
-        Integer winningRate = memberGameResult.calculateWinningRate();
-
-        return WinningRateResponse.of(winningRate);
+        return WinningRateResponse.of(
+                memberGameResult.getWinCount(),
+                memberGameResult.getLoseCount(),
+                memberGameResult.getDrawCount()
+        );
     }
 
     private MemberGameResult findMemberGameResultByMemberId(Long memberId) {
