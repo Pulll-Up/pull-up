@@ -46,7 +46,7 @@ const ExamDetailPage = () => {
       };
       await postExamAnswer(validExamId, requestBody);
       setException();
-      navigate(`/exam/${examId}/result`);
+      navigate(`/exam/${examId}/result`, { state: { fromExamPage: true } });
     } catch (error) {
       console.error('답안 제출 실패:', error);
     }
@@ -86,7 +86,7 @@ const ExamDetailPage = () => {
     <div className="flex gap-12 bg-Main md:px-16 md:py-10">
       <div className="relative flex w-full flex-col gap-4 sm:mt-16 md:flex-row">
         {/* Info Section - Mobile View */}
-        <section className="sticky top-2 border border-b-2 bg-white px-10 pt-[86px] sm:pt-[8px] md:hidden">
+        <section className="sticky top-2 border border-b-2 bg-white px-10 pb-2 pt-[86px] sm:top-16 sm:pt-[8px] md:hidden">
           <Accordion type="single" defaultValue="timeLeft" collapsible>
             {infoSections.map(({ id, title, icon, content }) => (
               <AccordionItem key={id} value={id}>
@@ -124,7 +124,7 @@ const ExamDetailPage = () => {
 
         <aside className="relative min-w-[280px] flex-1 flex-shrink-0 px-10 py-4 md:p-0 lg:min-w-[340px] xl:max-w-[380px]">
           {/* Info Section - Web View */}
-          <div className="sticky top-10 flex flex-col gap-10">
+          <div className="sticky top-24 flex flex-col gap-10">
             <div className="hidden flex-col gap-10 md:flex">
               {infoSections.map(({ id, title, icon, content }) => (
                 <InfoSection key={id} title={title} icon={icon}>
@@ -135,7 +135,7 @@ const ExamDetailPage = () => {
             {/* 답안 제출 */}
             <SubmitDialog
               onSubmit={onSubmit}
-              isDisabled={!isAllSolved}
+              //isDisabled={!isAllSolved}
               title="정말 시험을 제출하시겠습니까?"
               description="제출 후에는 더 이상 답안을 수정할 수 없습니다."
             />

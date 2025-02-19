@@ -1,4 +1,4 @@
-import { getAuthInfo, signup } from '@/api/auth';
+import { signup } from '@/api/auth';
 import { getMember } from '@/api/member';
 import CsConditionSelector from '@/components/common/csConditionSelector';
 import ProgressSteps from '@/components/common/progressSteps';
@@ -12,7 +12,7 @@ import CompleteMessage from '@/components/common/completeMessage';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
-  const { setMember } = memberStore();
+  const { setMember, setIsLoggedIn } = memberStore();
   const [progress, setProgress] = useState(1);
   const [showLoginComplete, setShowLoginComplete] = useState(false);
   const [showSelector, setShowSelector] = useState(false);
@@ -67,18 +67,15 @@ const SignUpPage = () => {
       return;
     }
 
-    await queryClient.fetchQuery({
-      queryKey: ['authInfo'],
-      queryFn: getAuthInfo,
-    });
-
+    setIsLoggedIn(true);
     setMember(member);
 
     setTimeout(() => {
-      navigate('/');
-      toast.success('회원가입이 완료되었습니다.', {
-        position: 'bottom-center',
+      navigate('/dashboard');
+      toast.success('회원가입이 완료되었습니다. 대시보드에서 알림을 설정해보세요!', {
+        position: 'top-center',
         toastId: 'signed-up',
+        autoClose: 3000,
       });
     }, 300);
   };
@@ -120,7 +117,7 @@ const SignUpPage = () => {
       </style>
 
       <div
-        className="relative flex h-full w-full flex-col items-center pt-[94px] sm:pt-16"
+        className="relative flex min-h-full w-full flex-col items-center justify-center pt-[94px] sm:pt-16"
         style={{
           background: `
           radial-gradient(circle at 50% 50%, rgb(255, 255, 255) 0%, transparent 100%),
@@ -131,7 +128,7 @@ const SignUpPage = () => {
         }}
       >
         {/* 프로그레스바 컨테이너 */}
-        <div className="flex h-full w-full flex-col items-center justify-start gap-10 p-36">
+        <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-10">
           <div className="sticky">
             <ProgressSteps currentStep={progress} totalStep={2} />
           </div>

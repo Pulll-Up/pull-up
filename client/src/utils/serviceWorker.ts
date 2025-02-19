@@ -47,10 +47,13 @@ export async function requestPermission() {
       queryKey: ['device-token'],
       queryFn: () => registerDeviceToken(currentToken),
     });
+
+    toast.success('알림이 설정되었습니다.', { position: 'top-center', toastId: 'noti-success' });
   } else {
-    toast.info('사이트 알림을 허용해서 오늘의 문제를 매일 받아보세요!', {
-      position: 'bottom-center',
-      toastId: 'notification',
+    toast.info('알림 권한이 필요합니다. 사이트 알림 허용 후 다시 시도해주세요!', {
+      position: 'top-center',
+      toastId: 'noti-error',
+      autoClose: 3000,
     });
   }
 }

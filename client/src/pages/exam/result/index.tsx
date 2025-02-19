@@ -1,8 +1,8 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useCallback, useEffect } from 'react';
 import InfoSection from '@/components/exam/infoSection';
 import SubmitButton from '@/components/common/submitButton';
 import ProblemStatusButton from '@/components/exam/infoSection/problemStatusButton';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useGetExamResult } from '@/api/exam';
 import { useExamStore } from '@/stores/examStore';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -13,25 +13,48 @@ const ExamSolution = lazy(() => import('@/components/exam/solution'));
 
 const ExamResultPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { examId } = useParams();
-  const validExamId = examId ? examId : '';
   const { setSolutionPage, initializeAndSetOptions, setAnswer } = useExamStore();
-  const { data: examResult } = useGetExamResult(validExamId);
+  const { data: examResult } = useGetExamResult(examId!);
+
+  // 뒤로가기 방지를 위한 핸들러
+  const blockNavigation = useCallback(() => {
+    // 현재 URL로 다시 이동하여 뒤로가기 방지
+    window.history.pushState({ fromExamPage: true }, '', window.location.href);
+    return false;
+  }, []);
 
   useEffect(() => {
     setSolutionPage(true); // 결과 페이지로 설정
-    // 각 문제에 대해 상태 초기화
-    examResult.examResultDetailDtos.forEach((problem) => {
-      initializeAndSetOptions(problem.problemId, problem.options, {
-        answer: problem.answer,
-        chosenAnswer: problem.chosenAnswer,
+    if (examResult) {
+      // 문제 상태 초기화
+      examResult.examResultDetailDtos.forEach((problem) => {
+        initializeAndSetOptions(problem.problemId, problem.options, {
+          answer: problem.answer,
+          chosenAnswer: problem.chosenAnswer,
+        });
+        // 선택한 답변 저장
+        if (problem.chosenAnswer) {
+          setAnswer(problem.problemId, problem.chosenAnswer);
+        }
       });
-      // 선택한 답변 저장
-      if (problem.chosenAnswer) {
-        setAnswer(problem.problemId, problem.chosenAnswer);
-      }
-    });
+    }
   }, [examResult, initializeAndSetOptions, setAnswer, setSolutionPage]);
+
+  // 뒤로가기 방지 로직
+  useEffect(() => {
+    const isFromExamPage = location.state?.fromExamPage === true;
+    if (isFromExamPage) {
+      // 초기 히스토리 상태 설정
+      window.history.pushState({ fromExamPage: true }, '', window.location.href);
+      // popstate 이벤트 리스너 등록
+      window.addEventListener('popstate', blockNavigation);
+      return () => {
+        window.removeEventListener('popstate', blockNavigation);
+      };
+    }
+  }, [location.state, blockNavigation]);
 
   if (!examResult) {
     return <div>시험 결과를 불러오는 데 실패했습니다.</div>;
@@ -74,8 +97,8 @@ const ExamResultPage = () => {
   return (
     <div className="flex min-h-screen gap-12 bg-Main md:px-8 md:py-10">
       <div className="relative flex w-full flex-col gap-4 sm:mt-16 md:flex-row md:justify-center">
-        {/* Info Section*/}
-        <section className="sticky top-2 border border-b-2 bg-white px-10 pb-2 pt-[86px] sm:pt-[8px] md:hidden">
+        {/* Mobile Info Section*/}
+        <section className="sticky top-2 border border-b-2 bg-white px-10 pb-2 pt-[86px] sm:top-16 sm:pt-[8px] md:hidden">
           <Accordion type="single" defaultValue="score" collapsible>
             {infoSections.map(({ id, title, icon, content }) => (
               <AccordionItem key={id} value={id}>
@@ -120,7 +143,7 @@ const ExamResultPage = () => {
         </section>
         {/* Info Section - Web View */}
         <aside className="relative min-w-[280px] flex-1 flex-shrink-0 px-10 py-4 md:p-0 lg:min-w-[340px] xl:max-w-[380px]">
-          <div className="sticky top-10 flex flex-col gap-10">
+          <div className="sticky top-24 flex flex-col gap-10">
             <div className="hidden flex-col gap-10 md:flex">
               <InfoSection>
                 <span className="text-xl md:text-2xl lg:text-3xl">{round}</span>

@@ -5,15 +5,17 @@ import { convertSubject } from '@/utils/convertSubject';
 import useSideBarCard from '@/hooks/useSideBarCard';
 import useResponsive from '@/hooks/useResponsive';
 import { Button } from '@/components/ui/button';
+import { ButtonMouseEvent } from '@/types/event';
 
 interface SideBarProps {
   image: string;
   name: string;
   email: string;
   subjects: Subject[];
+  onClick: (e: ButtonMouseEvent) => void;
 }
 
-const SideBar = ({ image, name, email, subjects }: SideBarProps) => {
+const SideBar = ({ image, name, email, subjects, onClick }: SideBarProps) => {
   const { recentExamList, wrongProblemList, archiveProblemList } = useSideBarCard(5);
   const { isTabletLg } = useResponsive();
 
@@ -22,7 +24,7 @@ const SideBar = ({ image, name, email, subjects }: SideBarProps) => {
       {isTabletLg && (
         <div className="flex w-full items-center justify-between rounded-md bg-primary-50 p-2 text-xs">
           <span>오늘의 문제를 알림으로 받을래요</span>
-          <Button size="fit" className="px-2 py-1 text-[10px]">
+          <Button size="fit" className="px-2 py-1 text-[10px]" onClick={onClick}>
             알림 받기
           </Button>
         </div>
@@ -32,7 +34,7 @@ const SideBar = ({ image, name, email, subjects }: SideBarProps) => {
         {!isTabletLg && (
           <div className="flex w-full items-center justify-between rounded-md bg-primary-50 p-2 text-xs lg:mb-[4px]">
             <span>오늘의 문제를 알림으로 받을래요</span>
-            <Button size="fit" className="px-2 py-1 text-[10px]">
+            <Button size="fit" className="px-2 py-1 text-[10px]" onClick={onClick}>
               알림 받기
             </Button>
           </div>
