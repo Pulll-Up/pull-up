@@ -3,13 +3,14 @@ import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const AuthRequired = () => {
+export const AuthCheck = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { authInfo, isAuthorized, isSuccess, isError } = useGetAuthInfo();
 
   useEffect(() => {
     if (isError || !isAuthorized) {
+      // 로그아웃
       if (location.pathname !== '/signin') {
         toast.error('로그인이 필요합니다.', {
           position: 'bottom-center',
@@ -31,16 +32,4 @@ const AuthRequired = () => {
   }, [authInfo, isAuthorized, isError, isSuccess, location.pathname]);
 
   return <Outlet />;
-};
-
-// 사용자 정보 확인
-export const AuthCheck = () => {
-  const location = useLocation();
-
-  // 리다이렉트 페이지는 확인없이 바로 렌더링
-  if (location.pathname === '/redirect') {
-    return <Outlet />;
-  }
-
-  return <AuthRequired />;
 };

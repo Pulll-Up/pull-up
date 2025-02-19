@@ -5,10 +5,17 @@ import gameRoutes from './routes/gameRoutes';
 import GameLayout from '@/layouts/gameLayout';
 import MainLayout from '@/layouts/mainLayout';
 import { AuthCheck } from '@/layouts/authCheck';
-import etcRoutes from './routes/etcRoutes';
 import examRoutes from './routes/examRoutes';
+import etcRoutes from './routes/etcRoutes';
 
 const routes = [
+  // 인증이 필요없는 페이지
+  {
+    path: '/',
+    element: <MainLayout />,
+    children: [...etcRoutes],
+  },
+  // 인증이 필요한 페이지
   {
     element: <AuthCheck />,
     children: [
@@ -23,12 +30,6 @@ const routes = [
         children: [...gameRoutes],
       },
     ],
-  },
-  // 인증이 필요없는 페이지들
-  {
-    path: '/',
-    element: <MainLayout />,
-    children: [...etcRoutes],
   },
 ];
 

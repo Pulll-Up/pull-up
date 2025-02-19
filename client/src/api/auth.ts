@@ -36,7 +36,8 @@ export const reissue = async () => {
 export const logout = async () => {
   await api.post('auth/logout');
   queryClient.setQueryData(['member'], null);
-  queryClient.setQueryData(['authInfo'], null);
+  queryClient.setQueryData(['authInfo'], { authInfo: undefined, isAuthorized: false });
+  AuthStore.clearAccessToken();
 };
 
 // 회원가입

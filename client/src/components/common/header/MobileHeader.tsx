@@ -1,6 +1,5 @@
 import { logout, useGetAuthInfo } from '@/api/auth';
 import { cn } from '@/lib/utils';
-import { AuthStore } from '@/utils/authService';
 import { Link, useLocation } from 'react-router-dom';
 
 interface HeaderItem {
@@ -36,8 +35,6 @@ const MobileHeader = () => {
       }
       //console.log('로그아웃 시도');
       await logout();
-      AuthStore.clearAccessToken();
-      window.location.reload();
     }
   };
 
