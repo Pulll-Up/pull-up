@@ -11,7 +11,9 @@ export interface CorrectRate {
 }
 
 export interface WinningRate {
-  winningRate: number;
+  winCount: number;
+  loseCount: number;
+  drawCount: number;
 }
 
 export interface Streak {
