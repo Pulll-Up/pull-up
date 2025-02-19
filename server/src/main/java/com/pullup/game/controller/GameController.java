@@ -8,7 +8,9 @@ import com.pullup.game.dto.response.GetPlayerTypeResponse;
 import com.pullup.game.dto.response.GetRandomMatchTypeResponse;
 import com.pullup.game.dto.response.JoinRoomResponse;
 import com.pullup.game.dto.response.PlayerType;
+import com.pullup.game.dto.response.WinningRateResponse;
 import com.pullup.game.service.GameService;
+import com.pullup.member.service.MemberGameResultService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GameController implements GameApi {
 
     private final GameService gameService;
+    private final MemberGameResultService memberGameResultService;
 
     @PostMapping("/room")
     public ResponseEntity<CreateRoomResponse> createRoom(@RequestBody CreateRoomWithSubjectsRequest request) {
@@ -82,6 +85,16 @@ public class GameController implements GameApi {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .build();
+    }
+
+    @GetMapping("/me/winning-rate")
+    public ResponseEntity<WinningRateResponse> getWinningRate() {
+        Long memberId = SecurityUtil.getAuthenticatedMemberId();
+
+        WinningRateResponse winningRateResponse = memberGameResultService.getWinningRate(memberId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(winningRateResponse);
     }
 
 
