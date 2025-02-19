@@ -152,4 +152,9 @@ public class MemberService {
         member.updateSolvedDays(newDaySolvedStatus);
         memberRepository.save(member);
     }
+
+    public String getMemberEmail(Long memberId) {
+        return memberRepository.findEmailById(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
+    }
 }

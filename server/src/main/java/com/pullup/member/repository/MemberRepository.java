@@ -16,4 +16,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m FROM Member m WHERE m.email = :email AND m.oAuthProvider = :oAuthProvider")
     Optional<Member> findByEmailAndOAuthProvider(String email, OAuthProvider oAuthProvider);
+
+    @Query("SELECT m.email FROM Member m WHERE m.id = :memberId")
+    Optional<String> findEmailById(Long memberId);
 }
