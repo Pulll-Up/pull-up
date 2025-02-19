@@ -22,6 +22,7 @@ public class GameRoom {
     private GameRoomType gameRoomType;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private boolean isResultUpdated;
 
 
     public static GameRoom createGameRoomByInvitationWithHost(Long id, String name) {
@@ -34,6 +35,7 @@ public class GameRoom {
                 .gameRoomType(GameRoomType.INVITATION)
                 .createdAt(LocalDateTime.now())
                 .modifiedAt(LocalDateTime.now())
+                .isResultUpdated(false)
                 .build();
     }
 
@@ -47,6 +49,7 @@ public class GameRoom {
                 .gameRoomType(GameRoomType.RANDOM_MATCHING)
                 .createdAt(LocalDateTime.now())
                 .modifiedAt(LocalDateTime.now())
+                .isResultUpdated(false)
                 .build();
     }
 
@@ -95,6 +98,9 @@ public class GameRoom {
         }
     }
 
+    public void markResultUpdated() {
+        this.isResultUpdated = true;
+    }
 
 }
 
