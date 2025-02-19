@@ -51,7 +51,7 @@ const InterviewPage = () => {
   if (!data || !member) return null;
 
   const onSubmit = async () => {
-    if (answer.trim.length === 0) {
+    if (!answer.trim()) {
       toast.error('답변을 입력해주세요.', { position: 'bottom-center', toastId: 'answer-required' });
 
       return;
