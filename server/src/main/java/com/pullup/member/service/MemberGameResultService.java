@@ -2,7 +2,7 @@ package com.pullup.member.service;
 
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.exception.NotFoundException;
-import com.pullup.game.dto.response.WinningRateResponse;
+import com.pullup.game.dto.response.GameWinLoseDrawResultResponse;
 import com.pullup.member.domain.MemberGameResult;
 import com.pullup.member.repository.MemberGameResultRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +14,14 @@ public class MemberGameResultService {
 
     private final MemberGameResultRepository memberGameResultRepository;
 
-    public WinningRateResponse getWinningRate(Long memberId) {
+    public GameWinLoseDrawResultResponse getWinningRate(Long memberId) {
         MemberGameResult memberGameResult = findMemberGameResultByMemberId(memberId);
 
-        Integer winningRate = memberGameResult.calculateWinningRate();
-
-        return WinningRateResponse.of(winningRate);
+        return GameWinLoseDrawResultResponse.of(
+                memberGameResult.getWinCount(),
+                memberGameResult.getLoseCount(),
+                memberGameResult.getDrawCount()
+        );
     }
 
     private MemberGameResult findMemberGameResultByMemberId(Long memberId) {
