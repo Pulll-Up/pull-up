@@ -353,7 +353,6 @@ public class GameService {
     @Transactional
     public GameRoomResultResponse getGameRoomResult(String roomId) {
         GameRoom gameRoom = findByRoomId(roomId);
-
         Player winner = gameRoom.getWinner();
 
         if (winner != null) {
@@ -361,14 +360,17 @@ public class GameService {
             if (gameRoom.getIsForfeitGame()) {
                 if (winner.getId() == gameRoom.getPlayer1().getId()) { // 1P가 승자인 경우
 
-                    MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
-                            gameRoom.getPlayer1().getId());
+                    if (!gameRoom.isResultUpdated()) {
+                        MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
+                                gameRoom.getPlayer1().getId());
 
-                    MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
-                            gameRoom.getPlayer2().getId());
+                        MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
+                                gameRoom.getPlayer2().getId());
 
-                    memberGameResultWithPlayer1.addWinCount();
-                    memberGameResultWithPlayer2.addLoseCount();
+                        memberGameResultWithPlayer1.addWinCount();
+                        memberGameResultWithPlayer2.addLoseCount();
+                        gameRoom.markResultUpdated();
+                    }
 
                     return GameRoomResultResponse.of(
                             false,
@@ -385,14 +387,17 @@ public class GameService {
                             )
                     );
                 } else {
-                    MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
-                            gameRoom.getPlayer1().getId());
+                    if (!gameRoom.isResultUpdated()) {
+                        MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
+                                gameRoom.getPlayer1().getId());
 
-                    MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
-                            gameRoom.getPlayer2().getId());
+                        MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
+                                gameRoom.getPlayer2().getId());
 
-                    memberGameResultWithPlayer1.addLoseCount();
-                    memberGameResultWithPlayer2.addWinCount();
+                        memberGameResultWithPlayer1.addLoseCount();
+                        memberGameResultWithPlayer2.addWinCount();
+                        gameRoom.markResultUpdated();
+                    }
 
                     return GameRoomResultResponse.of( // 2P가 승자인 경우
                             false,
@@ -414,14 +419,17 @@ public class GameService {
             // 2. 방 이탈 아닌 경우 - 정상 종료 or 타임 아웃
             // 2-1. 1P 승리
             else if (!gameRoom.getIsForfeitGame() && winner.getId() == gameRoom.getPlayer1().getId()) {
-                MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
-                        gameRoom.getPlayer1().getId());
+                if (!gameRoom.isResultUpdated()) {
+                    MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
+                            gameRoom.getPlayer1().getId());
 
-                MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
-                        gameRoom.getPlayer2().getId());
+                    MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
+                            gameRoom.getPlayer2().getId());
 
-                memberGameResultWithPlayer1.addWinCount();
-                memberGameResultWithPlayer2.addLoseCount();
+                    memberGameResultWithPlayer1.addWinCount();
+                    memberGameResultWithPlayer2.addLoseCount();
+                    gameRoom.markResultUpdated();
+                }
 
                 return GameRoomResultResponse.of(
                         false,
@@ -440,15 +448,17 @@ public class GameService {
             }
             // 2P가 승자인 경우
             else if (!gameRoom.getIsForfeitGame() && winner.getId() == gameRoom.getPlayer2().getId()) {
+                if (!gameRoom.isResultUpdated()) {
+                    MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
+                            gameRoom.getPlayer1().getId());
 
-                MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
-                        gameRoom.getPlayer1().getId());
+                    MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
+                            gameRoom.getPlayer2().getId());
 
-                MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
-                        gameRoom.getPlayer2().getId());
-
-                memberGameResultWithPlayer1.addLoseCount();
-                memberGameResultWithPlayer2.addWinCount();
+                    memberGameResultWithPlayer1.addLoseCount();
+                    memberGameResultWithPlayer2.addWinCount();
+                    gameRoom.markResultUpdated();
+                }
 
                 return GameRoomResultResponse.of(
                         false,
@@ -468,14 +478,17 @@ public class GameService {
         }
         // 무승부인 경우
         else {
-            MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
-                    gameRoom.getPlayer1().getId());
+            if (!gameRoom.isResultUpdated()) {
+                MemberGameResult memberGameResultWithPlayer1 = findMemberGameResultByMemberId(
+                        gameRoom.getPlayer1().getId());
 
-            MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
-                    gameRoom.getPlayer2().getId());
+                MemberGameResult memberGameResultWithPlayer2 = findMemberGameResultByMemberId(
+                        gameRoom.getPlayer2().getId());
 
-            memberGameResultWithPlayer1.addDrawCount();
-            memberGameResultWithPlayer2.addDrawCount();
+                memberGameResultWithPlayer1.addDrawCount();
+                memberGameResultWithPlayer2.addDrawCount();
+                gameRoom.markResultUpdated();
+            }
 
             if (gameRoom.getIsForfeitGame()) {
                 return GameRoomResultResponse.of(
