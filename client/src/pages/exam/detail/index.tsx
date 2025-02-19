@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { postExamAnswer, useGetExamDetails } from '@/api/exam';
 import { useExamStore } from '@/stores/examStore';
@@ -15,36 +15,30 @@ import usePrompt from '@/hooks/useNavigationBlocker';
 const ExamDetailPage = () => {
   const navigate = useNavigate();
   const { examId } = useParams();
-  const validExamId = examId ? examId : '';
+  const validExamId = examId || '';
   const { data: examProblems } = useGetExamDetails(validExamId);
   const answers = useExamStore((state) => state.answers);
   const { resetExamState, setAnswer, setSolutionPage, initializeAndSetOptions } = useExamStore();
-  const [isInitialized] = useState(false);
   const { isBlocked, handleProceed, handleCancel, setException } = usePrompt();
-
   const isAllSolved = (examProblems || []).every(
     (problem) => answers[problem.problemId] && answers[problem.problemId].trim() !== '',
   );
 
   useEffect(() => {
-    if (!examProblems || isInitialized) return;
+    if (!examProblems) return;
     resetExamState();
     setSolutionPage(false);
     examProblems.forEach((problem) => {
       initializeAndSetOptions(problem.problemId, problem.options);
       setAnswer(problem.problemId, '');
     });
-  }, [examProblems, isInitialized, resetExamState, initializeAndSetOptions, setSolutionPage, setAnswer]);
-
-  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+  }, [examProblems, resetExamState, initializeAndSetOptions, setSolutionPage, setAnswer]);
 
   // 새로고침 감지 및 리디렉션
   useEffect(() => {
     if (sessionStorage.getItem('redirectOnRefresh') === 'true') {
       sessionStorage.removeItem('redirectOnRefresh');
       navigate('/exam');
-    } else {
-      setIsLoading(false); // 리디렉션 없으면 렌더링 허용
     }
   }, [navigate]);
 
@@ -52,8 +46,7 @@ const ExamDetailPage = () => {
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
-      event.returnValue = '';
-      sessionStorage.setItem('redirectOnRefresh', 'true'); // 새로고침 플래그 설정
+      sessionStorage.setItem('redirectOnRefresh', 'true');
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -62,15 +55,6 @@ const ExamDetailPage = () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
-
-  // 초기 로딩 상태를 처리하는 조건부 렌더링
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <p>로딩 중...</p>
-      </div>
-    );
-  }
 
   const onSubmit = async () => {
     try {
@@ -101,7 +85,7 @@ const ExamDetailPage = () => {
       icon: 'problem',
       content: (
         <div className="grid grid-cols-5 gap-2">
-          {examProblems.map((problem, index) => (
+          {examProblems?.map((problem, index) => (
             <ProblemStatusButton
               key={problem.problemId}
               index={index + 1}
@@ -142,7 +126,7 @@ const ExamDetailPage = () => {
 
         {/* 문제 리스트 */}
         <section className="flex-2 flex w-full flex-col gap-6 px-10 md:w-[920px] md:gap-10">
-          {examProblems.map((problem, index) => (
+          {examProblems?.map((problem, index) => (
             <div key={problem.problemId} id={`problem-${problem.problemId}`}>
               <ExamProblem
                 index={index + 1}
