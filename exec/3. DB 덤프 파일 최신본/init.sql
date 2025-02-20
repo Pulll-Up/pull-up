@@ -81,7 +81,7 @@ create table interview_answer
     interview_id    bigint not null,
     member_id       bigint not null,
     modified_at     datetime(6) not null,
-    answer          varchar(255) not null,
+    answer          text not null,
     strength        varchar(255) null,
     weakness        varchar(255) null,
     constraint FKe9yi5v8qnnru9q0yb2o2napim foreign key (interview_id) references interview (id),
@@ -196,4 +196,5 @@ create table problem_option
     content       varchar(255) not null,
     constraint FK4gi6sb33qpgdbmiq12giv560r foreign key (problem_id) references problem (id) on delete cascade
 );
+
 
