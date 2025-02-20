@@ -42,23 +42,22 @@ public class InterviewAnswer extends BaseTimeEntity {
     private Interview interview;
 
     @Builder
-    private InterviewAnswer(Member member, Interview interview, String strength, String weakness, String answer) {
+    private InterviewAnswer(Member member, Interview interview, String answer) {
         this.member = member;
         this.interview = interview;
-        this.strength = strength;
-        this.weakness = weakness;
         this.answer = answer;
     }
 
-    public static InterviewAnswer createInterviewAnswer(Member member, Interview interview, String strength,
-                                                        String weakness, String answer) {
+    public static InterviewAnswer createInterviewAnswer(Member member, Interview interview, String answer) {
         return InterviewAnswer.builder()
                 .member(member)
                 .interview(interview)
-                .strength(strength)
-                .weakness(weakness)
                 .answer(answer)
                 .build();
     }
 
+    public void updateAnswer(String strength, String weakness) {
+        this.strength = strength;
+        this.weakness = weakness;
+    }
 }

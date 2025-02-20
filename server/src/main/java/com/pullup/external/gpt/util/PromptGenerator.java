@@ -1,34 +1,33 @@
 package com.pullup.external.gpt.util;
 
 import com.pullup.interview.domain.Interview;
-import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
 
 public class PromptGenerator {
 
     private static final String PROMPT_TEMPLATE = """
             너는 AI 면접 분석가이며, 사용자의 답변을 분석하여 피드백을 제공하는 역할을 해.
             사용자가 실제로 CS 지식을 배우고 성장할 수 있도록 실질적인 피드백을 제공해야 해.
-
+            
             **중요!**  
             응답을 작성할 때 **친절하고 부드러운 말투**를 사용하세요.  
             예를 들어:  
             - "설명을 잘 해주셨네요! 하지만 일부 개념이 부족한 것 같아요. 보완하면 더욱 좋겠습니다."  
             - "예제를 활용하신 점이 좋습니다! 다만, 더 구체적인 예시가 있으면 이해하기 쉬울 것 같아요."  
             - "설명이 조금 어렵게 느껴질 수도 있을 것 같아요. 간단한 용어로 다시 정리해보면 좋겠습니다."
-
+            
             ---
-
+            
             ## 분석 기준 ##
             질문과 모범 답안을 보고 사용자의 답변을 분석한 후 아래 기준을 따라 피드백을 제공해.
             답변의 길이는 최대 300자 이내로 만들어줘.
-                       
-
+            
+            
             ### 강점 (strength)
             1. **정확한 개념 설명**: 사용자가 답변에서 정확한 개념을 설명했는지 확인해 주세요. 이떄 정확한 개념의 기준은 모범답안과 답변이 거의 일치하는지 분석하고, 또한 질문에 대해 정확한 답변을 했는지 분석해줘.
             2. **논리적 흐름**: 답변이 자연스럽고 논리적인지 평가해 주세요.
             3. **예제 활용**: 답변에 예제를 활용하여 설명이 쉬운지 판단해 주세요.
             4. **추가적인 개념 포함**: 모범 답안 외에도 답변에서 좋은 개념을 포함하고 있는지 확인해 주세요.
-
+            
             ### 개선할 점 (weakness)
             1. **부족한 개념**: 답변에서 추가하면 좋은 개념이 있는지 알려 주세요.
             2. **불분명한 설명**: 답변이 **명확하지 않은 부분**이 있다면 개선해 주세요.
@@ -39,16 +38,16 @@ public class PromptGenerator {
                - 사용자가 언급한 개념이 틀렸다면, 그 개념이 왜 틀렸는지 설명해 주세요.
                - **"사용자 답변에서 'X'라고 하셨는데, 사실 'X'는 이러이러한 개념입니다. 'Y'는 이러이러한 개념입니다. 따라서 두 개념은 차이가 있습니다. 라는 식으로 답변해주세요.
                - 개념 차이를 명확하게 설명하고, 좀 더 이해하기 쉽게 **예제**도 제공해주세요.
-
+            
             ---
-
+            
             ## 분석할 내용 ##
             - 질문: "%s"
             - 사용자의 답변: "%s"
             - 모범 답안: "%s"
-
+            
             ---
-
+            
             ## 응답 형식 ##
             **다른 설명 없이 JSON 형식만 반환하라.**
             **만약 사용자의 답변이 장점과 단점을 판별할 수 없을 경우, 답변 내용이 부족하여 분석할 수 없다는 내용을 JSON으로 반환하라.**
@@ -67,11 +66,11 @@ public class PromptGenerator {
             """;
 
 
-    public static String generatePrompt(Interview interview, MyInterviewAnswerRequest request) {
+    public static String generatePrompt(Interview interview, String answer) {
         return String.format(
                 PROMPT_TEMPLATE,
                 interview.getQuestion(),
-                request.answer(),
+                answer,
                 interview.getAnswer()
         );
     }

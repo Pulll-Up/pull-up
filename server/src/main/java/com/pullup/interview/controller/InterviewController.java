@@ -54,12 +54,12 @@ public class InterviewController implements InterviewApi {
 
     @Override
     @PostMapping("/{interviewId}/submit")
-    public ResponseEntity<CompletableFuture<MyInterviewAnswerResponse>> submitInterviewAnswer(
+    public ResponseEntity<MyInterviewAnswerResponse> submitInterviewAnswer(
             @PathVariable("interviewId") @DecryptedId Long interviewId,
             @Valid @RequestBody MyInterviewAnswerRequest myInterviewAnswerRequest
     ) {
         Long memberId = SecurityUtil.getAuthenticatedMemberId();
-        CompletableFuture<MyInterviewAnswerResponse> myInterviewAnswerResponse = memberFacade.submitInterviewAnswer(
+        MyInterviewAnswerResponse myInterviewAnswerResponse = memberFacade.submitInterviewAnswer(
                 memberId,
                 interviewId,
                 myInterviewAnswerRequest
@@ -71,11 +71,12 @@ public class InterviewController implements InterviewApi {
 
     @Override
     @GetMapping("/{interviewAnswerId}/result")
-    public ResponseEntity<MyInterviewAnswerResultResponse> getMyInterviewAnswerResult(
+    public ResponseEntity<CompletableFuture<MyInterviewAnswerResultResponse>> getMyInterviewAnswerResult(
             @PathVariable("interviewAnswerId") @DecryptedId Long interviewAnswerId
     ) {
-        MyInterviewAnswerResultResponse myInterviewAnswerResultResponse = interviewService.getMyInterviewAnswerResult(
-                interviewAnswerId);
+        CompletableFuture<MyInterviewAnswerResultResponse> myInterviewAnswerResultResponse = memberFacade.getMyInterviewAnswerResult(
+                interviewAnswerId
+        );
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(myInterviewAnswerResultResponse);
