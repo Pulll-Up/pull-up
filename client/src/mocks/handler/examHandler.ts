@@ -17,7 +17,6 @@ export const examHandler = [
   // 모의고사 문제 조회
   http.get('http://localhost:8080/api/v1/exam/:examId', async ({ params }) => {
     const { examId } = params;
-    console.log('Received examId:', examId);
     if (examId) {
       // 성공 응답
       return HttpResponse.json(

@@ -42,8 +42,7 @@ export const useToggleProblemBookmark = (problemId: string, examId?: string) => 
 
       return { previousProblemDetail, previousExamResult };
     },
-    onError: (error, _, context) => {
-      console.error('북마크 토글 실패:', error);
+    onError: (_error, _, context) => {
       if (context?.previousProblemDetail) {
         queryClient.setQueryData(QUERY_KEYS.PROBLEM_DETAIL(problemId), context.previousProblemDetail);
       }

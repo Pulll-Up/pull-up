@@ -27,14 +27,11 @@ self.addEventListener('message', function (event) {
   }
 });
 
-self.addEventListener('install', function (e) {
-  console.log('fcm sw install..');
+self.addEventListener('install', function () {
   self.skipWaiting();
 });
 
-self.addEventListener('activate', function (e) {
-  console.log('fcm sw activate..');
-});
+self.addEventListener('activate', function () {});
 
 self.addEventListener('push', function (e) {
   if (!e.data.json()) return;
@@ -48,13 +45,10 @@ self.addEventListener('push', function (e) {
     ...resultData,
   };
 
-  console.log('push: ', { resultData, notificationTitle, notificationOptions });
-
   e.waitUntil(self.registration.showNotification(notificationTitle, notificationOptions));
 });
 
 self.addEventListener('notificationclick', function (event) {
-  console.log('notification click');
   const url = 'https://www.pull-up.store/signin';
   event.notification.close();
   event.waitUntil(self.clients.openWindow(url));

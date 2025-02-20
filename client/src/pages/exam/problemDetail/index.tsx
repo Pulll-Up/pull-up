@@ -27,8 +27,6 @@ const ProblemDetail = () => {
     return <div>문제를 불러오는 데 실패했습니다.</div>;
   }
 
-  console.log(data);
-
   const onHandleBack = () => {
     navigate(-1);
   };

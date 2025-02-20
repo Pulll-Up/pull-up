@@ -59,20 +59,16 @@ const ExamDetailPage = () => {
   }, [validExamId, navigate]);
 
   const onSubmit = async () => {
-    try {
-      const requestBody = {
-        problemAndChosenAnswers: Object.keys(answers).map((problemId) => ({
-          problemId,
-          chosenAnswer: answers[problemId] ?? '',
-        })),
-      };
-      await postExamAnswer(validExamId, requestBody);
-      sessionStorage.removeItem(`exam_${validExamId}_active`); // 시험 종료 시 상태 초기화
-      setException();
-      navigate(`/exam/${examId}/result`, { state: { fromExamPage: true } });
-    } catch (error) {
-      console.error('답안 제출 실패:', error);
-    }
+    const requestBody = {
+      problemAndChosenAnswers: Object.keys(answers).map((problemId) => ({
+        problemId,
+        chosenAnswer: answers[problemId] ?? '',
+      })),
+    };
+    await postExamAnswer(validExamId, requestBody);
+    sessionStorage.removeItem(`exam_${validExamId}_active`); // 시험 종료 시 상태 초기화
+    setException();
+    navigate(`/exam/${examId}/result`, { state: { fromExamPage: true } });
   };
 
   const infoSections = [

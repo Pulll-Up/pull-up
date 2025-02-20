@@ -23,16 +23,12 @@ const ExamPage = () => {
 
   // 모의고사 생성 함수
   const handleExamStart = async (level: Level | null, subjects: Subject[]) => {
-    try {
-      const requestBody = {
-        difficultyLevel: level ?? 'EASY',
-        subjects: subjects,
-      };
-      const response = await postExam(requestBody);
-      navigate(`/exam/${response.examId}`);
-    } catch (error) {
-      console.error('모의고사 생성 실패: ', error);
-    }
+    const requestBody = {
+      difficultyLevel: level ?? 'EASY',
+      subjects: subjects,
+    };
+    const response = await postExam(requestBody);
+    navigate(`/exam/${response.examId}`);
   };
 
   // 모달 열기
