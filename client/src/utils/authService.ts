@@ -38,6 +38,22 @@ export const setTokenHeader = (request: Request) => {
 };
 
 // 토큰 재발급
+let refreshPromise: Promise<void> | null = null;
+
+export const reissueToken = async () => {
+  // 이미 진행 중인 reissue 요청이 있다면 그것을 반환
+  if (refreshPromise) {
+    return refreshPromise;
+  }
+
+  // 새로운 reissue 요청 생성
+  refreshPromise = reissue();
+
+  // reissue 완료 후 Promise 초기화
+  await refreshPromise;
+  refreshPromise = null;
+};
+
 export const handleRefreshToken: BeforeRetryHook = async ({ error, retryCount }) => {
   const errorMessage = error.message;
 
@@ -52,6 +68,12 @@ export const handleRefreshToken: BeforeRetryHook = async ({ error, retryCount })
     return api.stop;
   }
 
-  console.log('reissue');
-  await reissue();
+  try {
+    await reissueToken(); // 단일 reissue 프로미스 사용
+    console.log('reissue success');
+  } catch (error) {
+    console.error('reissue failed:', error);
+    await logout();
+    return api.stop;
+  }
 };
