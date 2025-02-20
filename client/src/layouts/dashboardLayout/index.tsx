@@ -2,6 +2,7 @@ import { useGetMember } from '@/api/member';
 import SideBar from '@/components/dashboard/sidebar';
 import useResponsive from '@/hooks/useResponsive';
 import { registerServiceWorker, requestPermission } from '@/utils/serviceWorker';
+import { throttle } from 'lodash';
 import { lazy } from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -14,10 +15,14 @@ const DashBoardLayout = () => {
 
   if (!member) return null;
 
-  const onClick = async () => {
-    await registerServiceWorker();
-    await requestPermission();
-  };
+  const onClick = throttle(
+    async () => {
+      await registerServiceWorker();
+      await requestPermission();
+    },
+    3000,
+    { leading: true, trailing: false },
+  );
 
   return (
     <div className="box-border flex min-h-screen bg-Main pt-[94px] sm:pt-16">
