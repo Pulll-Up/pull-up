@@ -224,10 +224,16 @@ public class ExamService {
     public GetExamStrengthResponse getExamStrength(Long memberId) {
         List<MemberExamStatistic> statistics = examStatisticRepository.findAllByMemberId(memberId);
 
+        int totalSum = 0;
+        for (MemberExamStatistic statistic : statistics) {
+            totalSum += statistic.getTotalCount();
+        }
+        final int totalCount = totalSum;
+
         List<ExamStrengthDto> strengthDtos = statistics.stream()
                 .map(stat -> new ExamStrengthDto(
                         stat.getSubject().name(),
-                        stat.calculateCorrectRate(stat.getTotalCount(), stat.getWrongCount())
+                        stat.calculateCorrectRate(totalCount, stat.getWrongCount())
                 ))
                 .collect(Collectors.toList());
 
