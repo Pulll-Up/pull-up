@@ -39,7 +39,6 @@ export const logout = async () => {
   // 모든 쿼리 캐시 무효화
   await queryClient.invalidateQueries();
   queryClient.setQueryData(['authInfo'], { authInfo: undefined, isAuthorized: false, isSuccess: true });
-  queryClient.resetQueries();
 
   AuthStore.clearAccessToken();
 };
