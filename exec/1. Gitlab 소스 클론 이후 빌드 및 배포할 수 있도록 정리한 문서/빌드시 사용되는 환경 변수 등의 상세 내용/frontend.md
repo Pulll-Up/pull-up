@@ -1,5 +1,13 @@
+## .env
 ### 상위 디렉토리에서 .env 파일을 생성하고 아래 내용을 복사 붙여넣기 해야합니다.
+### 환경에 맞게 변수를 URL을 설정합니다.
+```
+# 로컬 환경 변수 설정
+VITE_BASE_URL = http://localhost:8080/api/v1/
+VITE_OAUTH_URL = http://localhost:8080
+VITE_WEBSOCKET_URL=http://localhost:8080
 
+# 배포 환경 변수 설정
 VITE_BASE_URL=https://api.pull-up.store/api/v1
 VITE_OAUTH_URL=https://api.pull-up.store
 VITE_WEBSOCKET_URL=wss://api.pull-up.store/game-websocket
@@ -12,3 +20,4 @@ VITE_MESSAGING_SENDER_ID = 발급받은 FCM의 MESSAGING_SENDER_ID
 VITE_APP_ID = 발급받은 FCM의 APP_ID
 VITE_MEASUREMENT_ID = 발급받은 FCM의 MEASUREMENT_ID
 VITE_VAPID = 발급받은 FCM의 VAPID
+```

@@ -5,9 +5,11 @@
 ## 생성 후, docker 폴더로 디렉토리 경로를 이동하여 아래와 같이 입력합니다.
 ### 프론트엔드 명령어 : docker compose -f frontend up -d
 ### 백엔드 명령어 : docker compose -f spring-app-dev up -d
-
+* 주의사항 : 현재 실행하는 docker compose version에 따라 명령어가 달라질 수 있습니다. <br>
+    EX) docker-compose -f frontend up -d
 
 ### nginx.conf
+```
 server {
     listen 80;
     server_name api.pull-up.store jenkins.pull-up.store www.pull-up.store;
@@ -94,8 +96,10 @@ server {
         proxy_set_header Host $host;
     }
 }
+```
 
 ## docker-compose.nginx.yml
+```
 version: '3.8'
 
 services:
@@ -139,3 +143,4 @@ networks:
     driver: bridge
   frontend:
     driver: bridge
+```
