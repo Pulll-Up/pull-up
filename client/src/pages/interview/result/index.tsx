@@ -1,49 +1,35 @@
-import { getInterviewResult, useGetInterviewList } from '@/api/interview';
+import { useGetInterviewList, useGetInterviewResult } from '@/api/interview';
 import SearchModal from '@/components/interview/searchModal';
 import SideMenu from '@/components/interview/sideMenu';
 import InterviewFeedback from '@/components/interview/interviewFeedback';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import InterviewMyAnswer from '@/components/interview/myAnswer';
 import convertDate from '@/utils/convertDate';
 import Icon from '@/components/common/icon';
-import { queryClient } from '@/main';
-import { InterviewResultResponse } from '@/types/response/interview';
-import LoadingPage from '@/pages/loading';
 import { toast } from 'react-toastify';
+import LoadingPage from '@/pages/loading';
 
 const InterviewResultPage = () => {
   const navigate = useNavigate();
   const { interviewAnswerId } = useParams();
+  const { data: result, isError } = useGetInterviewResult(interviewAnswerId!);
   const { data: interviewList } = useGetInterviewList();
-  const [result, setResult] = useState<InterviewResultResponse | null>(null);
 
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchResult = async () => {
-      try {
-        const data = await queryClient.fetchQuery({
-          queryKey: ['result', interviewAnswerId],
-          queryFn: () => getInterviewResult(interviewAnswerId!),
-        });
+  // 결과 분석 오류
+  if (isError) {
+    navigate('/');
+    toast.error('존재하지 않는 페이지입니다.', {
+      position: 'bottom-center',
+      toastId: 'not-found',
+    });
 
-        setResult(data);
-      } catch (error) {
-        navigate('/');
-        toast.error('존재하지 않는 페이지입니다.', {
-          position: 'bottom-center',
-          toastId: 'not-found',
-        });
-      }
-    };
-
-    if (interviewAnswerId) {
-      fetchResult();
-    }
-  }, [interviewAnswerId, navigate]);
+    return;
+  }
 
   if (!result || !interviewList) return <LoadingPage />;
 

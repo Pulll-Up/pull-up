@@ -47,8 +47,8 @@ const InterviewPage = () => {
   if (!authInfo || !data || !member) return null;
 
   const onSubmit = async () => {
-    if (!answer.trim()) {
-      toast.error('답변을 입력해주세요.', { position: 'bottom-center', toastId: 'answer-required' });
+    if (answer.trim().length < 20) {
+      toast.error('최소 20자 이상 입력해주세요.', { position: 'bottom-center', toastId: 'answer-required' });
 
       return;
     }
@@ -96,7 +96,7 @@ const InterviewPage = () => {
             <span className="text-lg font-semibold lg:text-xl">나의 답변</span>
             <InputForm
               id="todayQuestion"
-              placeholder="질문에 대한 답을 남겨주세요."
+              placeholder="최소 20자 이상 작성해주세요."
               value={answer}
               limit={500}
               onChange={onChange}
