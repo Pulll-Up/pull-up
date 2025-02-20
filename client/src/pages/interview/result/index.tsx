@@ -9,12 +9,11 @@ import InterviewMyAnswer from '@/components/interview/myAnswer';
 import convertDate from '@/utils/convertDate';
 import Icon from '@/components/common/icon';
 import { toast } from 'react-toastify';
-import LoadingPage from '@/pages/loading';
 
 const InterviewResultPage = () => {
   const navigate = useNavigate();
   const { interviewAnswerId } = useParams();
-  const { data: result, isLoading, isError } = useGetInterviewResult(interviewAnswerId!);
+  const { data: result, isError } = useGetInterviewResult(interviewAnswerId!);
   const { data: interviewList } = useGetInterviewList();
 
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
@@ -31,12 +30,7 @@ const InterviewResultPage = () => {
     return;
   }
 
-  // 결과 분석 로딩
-  if (isLoading) {
-    return <LoadingPage />;
-  } else {
-    if (!result || !interviewList) return null;
-  }
+  if (!result || !interviewList) return null;
 
   const handleMenuClick = () => {
     setIsSideMenuOpen(!isSideMenuOpen);

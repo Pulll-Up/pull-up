@@ -3,7 +3,7 @@ import api from './instance';
 import { Subject } from '@/types/member';
 import { AuthStore } from '@/utils/authService';
 import { queryClient } from '@/main';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 
 // 로그인
@@ -36,7 +36,8 @@ export const reissue = async () => {
 export const logout = async () => {
   await api.post('auth/logout');
   queryClient.setQueryData(['member'], null);
-  queryClient.setQueryData(['authInfo'], null);
+  queryClient.setQueryData(['authInfo'], { authInfo: undefined, isAuthorized: false });
+  AuthStore.clearAccessToken();
 };
 
 // 회원가입
@@ -62,6 +63,28 @@ export const useSignUpMutation = (subjectNames: Subject[]) => {
 
 // 사용자 정보 확인
 export const getAuthInfo = async () => {
-  const response = await api.get('auth/check').json<AuthResponseType>();
-  return response;
+  try {
+    const response = await api.get('auth/check').json<AuthResponseType>();
+    return { authInfo: response, isAuthorized: true };
+  } catch (error) {
+    return { authInfo: undefined, isAuthorized: false };
+  }
+};
+
+export const useGetAuthInfo = () => {
+  const { data, isSuccess, isError } = useSuspenseQuery({
+    queryKey: ['authInfo'],
+    queryFn: async () => {
+      // redirect 페이지에서는 API 호출하지 않고 기본값 반환
+      if (window.location.pathname === '/redirect') {
+        return {
+          authInfo: undefined,
+          isAuthorized: false,
+        };
+      }
+      return getAuthInfo();
+    },
+  });
+
+  return { authInfo: data.authInfo, isAuthorized: data.isAuthorized, isSuccess, isError };
 };

@@ -5,17 +5,16 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { TextAreaChangeEvent, TextAreaKeyboardEvent } from '@/types/event';
-import { memberStore } from '@/stores/memberStore';
 import { getMember } from '@/api/member';
 import { queryClient } from '@/main';
 import { Member } from '@/types/member';
 import LoadingPage from '@/pages/loading';
-import { getAuthInfo } from '@/api/auth';
+import { useGetAuthInfo } from '@/api/auth';
 
 const InterviewPage = () => {
   const navigate = useNavigate();
-  const { setInterviewAnswerId, setIsSolvedToday, isSolvedToday } = memberStore();
   const [member, setMember] = useState<Member>();
+  const { authInfo } = useGetAuthInfo();
   const { data } = useGetInterview();
 
   const [hint, setHint] = useState(false);
@@ -24,7 +23,6 @@ const InterviewPage = () => {
 
   useEffect(() => {
     const fetchMember = async () => {
-      const authInfo = await getAuthInfo();
       const data = await queryClient.fetchQuery({
         queryKey: ['member'],
         queryFn: getMember,
@@ -32,7 +30,7 @@ const InterviewPage = () => {
 
       if (!data) return null;
 
-      if (authInfo?.isSolvedToday || isSolvedToday) {
+      if (authInfo && authInfo.isSolvedToday) {
         navigate('/');
         toast.info('오늘의 문제를 이미 풀었습니다. 결과를 확인하세요!', {
           position: 'bottom-center',
@@ -48,7 +46,7 @@ const InterviewPage = () => {
     fetchMember();
   }, []);
 
-  if (!data || !member) return null;
+  if (!authInfo || !data || !member) return null;
 
   const onSubmit = async () => {
     if (!answer.trim()) {
@@ -65,8 +63,6 @@ const InterviewPage = () => {
       answer,
     });
 
-    setInterviewAnswerId(response.interviewAnswerId);
-    setIsSolvedToday(true);
     navigate(`/interview/result/${response.interviewAnswerId}`);
 
     setIsSubmitting(false);

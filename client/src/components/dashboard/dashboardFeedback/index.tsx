@@ -1,14 +1,14 @@
+import { useGetAuthInfo } from '@/api/auth';
 import { useGetInterviewResult } from '@/api/interview';
 import Icon from '@/components/common/icon';
-import { memberStore } from '@/stores/memberStore';
 import { InterviewResultResponse } from '@/types/response/interview';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const DashboardFeedback = () => {
   const navigate = useNavigate();
-  const { isSolvedToday, interviewAnswerId } = memberStore();
-  const { data: result, isLoading } = useGetInterviewResult(interviewAnswerId);
+  const { authInfo } = useGetAuthInfo();
+  const { data: result, isLoading } = useGetInterviewResult(authInfo?.interviewAnswerId ?? '');
 
   const [resultData, setResultData] = useState<InterviewResultResponse>({
     interviewId: '1',
@@ -26,12 +26,12 @@ const DashboardFeedback = () => {
   });
 
   useEffect(() => {
-    if (isSolvedToday && result) {
+    if (authInfo?.isSolvedToday && result) {
       setResultData(result);
     }
-  }, [isSolvedToday, result]);
+  }, [authInfo, result]);
 
-  if (isLoading) return <>불러오는 중...</>;
+  if (!authInfo || isLoading) return <>불러오는 중...</>;
 
   return (
     <div className="relative flex h-full w-full flex-col gap-3 lg:flex-row">
@@ -67,7 +67,7 @@ const DashboardFeedback = () => {
           <p className="line-clamp-2 overflow-hidden text-ellipsis">{resultData.weakness}</p>
         </section>
         <button
-          onClick={() => navigate(`/interview/result/${interviewAnswerId}`)}
+          onClick={() => navigate(`/interview/result/${authInfo.interviewAnswerId}`)}
           className="flex w-fit items-center justify-center gap-2 self-end rounded-lg border border-primary-500 bg-primary-50 px-2 py-1 font-semibold text-primary-500"
         >
           <span className="text-sm">자세히 보기</span>
@@ -75,7 +75,7 @@ const DashboardFeedback = () => {
         </button>
       </div>
 
-      {!isSolvedToday && (
+      {!authInfo.isSolvedToday && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80">
           <p className="text-base font-bold text-primary-500">아직 문제를 풀지 않았어요!</p>
           <button
