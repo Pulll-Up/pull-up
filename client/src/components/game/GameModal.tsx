@@ -8,7 +8,6 @@ import WaitingAfterCreating from './gameModalComponent/waiting/WaitingAfterCreat
 import { toast } from 'react-toastify';
 import { useRoomStore } from '@/stores/roomStore';
 import { GetRandomTypeResponse } from '@/types/response/game';
-import WaitingRamdom from './gameModalComponent/waiting/WaitingRandom';
 import { useWebSocketStore } from '@/stores/useWebSocketStore';
 import { FormFormEvent } from '@/types/event';
 import { SubjectSelect } from '@/types/game';
@@ -160,14 +159,14 @@ const GameModals = () => {
 
   return (
     <div className="flex gap-4 sm:gap-6">
-      <Modal
+      {/* <Modal
         triggerName="랜덤 매칭"
         triggerColor="primary"
         onOpenChange={(isOpen: boolean) => handleCloseModal(isOpen)}
         isOutsideClickable={true}
       >
         <WaitingRamdom handleGameState={handleRandomRoom} />
-      </Modal>
+      </Modal> */}
       <Modal
         triggerName="방 생성"
         triggerColor="primary"
