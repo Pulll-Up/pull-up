@@ -3,11 +3,11 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import api from './instance';
 import { CreateResponse } from '@/types/common';
 import { now } from 'lodash';
-import { memberStore } from '@/stores/memberStore';
 import { CommentCreateRequest, CommentUpdateRequest } from '@/types/request/comment';
 import { InterviewAnswer } from '@/types/interview';
 import { Comment } from '@/types/comment';
 import { toast } from 'react-toastify';
+import { getAuthInfo } from './auth';
 
 // 댓글 전체 조회
 const getComments = async (interviewAnswerId: string) => {
@@ -37,6 +37,9 @@ export const useCreateComment = (interviewAnswerId: string) => {
     },
 
     onMutate: async (comment: CommentCreateRequest) => {
+      const data = await getAuthInfo();
+      const authInfo = data.authInfo;
+
       await queryClient.cancelQueries({ queryKey: ['interviewAnswerDetail', interviewAnswerId] });
       await queryClient.cancelQueries({ queryKey: ['commnets', interviewAnswerId] });
 
@@ -52,7 +55,7 @@ export const useCreateComment = (interviewAnswerId: string) => {
         {
           commentId: 0,
           writer: '',
-          email: memberStore.getState().member?.email,
+          email: authInfo?.email,
           content: comment.content,
           createdAt: now(),
         },
