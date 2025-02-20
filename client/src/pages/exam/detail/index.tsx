@@ -44,10 +44,9 @@ const ExamDetailPage = () => {
         event.preventDefault();
       }
     };
-
     // 페이지 진입 시 리다이렉트 확인
     if (sessionStorage.getItem(`exam_${validExamId}_redirect`) === 'true') {
-      sessionStorage.removeItem(`exam_${validExamId}_redirect`); // 리다이렉트 플래그 초기화
+      sessionStorage.removeItem(`exam_${validExamId}_redirect`);
       navigate('/exam', { replace: true }); // 새로고침 시 /exam 페이지로 이동
     }
     window.addEventListener('beforeunload', handleBeforeUnload);
