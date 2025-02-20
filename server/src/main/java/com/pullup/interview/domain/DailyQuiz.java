@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "daily_quiz")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DailyQuiz {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
