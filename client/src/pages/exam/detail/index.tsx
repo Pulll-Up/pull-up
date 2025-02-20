@@ -34,27 +34,21 @@ const ExamDetailPage = () => {
     });
   }, [examProblems, resetExamState, initializeAndSetOptions, setSolutionPage, setAnswer]);
 
-  // 새로고침 감지 및 리디렉션
-  useEffect(() => {
-    if (sessionStorage.getItem('redirectOnRefresh') === 'true') {
-      sessionStorage.removeItem('redirectOnRefresh');
-      navigate('/exam');
-    }
-  }, [navigate]);
-
   // 새로고침 감지 이벤트 등록
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
       sessionStorage.setItem('redirectOnRefresh', 'true');
     };
-
     window.addEventListener('beforeunload', handleBeforeUnload);
-
+    if (sessionStorage.getItem('redirectOnRefresh') === 'true') {
+      sessionStorage.removeItem('redirectOnRefresh');
+      navigate('/exam', { replace: true });
+    }
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, []);
+  }, [navigate]);
 
   const onSubmit = async () => {
     try {
