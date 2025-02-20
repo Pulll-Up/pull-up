@@ -36,29 +36,39 @@ const ExamDetailPage = () => {
 
   // 새로고침 감지 이벤트 등록
   useEffect(() => {
+    sessionStorage.setItem(`exam_${validExamId}_active`, 'true');
+    // 새로고침 감지
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      sessionStorage.setItem('redirectOnRefresh', 'true');
+      if (sessionStorage.getItem(`exam_${validExamId}_active`) === 'true') {
+        sessionStorage.setItem(`exam_${validExamId}_redirect`, 'true');
+        event.preventDefault();
+      }
     };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    if (sessionStorage.getItem('redirectOnRefresh') === 'true') {
-      sessionStorage.removeItem('redirectOnRefresh');
-      navigate('/exam', { replace: true });
+
+    // 페이지 진입 시 리다이렉트 확인
+    if (sessionStorage.getItem(`exam_${validExamId}_redirect`) === 'true') {
+      sessionStorage.removeItem(`exam_${validExamId}_redirect`); // 리다이렉트 플래그 초기화
+      navigate('/exam', { replace: true }); // 새로고침 시 /exam 페이지로 이동
     }
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
     return () => {
+      // 페이지 떠날 때 상태 초기화
+      sessionStorage.removeItem(`exam_${validExamId}_active`);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [navigate]);
+  }, [validExamId, navigate]);
 
   const onSubmit = async () => {
     try {
       const requestBody = {
         problemAndChosenAnswers: Object.keys(answers).map((problemId) => ({
-          problemId: problemId,
+          problemId,
           chosenAnswer: answers[problemId] ?? '',
         })),
       };
       await postExamAnswer(validExamId, requestBody);
+      sessionStorage.removeItem(`exam_${validExamId}_active`); // 시험 종료 시 상태 초기화
       setException();
       navigate(`/exam/${examId}/result`, { state: { fromExamPage: true } });
     } catch (error) {
