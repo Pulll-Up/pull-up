@@ -9,7 +9,7 @@
 
 ## 💡 **프로젝트 소개**
 <div align="center">
-    <img src="/uploads/fce2f56f73bc882f1d6ccbfbf8e00d11/image.png" width="600" />
+    <img src="/uploads/0efbb2c8ddfbe54aa243e6be425b37e3/PULL_UP.png" width="600" />
 
 </div>
 
@@ -95,8 +95,7 @@
 #### 1. **오늘의 문제**  
    - 사용자의 관심과목을 기반으로 매일 면접 문제가 제공되며, AI를 통해 피드백을 받습니다.
 <div align="center">
-    <img src="/uploads/711a1d032f0a99320d4b96007a00d02b/image.png" width="400" />
-    <img src=" /uploads/0301275d4f6ed5123a6007519176da23/image.png" width="400" />
+    <img src="/uploads/04b067559c8f62b22135ef0670def11d/%EC%98%A4%EB%8A%98%EC%9D%98%EB%AC%B8%EC%A0%9C.gif" width="400" />
 </div>
 
 <br/>
@@ -104,8 +103,7 @@
 #### 2. **모의고사 페이지**  
    - 다양한 주제의 문제를 선택하고 풀 수 있습니다.  
 <div align="center">
-    <img src="/uploads/55354488ab871b1fa520ab67860e1ed0/image.png" width="400" />
-    <img src="/uploads/03f97eba91248a97ca6924a9f73d8b49/image.png" width="400" />
+    <img src="/uploads/1617c21ece7d5bfcae383e8c85c8ff8b/%EC%8B%9C%ED%97%98%EB%AA%A8%EB%93%9C.gif" width="400" />
 </div>
 
 <br/>
@@ -113,7 +111,7 @@
 #### 3. **게임 페이지**  
    - 친구와 경쟁하며 CS 퀴즈 게임을 즐길 수 있습니다.  
 <div align="center">
-    <img src="/uploads/4d858daf8078cf14eea466b599022f16/image.png" width="400" />
+    <img src="/uploads/76e0381037415939f03071019ef29cbf/%EA%B2%8C%EC%9E%84%EB%AA%A8%EB%93%9C.gif" width="400" />
 </div>
 
 
@@ -122,7 +120,7 @@
 #### 4. **통계 및 성적 분석**  
    - 사용자의 전체 학습 현황과 주요 기록을 한눈에 확인할 수 있습니다.
 <div align="center">
-    <img src="/uploads/bee6e2f88093d99415da159067335ec1/image.png" width="400" />
+    <img src="/uploads/ee0dc90d033064018f01c647af1bda11/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C.gif" width="400" />
 </div>
 
 
