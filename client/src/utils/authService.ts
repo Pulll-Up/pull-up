@@ -70,9 +70,7 @@ export const handleRefreshToken: BeforeRetryHook = async ({ error, retryCount })
 
   try {
     await reissueToken(); // 단일 reissue 프로미스 사용
-    console.log('reissue success');
   } catch (error) {
-    console.error('reissue failed:', error);
     await logout();
     return api.stop;
   }
