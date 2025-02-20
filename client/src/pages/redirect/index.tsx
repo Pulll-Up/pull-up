@@ -29,7 +29,9 @@ const RedirectPage = () => {
         return;
       }
 
-      await getAuthInfo();
+      const authInfo = await getAuthInfo();
+      queryClient.setQueryData(['authInfo'], { authInfo: authInfo, isAuthorized: true });
+
       navigate('/');
     };
 
