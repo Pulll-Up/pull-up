@@ -28,25 +28,32 @@ const SignUpPage = () => {
         return;
       }
 
-      setShowLoginComplete(true);
+      // 이전 페이지가 redirect인 경우에만 로그인 완료 메시지를 보여줌
+      if (document.referrer.includes('/redirect')) {
+        setShowLoginComplete(true);
+        setProgress(1);
 
-      setTimeout(() => {
-        setProgress(2);
-
-        // 프로그레스바 변경 후 0.5초 뒤에 로그인 완료 메시지 페이드아웃
         setTimeout(() => {
-          setShowLoginComplete(false);
-          // 메시지 페이드아웃 후 0.3초 뒤에 선택기 표시
+          setProgress(2);
+
+          // 프로그레스바 변경 후 0.5초 뒤에 로그인 완료 메시지 페이드아웃
           setTimeout(() => {
-            setShowSelector(true);
-          }, 300);
-        }, 500);
-      }, 2000);
+            setShowLoginComplete(false);
+            // 메시지 페이드아웃 후 0.3초 뒤에 선택기 표시
+            setTimeout(() => {
+              setShowSelector(true);
+            }, 300);
+          }, 500);
+        }, 2000);
+      } else {
+        // 메인 페이지나 다른 페이지에서 온 경우 바로 과목 선택 화면으로
+        setProgress(2);
+        setShowSelector(true);
+      }
     };
 
     fetchMember();
   }, []);
-
   const onConfirmSignUp = async (selectedSubjects: Subject[]) => {
     try {
       await signup(selectedSubjects);
