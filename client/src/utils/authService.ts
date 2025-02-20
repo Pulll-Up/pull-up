@@ -1,7 +1,7 @@
 import { logout, reissue } from '@/api/auth';
 import api from '@/api/instance';
 import { API_RETRY_COUNT } from '@/constants/auth';
-import { BeforeRetryHook, HTTPError } from 'ky';
+import { BeforeRetryHook } from 'ky';
 
 const AUTH_TOKEN_KEY = 'auth_access_token';
 
@@ -38,11 +38,27 @@ export const setTokenHeader = (request: Request) => {
 };
 
 // 토큰 재발급
-export const handleRefreshToken: BeforeRetryHook = async ({ error, retryCount }) => {
-  const httpError = error as HTTPError;
+let refreshPromise: Promise<void> | null = null;
 
-  // 401 에러 아니면 멈춤
-  if (httpError.response?.status !== 401) {
+export const reissueToken = async () => {
+  // 이미 진행 중인 reissue 요청이 있다면 그것을 반환
+  if (refreshPromise) {
+    return refreshPromise;
+  }
+
+  // 새로운 reissue 요청 생성
+  refreshPromise = reissue();
+
+  // reissue 완료 후 Promise 초기화
+  await refreshPromise;
+  refreshPromise = null;
+};
+
+export const handleRefreshToken: BeforeRetryHook = async ({ error, retryCount }) => {
+  const errorMessage = error.message;
+
+  // 토큰 만료 아니면 멈춤
+  if (errorMessage !== '[ACCESS_TOKEN] 만료된 Token 입니다.') {
     return api.stop;
   }
 
@@ -52,6 +68,10 @@ export const handleRefreshToken: BeforeRetryHook = async ({ error, retryCount })
     return api.stop;
   }
 
-  console.log('reissue');
-  await reissue();
+  try {
+    await reissueToken(); // 단일 reissue 프로미스 사용
+  } catch (error) {
+    await logout();
+    return api.stop;
+  }
 };
