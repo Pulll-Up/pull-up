@@ -10,7 +10,7 @@ const GameScoreBoard = ({ player }: GameScoreBoardProps) => {
       <div className="flex items-center gap-3">
         <h3 className="text-lg font-bold text-primary-600 md:text-2xl">{player.name}</h3>
       </div>
-      <div className="flex min-h-[50px] items-center justify-center px-2 py-1 pb-2 text-4xl font-extrabold text-stone-700 md:h-full md:pb-4 md:text-7xl">
+      <div className="flex min-h-[50px] items-center justify-center px-2 py-1 pb-2 text-4xl font-extrabold text-stone-700 md:h-full md:pb-4 md:text-6xl">
         {player.score}
       </div>
     </div>

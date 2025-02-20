@@ -18,7 +18,7 @@ const Analysis = () => {
   if (isError) return <>차트 불러오기에 실패했어요</>;
 
   return (
-    <div className="flex aspect-[16/13] w-full justify-center overflow-hidden p-2">
+    <div className="flex aspect-[16/13] max-h-[200px] w-full justify-center overflow-hidden p-2 sm:max-h-[300px] md:max-h-none">
       <ChartContainer config={chartConfig} className="h-full">
         <RadarChart data={analysisData.examStrengthDtos}>
           <ChartTooltip
