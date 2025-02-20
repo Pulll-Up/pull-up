@@ -66,8 +66,8 @@ public interface InterviewApi {
                     )
             }
     )
-    public ResponseEntity<CompletableFuture<MyInterviewAnswerResponse>> submitInterviewAnswer(Long interviewId,
-                                                                                              MyInterviewAnswerRequest myInterviewAnswerRequest);
+    public ResponseEntity<MyInterviewAnswerResponse> submitInterviewAnswer(Long interviewId,
+                                                                           MyInterviewAnswerRequest myInterviewAnswerRequest);
 
     @Operation(
             summary = "오늘의 문제 답변에 대한 결과 조회",
@@ -90,7 +90,7 @@ public interface InterviewApi {
                     )
             }
     )
-    public ResponseEntity<MyInterviewAnswerResultResponse> getMyInterviewAnswerResult(Long interviewAnswerId);
+    public ResponseEntity<CompletableFuture<MyInterviewAnswerResultResponse>> getMyInterviewAnswerResult(Long interviewAnswerId);
 
     @Operation(
             summary = "멤버가 풀었던 오늘의 문제 전체 조회",

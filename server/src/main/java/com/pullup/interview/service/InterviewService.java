@@ -15,7 +15,6 @@ import com.pullup.interview.dto.SearchedInterviewQuestionDto;
 import com.pullup.interview.dto.response.InterviewAnswerResponse;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
-import com.pullup.interview.dto.response.MyInterviewAnswerResultResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.dto.response.SearchedInterviewQuestionsResponse;
 import com.pullup.interview.repository.DailyQuizRepository;
@@ -53,16 +52,12 @@ public class InterviewService {
     public InterviewAnswer saveInterviewAnswer(
             Member member,
             Interview interview,
-            String strength,
-            String weakness,
             String answer
     ) {
         return interviewAnswerRepository.save(
                 InterviewAnswer.createInterviewAnswer(
                         member,
                         interview,
-                        strength,
-                        weakness,
                         answer
                 )
         );
@@ -130,23 +125,6 @@ public class InterviewService {
         dailyQuizRepository.saveAll(dailyQuizzes);
     }
 
-    public MyInterviewAnswerResultResponse getMyInterviewAnswerResult(Long interviewAnswerId) {
-        InterviewAnswer interviewAnswer = interviewAnswerRepository.findByIdWithInterview(interviewAnswerId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
-
-        return MyInterviewAnswerResultResponse.of(
-                idEncryptionUtil.encrypt(interviewAnswer.getInterview().getId()),
-                idEncryptionUtil.encrypt(interviewAnswerId),
-                interviewAnswer.getInterview().getQuestion(),
-                interviewAnswer.getAnswer(),
-                getKeywords(interviewAnswer.getInterview().getId()),
-                interviewAnswer.getCreatedAt(),
-                interviewAnswer.getStrength(),
-                interviewAnswer.getWeakness(),
-                interviewAnswer.getInterview().getAnswer()
-        );
-    }
-
     public MyInterviewAnswersResponse getMyInterviewAnswers(Long memberId) {
         List<InterviewAnswer> interviewAnswers = interviewAnswerRepository.findAllByMemberIdWithInterview(memberId);
 
@@ -163,6 +141,11 @@ public class InterviewService {
                 .collect(Collectors.toList());
 
         return MyInterviewAnswersResponse.of(myInterviewAnswerDtos);
+    }
+
+    public InterviewAnswer findByIdWithInterview(Long interviewAnswerId) {
+        return interviewAnswerRepository.findByIdWithInterview(interviewAnswerId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_INTERVIEW_ANSWER_NOT_FOUND));
     }
 
     public InterviewAnswerResponse getInterviewAnswer(Long memberId, Long interviewAnswerId) {
@@ -216,7 +199,7 @@ public class InterviewService {
         );
     }
 
-    private List<String> getKeywords(Long interviewId) {
+    public List<String> getKeywords(Long interviewId) {
         List<InterviewHint> interviewHints = interviewHintRepository.findByInterviewId(interviewId);
         return interviewHints.stream().map(InterviewHint::getKeyword).toList();
     }

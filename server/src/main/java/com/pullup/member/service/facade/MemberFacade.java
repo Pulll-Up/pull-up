@@ -5,14 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pullup.common.exception.BadRequestException;
 import com.pullup.common.exception.ErrorMessage;
 import com.pullup.common.util.IdEncryptionUtil;
+import com.pullup.external.gpt.dto.response.ChatGptResponse;
+import com.pullup.external.gpt.service.ChatGptService;
+import com.pullup.external.gpt.util.PromptGenerator;
 import com.pullup.interview.domain.Interview;
 import com.pullup.interview.domain.InterviewAnswer;
 import com.pullup.interview.dto.request.MyInterviewAnswerRequest;
-import com.pullup.external.gpt.dto.response.ChatGptResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswerResponse;
-import com.pullup.external.gpt.service.ChatGptService;
+import com.pullup.interview.dto.response.MyInterviewAnswerResultResponse;
 import com.pullup.interview.service.InterviewService;
-import com.pullup.external.gpt.util.PromptGenerator;
 import com.pullup.member.domain.Member;
 import com.pullup.member.service.MemberService;
 import java.util.concurrent.CompletableFuture;
@@ -34,7 +35,7 @@ public class MemberFacade {
     private final IdEncryptionUtil idEncryptionUtil;
 
     @Transactional
-    public CompletableFuture<MyInterviewAnswerResponse> submitInterviewAnswer(
+    public MyInterviewAnswerResponse submitInterviewAnswer(
             Long memberId,
             Long interviewId,
             MyInterviewAnswerRequest myInterviewAnswerRequest
@@ -42,11 +43,26 @@ public class MemberFacade {
         Member member = memberService.findMemberById(memberId);
         Interview interview = interviewService.findInterviewById(interviewId);
 
-        if(interviewService.isAnswered(member, interview)) {
+        if (interviewService.isAnswered(member, interview)) {
             throw new BadRequestException(ErrorMessage.ERR_INTERVIEW_ALREADY_ANSWERED);
         }
 
-        String prompt = PromptGenerator.generatePrompt(interview, myInterviewAnswerRequest);
+        InterviewAnswer interviewAnswer = interviewService.saveInterviewAnswer(
+                member,
+                interview,
+                myInterviewAnswerRequest.answer()
+        );
+
+        memberService.updateSolveStatus(member);
+
+        return MyInterviewAnswerResponse.of(idEncryptionUtil.encrypt(interviewId),
+                idEncryptionUtil.encrypt(interviewAnswer.getId()));
+    }
+
+    public CompletableFuture<MyInterviewAnswerResultResponse> getMyInterviewAnswerResult(Long interviewAnswerId) {
+        InterviewAnswer interviewAnswer = interviewService.findByIdWithInterview(interviewAnswerId);
+
+        String prompt = PromptGenerator.generatePrompt(interviewAnswer.getInterview(), interviewAnswer.getAnswer());
 
         return CompletableFuture.supplyAsync(() -> {
             ChatGptResponse gptResponse = chatGptService.analyzeAnswer(prompt);
@@ -55,17 +71,19 @@ public class MemberFacade {
             String strength = extractJsonField(responseContent, "strength");
             String weakness = extractJsonField(responseContent, "weakness");
 
-            InterviewAnswer interviewAnswer = interviewService.saveInterviewAnswer(
-                    member,
-                    interview,
-                    strength,
-                    weakness,
-                    myInterviewAnswerRequest.answer()
+            interviewAnswer.updateAnswer(strength, weakness);
+
+            return MyInterviewAnswerResultResponse.of(
+                    idEncryptionUtil.encrypt(interviewAnswer.getInterview().getId()),
+                    idEncryptionUtil.encrypt(interviewAnswerId),
+                    interviewAnswer.getInterview().getQuestion(),
+                    interviewAnswer.getAnswer(),
+                    interviewService.getKeywords(interviewAnswer.getInterview().getId()),
+                    interviewAnswer.getCreatedAt(),
+                    interviewAnswer.getStrength(),
+                    interviewAnswer.getWeakness(),
+                    interviewAnswer.getInterview().getAnswer()
             );
-
-            memberService.updateSolveStatus(member);
-
-            return MyInterviewAnswerResponse.of(idEncryptionUtil.encrypt(interviewId), idEncryptionUtil.encrypt(interviewAnswer.getId()));
         });
     }
 
