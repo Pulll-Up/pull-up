@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import api from './instance';
 import { WinningRate } from '@/types/chart';
 import { SubjectSelect } from '@/types/game';
 import {
@@ -7,10 +6,11 @@ import {
   GetPlayerTypeResponse,
   GetRandomTypeResponse,
   PostCreateGameResponse,
-  PostJoinGameResponse,
 } from '@/types/response/game';
 import { useRoomStore } from '@/stores/roomStore';
 import { toast } from 'react-toastify';
+import api from './instance';
+import { ApiError } from './error';
 
 const getWinningRate = async () => {
   const response = await api.get<WinningRate>('game/me/winning-rate');
@@ -41,18 +41,29 @@ export const usePostCreateGame = () => {
 };
 
 const postJoinGame = async (roomId: string) => {
-  const data = await api.post<PostJoinGameResponse>('game/room/join', { json: { roomId } }).json();
+  const data = await api
+    .post('game/room/join', {
+      json: { roomId },
+    })
+    .json();
+
   return data;
 };
 
 export const usePostJoinGame = () => {
   const { mutateAsync } = useMutation({
     mutationFn: (roomId: string) => postJoinGame(roomId),
-    onError: () => {
-      toast.error('올바른 코드를 입력해주세요', {
-        position: 'bottom-center',
-        toastId: 'code-error',
-      });
+    onError: (error: ApiError) => {
+      if (error.response.status === 400 || error.response.status === 404)
+        toast.error(error.message, {
+          position: 'bottom-center',
+          toastId: 'code-error',
+        });
+      else
+        toast.error('알 수 없는 오류가 발생했습니다.', {
+          position: 'bottom-center',
+          toastId: 'code-error',
+        });
     },
   });
 

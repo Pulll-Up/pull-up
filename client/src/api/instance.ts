@@ -1,6 +1,7 @@
 import ky from 'ky';
 import { setTokenHeader, handleRefreshToken } from '@/utils/authService';
 import { API_RETRY_COUNT } from '@/constants/auth';
+import { ApiError } from './error';
 
 interface ErrorResponse {
   status: number;
@@ -28,15 +29,14 @@ const api = instance.extend({
     beforeRequest: [setTokenHeader],
     beforeRetry: [handleRefreshToken],
     afterResponse: [
-      async (_request, _options, response) => {
+      async (request, options, response) => {
         if (!response.ok) {
           const errorData = (await response.json().catch(() => null)) as ErrorResponse | null;
 
           if (errorData) {
-            const errorCode = response.status;
-            const errorMessage = errorData.errorMessage || 'Unknown error';
+            const message = errorData.errorMessage || 'Unknown error';
 
-            throw { code: errorCode, message: errorMessage };
+            throw new ApiError(request, options, response, message);
           }
         }
 
