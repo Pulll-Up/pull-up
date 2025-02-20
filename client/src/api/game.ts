@@ -6,6 +6,7 @@ import {
   GetPlayerTypeResponse,
   GetRandomTypeResponse,
   PostCreateGameResponse,
+  PostJoinGameResponse,
 } from '@/types/response/game';
 import { useRoomStore } from '@/stores/roomStore';
 import { toast } from 'react-toastify';
@@ -45,7 +46,7 @@ const postJoinGame = async (roomId: string) => {
     .post('game/room/join', {
       json: { roomId },
     })
-    .json();
+    .json<PostJoinGameResponse>();
 
   return data;
 };
