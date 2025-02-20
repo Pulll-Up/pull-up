@@ -35,8 +35,12 @@ export const reissue = async () => {
 // 로그아웃
 export const logout = async () => {
   await api.post('auth/logout');
-  queryClient.setQueryData(['member'], null);
+
+  // 모든 쿼리 캐시 무효화
+  await queryClient.invalidateQueries();
   queryClient.setQueryData(['authInfo'], { authInfo: undefined, isAuthorized: false, isSuccess: true });
+  queryClient.resetQueries();
+
   AuthStore.clearAccessToken();
 };
 
