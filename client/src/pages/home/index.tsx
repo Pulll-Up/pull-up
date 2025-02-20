@@ -24,6 +24,8 @@ const HomePage = () => {
         navigate('/interview');
         return;
       }
+    } else {
+      navigate('/signin');
     }
   };
 

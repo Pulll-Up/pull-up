@@ -1,4 +1,4 @@
-import { login } from '@/api/auth';
+import { getAuthInfo, login } from '@/api/auth';
 import { queryClient } from '@/main';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -29,6 +29,7 @@ const RedirectPage = () => {
         return;
       }
 
+      await getAuthInfo();
       navigate('/');
     };
 
