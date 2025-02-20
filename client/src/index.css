@@ -124,4 +124,20 @@ body {
   .animate-slide-fade-up {
     animation: slide-fade-up 0.8s ease-in-out;
   }
+
+  @keyframes spinFivePause {
+    0% {
+      transform: rotate(0deg);
+    }
+    90% {
+      transform: rotate(1440deg); /* 5바퀴 회전 (360deg * 5) */
+    }
+    100% {
+      transform: rotate(1440deg); /* 회전 후 잠깐 멈춤 */
+    }
+  }
+
+  .spin-pause {
+    animation: spinFivePause 4s linear infinite;
+  }
 }
