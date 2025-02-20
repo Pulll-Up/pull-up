@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { postExamAnswer, useGetExamDetails } from '@/api/exam';
 import { useExamStore } from '@/stores/examStore';
@@ -8,43 +8,66 @@ import ExamProblem from '@/components/exam/problem';
 import InfoSection from '@/components/exam/infoSection';
 import ProblemStatusButton from '@/components/exam/infoSection/problemStatusButton';
 import Icon from '@/components/common/icon';
-import usePrompt from '@/hooks/useNavigationBlocker';
 import NavigationDialog from '@/components/common/navigationDialog';
 import SubmitDialog from '@/components/exam/submitDialog';
+import usePrompt from '@/hooks/useNavigationBlocker';
 
 const ExamDetailPage = () => {
   const navigate = useNavigate();
   const { examId } = useParams();
-  const validExamId = examId ? examId : '';
+  const validExamId = examId || '';
   const { data: examProblems } = useGetExamDetails(validExamId);
   const answers = useExamStore((state) => state.answers);
   const { resetExamState, setAnswer, setSolutionPage, initializeAndSetOptions } = useExamStore();
-  const [isInitialized] = useState(false);
   const { isBlocked, handleProceed, handleCancel, setException } = usePrompt();
-
   const isAllSolved = (examProblems || []).every(
     (problem) => answers[problem.problemId] && answers[problem.problemId].trim() !== '',
   );
 
   useEffect(() => {
-    if (!examProblems || isInitialized) return;
+    if (!examProblems) return;
     resetExamState();
     setSolutionPage(false);
     examProblems.forEach((problem) => {
       initializeAndSetOptions(problem.problemId, problem.options);
       setAnswer(problem.problemId, '');
     });
-  }, [examProblems, isInitialized, resetExamState, initializeAndSetOptions, setSolutionPage, setAnswer]);
+  }, [examProblems, resetExamState, initializeAndSetOptions, setSolutionPage, setAnswer]);
+
+  // 새로고침 감지 이벤트 등록
+  useEffect(() => {
+    sessionStorage.setItem(`exam_${validExamId}_active`, 'true');
+    // 새로고침 감지
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (sessionStorage.getItem(`exam_${validExamId}_active`) === 'true') {
+        sessionStorage.setItem(`exam_${validExamId}_redirect`, 'true');
+        event.preventDefault();
+      }
+    };
+    // 페이지 진입 시 리다이렉트 확인
+    if (sessionStorage.getItem(`exam_${validExamId}_redirect`) === 'true') {
+      sessionStorage.removeItem(`exam_${validExamId}_redirect`);
+      navigate('/exam', { replace: true }); // 새로고침 시 /exam 페이지로 이동
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      // 페이지 떠날 때 상태 초기화
+      sessionStorage.removeItem(`exam_${validExamId}_active`);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [validExamId, navigate]);
 
   const onSubmit = async () => {
     try {
       const requestBody = {
         problemAndChosenAnswers: Object.keys(answers).map((problemId) => ({
-          problemId: problemId,
+          problemId,
           chosenAnswer: answers[problemId] ?? '',
         })),
       };
       await postExamAnswer(validExamId, requestBody);
+      sessionStorage.removeItem(`exam_${validExamId}_active`); // 시험 종료 시 상태 초기화
       setException();
       navigate(`/exam/${examId}/result`, { state: { fromExamPage: true } });
     } catch (error) {
@@ -65,7 +88,7 @@ const ExamDetailPage = () => {
       icon: 'problem',
       content: (
         <div className="grid grid-cols-5 gap-2">
-          {examProblems.map((problem, index) => (
+          {examProblems?.map((problem, index) => (
             <ProblemStatusButton
               key={problem.problemId}
               index={index + 1}
@@ -106,7 +129,7 @@ const ExamDetailPage = () => {
 
         {/* 문제 리스트 */}
         <section className="flex-2 flex w-full flex-col gap-6 px-10 md:w-[920px] md:gap-10">
-          {examProblems.map((problem, index) => (
+          {examProblems?.map((problem, index) => (
             <div key={problem.problemId} id={`problem-${problem.problemId}`}>
               <ExamProblem
                 index={index + 1}
@@ -135,20 +158,20 @@ const ExamDetailPage = () => {
             {/* 답안 제출 */}
             <SubmitDialog
               onSubmit={onSubmit}
-              //isDisabled={!isAllSolved}
+              isDisabled={!isAllSolved}
               title="정말 시험을 제출하시겠습니까?"
               description="제출 후에는 더 이상 답안을 수정할 수 없습니다."
             />
           </div>
         </aside>
       </div>
-      {/* 페이지 이동 경고 모달 */}
+      {/* 페이지 이동 및 새로고침 경고 모달 */}
       <NavigationDialog
         isOpen={isBlocked}
         onProceed={handleProceed}
         onCancel={handleCancel}
         title="시험을 중단하시겠습니까?"
-        description="페이지를 이동할 경우 시험이 무효화되고 선택한 답안이 모두 사라집니다."
+        description="페이지를 이동할 경우 시험은 0점으로 처리되며 선택한 답안이 모두 사라집니다."
       />
     </div>
   );
