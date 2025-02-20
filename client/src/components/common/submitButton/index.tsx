@@ -6,9 +6,10 @@ interface SubmitButtonProps {
   text: string;
   color?: 'primary' | 'secondary' | 'gray';
   disabled?: boolean;
+  onMouseEnter?: () => void; // prefetch를 위한 props
 }
 
-const SubmitButton = ({ onClick, text, color = 'primary', disabled = false }: SubmitButtonProps) => {
+const SubmitButton = ({ onClick, text, color = 'primary', disabled = false, onMouseEnter }: SubmitButtonProps) => {
   const COLOR_PROPS = {
     primary: 'bg-primary-500 text-white',
     secondary: 'bg-secondary-500 text-white',
@@ -18,6 +19,7 @@ const SubmitButton = ({ onClick, text, color = 'primary', disabled = false }: Su
   return (
     <button
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
       disabled={disabled}
       className={cn(COLOR_PROPS[color], 'w-full rounded-xl py-4 text-lg font-semibold xl:py-5 xl:text-xl')}
     >
