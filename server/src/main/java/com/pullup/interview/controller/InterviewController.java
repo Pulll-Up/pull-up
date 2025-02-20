@@ -74,7 +74,7 @@ public class InterviewController implements InterviewApi {
     public ResponseEntity<CompletableFuture<MyInterviewAnswerResultResponse>> getMyInterviewAnswerResult(
             @PathVariable("interviewAnswerId") @DecryptedId Long interviewAnswerId
     ) {
-        CompletableFuture<MyInterviewAnswerResultResponse> myInterviewAnswerResultResponse = memberFacade.getMyInterviewAnswerResult(
+        CompletableFuture<MyInterviewAnswerResultResponse> myInterviewAnswerResultResponse = memberFacade.getOrGenerateMyInterviewAnswerResult(
                 interviewAnswerId
         );
 

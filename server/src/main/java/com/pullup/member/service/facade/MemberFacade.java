@@ -59,8 +59,16 @@ public class MemberFacade {
                 idEncryptionUtil.encrypt(interviewAnswer.getId()));
     }
 
-    public CompletableFuture<MyInterviewAnswerResultResponse> getMyInterviewAnswerResult(Long interviewAnswerId) {
+    @Transactional
+    public CompletableFuture<MyInterviewAnswerResultResponse> getOrGenerateMyInterviewAnswerResult(
+            Long interviewAnswerId) {
         InterviewAnswer interviewAnswer = interviewService.findByIdWithInterview(interviewAnswerId);
+
+        if (interviewAnswer.getStrength() != null && interviewAnswer.getWeakness() != null) {
+            MyInterviewAnswerResultResponse myInterviewAnswerResultResponse = interviewService.buildMyInterviewAnswerResultResponse(
+                    interviewAnswer, interviewAnswerId);
+            return CompletableFuture.completedFuture(myInterviewAnswerResultResponse);
+        }
 
         String prompt = PromptGenerator.generatePrompt(interviewAnswer.getInterview(), interviewAnswer.getAnswer());
 
@@ -73,17 +81,7 @@ public class MemberFacade {
 
             interviewAnswer.updateAnswer(strength, weakness);
 
-            return MyInterviewAnswerResultResponse.of(
-                    idEncryptionUtil.encrypt(interviewAnswer.getInterview().getId()),
-                    idEncryptionUtil.encrypt(interviewAnswerId),
-                    interviewAnswer.getInterview().getQuestion(),
-                    interviewAnswer.getAnswer(),
-                    interviewService.getKeywords(interviewAnswer.getInterview().getId()),
-                    interviewAnswer.getCreatedAt(),
-                    interviewAnswer.getStrength(),
-                    interviewAnswer.getWeakness(),
-                    interviewAnswer.getInterview().getAnswer()
-            );
+            return interviewService.buildMyInterviewAnswerResultResponse(interviewAnswer, interviewAnswerId);
         });
     }
 
