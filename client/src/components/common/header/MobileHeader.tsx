@@ -27,13 +27,10 @@ const MobileHeader = () => {
   const loginItem: HeaderItem = { label: isAuthorized ? '로그아웃' : '로그인', path: isAuthorized ? '/' : '/signin' };
 
   const handleAuthClick = async () => {
-    //console.log('로그아웃 클릭');
     if (isAuthorized) {
       if (isExamInProgress || isGameInProgress) {
-        //console.log('시험 / 게임 페이지 로그아웃 차단.');
         return;
       }
-      //console.log('로그아웃 시도');
       await logout();
     }
   };
