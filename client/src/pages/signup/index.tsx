@@ -28,7 +28,7 @@ const SignUpPage = () => {
         return;
       }
 
-      // 이전 페이지가 redirect인 경우에만 로그인 완료 메시지를 보여줌
+      // 이전 페이지가 redirect인 경우
       if (document.referrer.includes('/redirect')) {
         setShowLoginComplete(true);
         setProgress(1);
