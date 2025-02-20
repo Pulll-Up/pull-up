@@ -15,6 +15,7 @@ import com.pullup.interview.dto.SearchedInterviewQuestionDto;
 import com.pullup.interview.dto.response.InterviewAnswerResponse;
 import com.pullup.interview.dto.response.InterviewAnswersResponse;
 import com.pullup.interview.dto.response.InterviewResponse;
+import com.pullup.interview.dto.response.MyInterviewAnswerResultResponse;
 import com.pullup.interview.dto.response.MyInterviewAnswersResponse;
 import com.pullup.interview.dto.response.SearchedInterviewQuestionsResponse;
 import com.pullup.interview.repository.DailyQuizRepository;
@@ -217,5 +218,20 @@ public class InterviewService {
 
     public boolean isAnswered(Member member, Interview interview) {
         return interviewAnswerRepository.existsByMemberAndInterview(member, interview);
+    }
+
+    public MyInterviewAnswerResultResponse buildMyInterviewAnswerResultResponse(InterviewAnswer interviewAnswer,
+                                                                                Long interviewAnswerId) {
+        return MyInterviewAnswerResultResponse.of(
+                idEncryptionUtil.encrypt(interviewAnswer.getInterview().getId()),
+                idEncryptionUtil.encrypt(interviewAnswerId),
+                interviewAnswer.getInterview().getQuestion(),
+                interviewAnswer.getAnswer(),
+                getKeywords(interviewAnswer.getInterview().getId()),
+                interviewAnswer.getCreatedAt(),
+                interviewAnswer.getStrength(),
+                interviewAnswer.getWeakness(),
+                interviewAnswer.getInterview().getAnswer()
+        );
     }
 }
