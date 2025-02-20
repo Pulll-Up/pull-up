@@ -220,8 +220,10 @@ public class InterviewService {
         return interviewAnswerRepository.existsByMemberAndInterview(member, interview);
     }
 
-    public MyInterviewAnswerResultResponse buildMyInterviewAnswerResultResponse(InterviewAnswer interviewAnswer,
-                                                                                Long interviewAnswerId) {
+    public MyInterviewAnswerResultResponse buildMyInterviewAnswerResultResponse(
+            InterviewAnswer interviewAnswer,
+            Long interviewAnswerId
+    ) {
         return MyInterviewAnswerResultResponse.of(
                 idEncryptionUtil.encrypt(interviewAnswer.getInterview().getId()),
                 idEncryptionUtil.encrypt(interviewAnswerId),
