@@ -12,7 +12,7 @@ const App = () => {
         newestOnTop={false}
         closeOnClick={false}
         rtl={false}
-        pauseOnFocusLoss
+        pauseOnFocusLoss={false}
         draggable
         pauseOnHover
         transition={Bounce}

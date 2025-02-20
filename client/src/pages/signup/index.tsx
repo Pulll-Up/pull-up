@@ -1,30 +1,25 @@
-import { signup } from '@/api/auth';
-import { getMember } from '@/api/member';
+import { getAuthInfo, signup } from '@/api/auth';
 import CsConditionSelector from '@/components/common/csConditionSelector';
 import ProgressSteps from '@/components/common/progressSteps';
-import { queryClient } from '@/main';
-import { memberStore } from '@/stores/memberStore';
 import { Subject } from '@/types/member';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import CompleteMessage from '@/components/common/completeMessage';
+import { queryClient } from '@/main';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
-  const { setMember, setIsLoggedIn } = memberStore();
   const [progress, setProgress] = useState(1);
   const [showLoginComplete, setShowLoginComplete] = useState(false);
   const [showSelector, setShowSelector] = useState(false);
 
   useEffect(() => {
     const fetchMember = async () => {
-      const member = await queryClient.fetchQuery({
-        queryKey: ['member'],
-        queryFn: getMember,
-      });
+      const data = await getAuthInfo();
+      const authInfo = data.authInfo;
 
-      if (member.interestSubjects.length > 0) {
+      if (authInfo?.isSignedUp) {
         navigate('/');
         toast.info('이미 가입된 회원입니다.', {
           position: 'bottom-center',
@@ -53,22 +48,26 @@ const SignUpPage = () => {
   }, []);
 
   const onConfirmSignUp = async (selectedSubjects: Subject[]) => {
-    await signup(selectedSubjects);
-    setProgress(3);
-
-    const member = await getMember();
-
-    if (!member) {
-      toast.error('회원가입을 실패했습니다.', {
+    try {
+      await signup(selectedSubjects);
+    } catch (error) {
+      toast.error('회원가입을 실패했습니다. 다시 시도해주세요.', {
         position: 'bottom-center',
-        toastId: 'member-required',
+        toastId: 'signup-failed',
       });
-      setProgress(2);
+
       return;
     }
 
-    setIsLoggedIn(true);
-    setMember(member);
+    // 회원가입 완료 후 authInfo 업데이트
+    const newAuthInfo = await getAuthInfo();
+    queryClient.setQueryData(['authInfo'], {
+      authInfo: newAuthInfo.authInfo,
+      isAuthorized: true,
+      isSuccess: true,
+    });
+
+    setProgress(3);
 
     setTimeout(() => {
       navigate('/dashboard');
