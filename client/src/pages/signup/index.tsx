@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import CompleteMessage from '@/components/common/completeMessage';
+import { queryClient } from '@/main';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -57,6 +58,14 @@ const SignUpPage = () => {
 
       return;
     }
+
+    // 회원가입 완료 후 authInfo 업데이트
+    const newAuthInfo = await getAuthInfo();
+    queryClient.setQueryData(['authInfo'], {
+      authInfo: newAuthInfo.authInfo,
+      isAuthorized: true,
+      isSuccess: true,
+    });
 
     setProgress(3);
 
