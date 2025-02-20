@@ -4,6 +4,7 @@ import ProgressBar from '@/components/common/progressBar';
 import GameBoard from '@/components/game/gameStage/GameBoard';
 import GameScoreBoard from '@/components/game/gameStage/GameScoreBoard';
 import usePrompt from '@/hooks/useNavigationBlocker';
+import { useSafeNavigate } from '@/hooks/useSafeNavigate';
 import useSendTimerManager from '@/hooks/useSendTimerManager';
 import { useRoomStore } from '@/stores/roomStore';
 import { useWebSocketStore } from '@/stores/useWebSocketStore';
@@ -13,6 +14,7 @@ import { toast } from 'react-toastify';
 
 const GameStage = () => {
   const navigate = useNavigate();
+  const { safeNavigate } = useSafeNavigate();
   const { roomId } = useRoomStore();
   const { updateSubscription, roomInfo, connectWebSocket, disconnectWebSocket } = useWebSocketStore();
   const { isBlocked, handleProceed, handleCancel, setException } = usePrompt();
@@ -60,7 +62,7 @@ const GameStage = () => {
     if (roomInfo.gameRoomStatus === 'FINISHED') {
       clearSendTimer('timeover');
       setException();
-      navigate('/game/result');
+      safeNavigate('/game/result');
     }
   }, [roomInfo]);
 
@@ -69,7 +71,9 @@ const GameStage = () => {
       setException();
       navigate('/game');
 
-      toast('게임이 종료되어 대기 화면으로 이동합니다.');
+      toast('게임이 종료되어 대기 화면으로 이동합니다.', {
+        toastId: 'blocked-path',
+      });
     }
   }, [getPlayerTypeError, navigate]);
 
