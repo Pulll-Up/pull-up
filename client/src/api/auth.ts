@@ -36,7 +36,7 @@ export const reissue = async () => {
 export const logout = async () => {
   await api.post('auth/logout');
   queryClient.setQueryData(['member'], null);
-  queryClient.setQueryData(['authInfo'], { authInfo: undefined, isAuthorized: false });
+  queryClient.setQueryData(['authInfo'], { authInfo: undefined, isAuthorized: false, isSuccess: true });
   AuthStore.clearAccessToken();
 };
 
