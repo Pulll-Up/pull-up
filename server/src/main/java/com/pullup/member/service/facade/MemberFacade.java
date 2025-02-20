@@ -64,25 +64,28 @@ public class MemberFacade {
             Long interviewAnswerId) {
         InterviewAnswer interviewAnswer = interviewService.findByIdWithInterview(interviewAnswerId);
 
-        if (interviewAnswer.getStrength() != null && interviewAnswer.getWeakness() != null) {
-            MyInterviewAnswerResultResponse myInterviewAnswerResultResponse = interviewService.buildMyInterviewAnswerResultResponse(
-                    interviewAnswer, interviewAnswerId);
-            return CompletableFuture.completedFuture(myInterviewAnswerResultResponse);
+        if (interviewAnswer.getStrength() == null || interviewAnswer.getWeakness() == null) {
+            String prompt = PromptGenerator.generatePrompt(interviewAnswer.getInterview(), interviewAnswer.getAnswer());
+
+            return CompletableFuture.supplyAsync(() -> {
+                ChatGptResponse gptResponse = chatGptService.analyzeAnswer(prompt);
+                return gptResponse.getGptMessageContent();
+            }, executorService).thenApply(responseContent -> {
+                String strength = extractJsonField(responseContent, "strength");
+                String weakness = extractJsonField(responseContent, "weakness");
+
+                interviewAnswer.updateAnswer(strength, weakness);
+
+                return interviewService.buildMyInterviewAnswerResultResponse(interviewAnswer, interviewAnswerId);
+            });
         }
 
-        String prompt = PromptGenerator.generatePrompt(interviewAnswer.getInterview(), interviewAnswer.getAnswer());
+        MyInterviewAnswerResultResponse myInterviewAnswerResultResponse = interviewService.buildMyInterviewAnswerResultResponse(
+                interviewAnswer,
+                interviewAnswerId
+        );
 
-        return CompletableFuture.supplyAsync(() -> {
-            ChatGptResponse gptResponse = chatGptService.analyzeAnswer(prompt);
-            return gptResponse.getGptMessageContent();
-        }, executorService).thenApply(responseContent -> {
-            String strength = extractJsonField(responseContent, "strength");
-            String weakness = extractJsonField(responseContent, "weakness");
-
-            interviewAnswer.updateAnswer(strength, weakness);
-
-            return interviewService.buildMyInterviewAnswerResultResponse(interviewAnswer, interviewAnswerId);
-        });
+        return CompletableFuture.completedFuture(myInterviewAnswerResultResponse);
     }
 
     private String extractJsonField(String jsonResponse, String fieldName) {
