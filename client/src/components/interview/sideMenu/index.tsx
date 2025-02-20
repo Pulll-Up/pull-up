@@ -9,9 +9,17 @@ interface SideMenuProps {
   handleMenuClick: (e: ButtonMouseEvent) => void;
   handleSearchClick: () => void;
   onInterviewClick: (interviewId: string) => void;
+  onInterviewHover?: (interviewAnswerId: string) => void; // prefetch를 위한 props
 }
 
-const SideMenu = ({ isOpen, interviewList, handleMenuClick, handleSearchClick, onInterviewClick }: SideMenuProps) => {
+const SideMenu = ({
+  isOpen,
+  interviewList,
+  handleMenuClick,
+  handleSearchClick,
+  onInterviewClick,
+  onInterviewHover,
+}: SideMenuProps) => {
   return (
     <div
       className={`fixed left-0 top-[94px] z-30 h-full border-r border-primary-200 bg-white transition-transform duration-300 ease-in-out md:top-[68px] ${
@@ -34,6 +42,7 @@ const SideMenu = ({ isOpen, interviewList, handleMenuClick, handleSearchClick, o
                 key={id}
                 title={item.question}
                 onInterviewClick={() => onInterviewClick(item.interviewAnswerId)}
+                onMouseEnter={() => onInterviewHover && onInterviewHover(item.interviewAnswerId)}
               />
             ))
           ) : (

@@ -1,4 +1,4 @@
-import { useGetInterviewList, useGetInterviewResult } from '@/api/interview';
+import { getInterviewResult, useGetInterviewList, useGetInterviewResult } from '@/api/interview';
 import SearchModal from '@/components/interview/searchModal';
 import SideMenu from '@/components/interview/sideMenu';
 import InterviewFeedback from '@/components/interview/interviewFeedback';
@@ -9,6 +9,8 @@ import InterviewMyAnswer from '@/components/interview/myAnswer';
 import convertDate from '@/utils/convertDate';
 import Icon from '@/components/common/icon';
 import { toast } from 'react-toastify';
+import LoadingPage from '@/pages/loading';
+import { queryClient } from '@/main';
 
 const InterviewResultPage = () => {
   const navigate = useNavigate();
@@ -26,11 +28,10 @@ const InterviewResultPage = () => {
       position: 'bottom-center',
       toastId: 'not-found',
     });
-
     return;
   }
 
-  if (!result || !interviewList) return null;
+  if (!result || !interviewList) return <LoadingPage />;
 
   const handleMenuClick = () => {
     setIsSideMenuOpen(!isSideMenuOpen);
@@ -47,11 +48,18 @@ const InterviewResultPage = () => {
     navigate(`/interview/result/${interviewAnswerId}`);
   };
 
+  // 지난 문제 호버시 prefetch
+  const onInterviewHover = (interviewAnswerId: string) => {
+    queryClient.prefetchQuery({
+      queryKey: ['result', interviewAnswerId],
+      queryFn: () => getInterviewResult(interviewAnswerId),
+    });
+  };
+
   const formatDate = convertDate(result.createdAt).split('-');
 
   return (
     <div className="flex min-h-full bg-Main p-6 md:p-10">
-      {/* 사이드바 넓이 만큼 왼쪽 마진 조절 */}
       <div
         className={`relative flex flex-1 pt-[94px] transition-all duration-500 sm:pt-16 ${
           isSideMenuOpen ? 'md:ml-[280px] lg:ml-[300px]' : 'ml-0'
@@ -63,6 +71,7 @@ const InterviewResultPage = () => {
           handleMenuClick={handleMenuClick}
           handleSearchClick={() => setIsModalOpen(true)}
           onInterviewClick={onInterviewClick}
+          onInterviewHover={onInterviewHover}
         />
 
         {/* 데스크탑 뷰 (lg 이상) */}

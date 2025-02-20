@@ -1,12 +1,25 @@
 import { useGetAuthInfo } from '@/api/auth';
+import { getInterviewResult } from '@/api/interview';
 import SmallChip from '@/components/common/smallchip';
 import SubmitButton from '@/components/common/submitButton';
 import { useChipAnimation } from '@/hooks/useChipAnimation';
+import { queryClient } from '@/main';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { authInfo } = useGetAuthInfo();
+
+  useEffect(() => {
+    // 메인 페이지 이동 시 결과 페이지 prefetch
+    if (authInfo?.isSolvedToday && authInfo?.interviewAnswerId) {
+      queryClient.prefetchQuery({
+        queryKey: ['result', authInfo.interviewAnswerId],
+        queryFn: () => getInterviewResult(authInfo.interviewAnswerId),
+      });
+    }
+  }, [authInfo?.isSolvedToday, authInfo?.interviewAnswerId]);
 
   const onClick = () => {
     if (authInfo) {
@@ -26,6 +39,16 @@ const HomePage = () => {
       }
     } else {
       navigate('/signin');
+    }
+  };
+
+  // 버튼 호버 시 결과 페이지 prefetch
+  const onButtonHover = () => {
+    if (authInfo?.isSolvedToday && authInfo?.interviewAnswerId) {
+      queryClient.prefetchQuery({
+        queryKey: ['result', authInfo.interviewAnswerId],
+        queryFn: () => getInterviewResult(authInfo.interviewAnswerId),
+      });
     }
   };
 
@@ -104,6 +127,7 @@ const HomePage = () => {
             }
             color="secondary"
             onClick={onClick}
+            onMouseEnter={onButtonHover}
           />
         </div>
         {/* 우측 컨테이너 */}
