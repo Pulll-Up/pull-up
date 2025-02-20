@@ -3,13 +3,14 @@ import CsConditionSelector from '@/components/common/csConditionSelector';
 import ProgressSteps from '@/components/common/progressSteps';
 import { Subject } from '@/types/member';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import CompleteMessage from '@/components/common/completeMessage';
 import { queryClient } from '@/main';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [progress, setProgress] = useState(1);
   const [showLoginComplete, setShowLoginComplete] = useState(false);
   const [showSelector, setShowSelector] = useState(false);
@@ -18,6 +19,11 @@ const SignUpPage = () => {
     const fetchMember = async () => {
       const data = await getAuthInfo();
       const authInfo = data.authInfo;
+      queryClient.setQueryData(['authInfo'], {
+        authInfo: authInfo,
+        isAuthorized: true,
+        isSuccess: true,
+      });
 
       if (authInfo?.isSignedUp) {
         navigate('/');
@@ -28,20 +34,25 @@ const SignUpPage = () => {
         return;
       }
 
-      setShowLoginComplete(true);
+      // 이전 페이지가 redirect인 경우
+      if (location.state?.fromRedirect) {
+        setShowLoginComplete(true);
+        setProgress(1);
 
-      setTimeout(() => {
-        setProgress(2);
-
-        // 프로그레스바 변경 후 0.5초 뒤에 로그인 완료 메시지 페이드아웃
         setTimeout(() => {
-          setShowLoginComplete(false);
-          // 메시지 페이드아웃 후 0.3초 뒤에 선택기 표시
+          setProgress(2);
+
           setTimeout(() => {
-            setShowSelector(true);
-          }, 300);
-        }, 500);
-      }, 2000);
+            setShowLoginComplete(false);
+            setTimeout(() => {
+              setShowSelector(true);
+            }, 300);
+          }, 500);
+        }, 2000);
+      } else {
+        setProgress(2);
+        setShowSelector(true);
+      }
     };
 
     fetchMember();

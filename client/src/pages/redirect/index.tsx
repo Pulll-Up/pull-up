@@ -25,7 +25,7 @@ const RedirectPage = () => {
 
       // 관심과목 미설정 시
       if (!auth.isSignedUp) {
-        navigate('/signup');
+        navigate('/signup', { state: { fromRedirect: true } });
         return;
       }
 
