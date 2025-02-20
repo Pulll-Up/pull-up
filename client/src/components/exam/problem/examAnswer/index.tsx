@@ -31,6 +31,7 @@ const ExamAnswer = ({ problemId, questionType }: ExamAnswerProps) => {
           value={chosenAnswer}
           disabled={isSolutionPage}
           onChange={handleTextChange}
+          maxLength={35}
         />
       )}
     </div>
