@@ -20,13 +20,13 @@ const MobileDashboardContainer = () => {
           풀이 현황
         </TabsTrigger>
         <TabsTrigger className={ACTIVE_STYLE} value="score">
-          점수 현황
+          시험 점수
         </TabsTrigger>
         <TabsTrigger className={ACTIVE_STYLE} value="analysis">
-          강점 분석
+          과목별 강점
         </TabsTrigger>
         <TabsTrigger className={ACTIVE_STYLE} value="winningRate">
-          나의 승률
+          게임 승률
         </TabsTrigger>
       </TabsList>
       <TabsContent value="today" className="w-full">
@@ -39,28 +39,32 @@ const MobileDashboardContainer = () => {
         </div>
       </TabsContent>
       <TabsContent value="streak">
-        <div className="flex min-h-[300px] flex-col rounded-2xl bg-white p-5">
+        <div className="flex max-h-[400px] min-h-[300px] flex-col rounded-2xl bg-white p-5">
+          <p className="text-md font-bold text-stone-800">49일 동안의 오늘의 문제 스트릭</p>
           <ChartContainer>
             <Streak />
           </ChartContainer>
         </div>
       </TabsContent>
       <TabsContent value="score">
-        <div className="flex min-h-[300px] flex-col rounded-2xl bg-white p-5">
+        <div className="flex max-h-[400px] min-h-[300px] flex-col rounded-2xl bg-white p-5">
+          <p className="text-md font-bold text-stone-800">최근 5회 시험 점수 확인하기</p>
           <ChartContainer>
             <Score />
           </ChartContainer>
         </div>
       </TabsContent>
       <TabsContent value="analysis">
-        <div className="flex min-h-[300px] flex-col rounded-2xl bg-white p-5">
+        <div className="flex max-h-[400px] min-h-[300px] flex-col rounded-2xl bg-white p-5">
+          <p className="text-md font-bold text-stone-800">CS 과목별 강점 확인하기</p>
           <ChartContainer>
             <Analysis />
           </ChartContainer>
         </div>
       </TabsContent>
       <TabsContent value="winningRate">
-        <div className="flex min-h-[300px] flex-col rounded-2xl bg-white p-5">
+        <div className="flex max-h-[400px] min-h-[300px] flex-col rounded-2xl bg-white p-5">
+          <p className="text-md font-bold text-stone-800">카드 게임 승률 보기</p>
           <ChartContainer>
             <WinningRate />
           </ChartContainer>

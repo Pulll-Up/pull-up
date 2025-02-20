@@ -24,7 +24,7 @@ const DashBoardPage = () => {
             </div>
             <div className="grid grid-cols-[1fr_1fr] gap-4">
               <div className="flex flex-col rounded-2xl bg-white p-5">
-                <ChartContainer icon="time" title="풀이 현황">
+                <ChartContainer icon="time" title="오늘의 문제 풀이 현황">
                   <Streak />
                 </ChartContainer>
               </div>
@@ -37,12 +37,12 @@ const DashBoardPage = () => {
           </div>
           <div className="grid grid-rows-[1.6fr_1fr] gap-4">
             <div className="flex flex-col rounded-2xl bg-white p-5">
-              <ChartContainer icon="smile" title="나의 강점 분석">
+              <ChartContainer icon="smile" title="과목별 강점 분석">
                 <Analysis />
               </ChartContainer>
             </div>
             <div className="flex flex-col rounded-2xl bg-white p-5">
-              <ChartContainer icon="score" title="점수 현황">
+              <ChartContainer icon="score" title="시험 점수 현황">
                 <Score />
               </ChartContainer>
             </div>

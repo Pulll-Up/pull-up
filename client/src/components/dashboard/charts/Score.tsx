@@ -30,7 +30,7 @@ const Score = () => {
   }));
 
   return (
-    <ChartContainer config={chartConfig} className="w-[80%] overflow-hidden">
+    <ChartContainer config={chartConfig} className="w-[70%] overflow-hidden sm:w-[50%] md:w-[80%]">
       <BarChart accessibilityLayer data={mergedData}>
         <CartesianGrid vertical={false} />
         <XAxis
