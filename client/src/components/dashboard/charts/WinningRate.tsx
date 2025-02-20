@@ -17,7 +17,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const mergedData = { winCount: 0, loseCount: 0, drawCount: 0 };
+// const mergedData = { winCount: 0, loseCount: 0, drawCount: 1 };
 
 const WinningRate = () => {
   const { data: winningRateData, isLoading, isError } = useGetWinningRate();
@@ -29,7 +29,13 @@ const WinningRate = () => {
 
   return (
     <ChartContainer config={chartConfig} className="mx-auto h-[190px] w-full max-w-[250px] overflow-hidden">
-      <RadialBarChart className="translate-y-10" data={[mergedData]} endAngle={180} innerRadius={80} outerRadius={130}>
+      <RadialBarChart
+        className="translate-y-10"
+        data={[winningRateData]}
+        endAngle={180}
+        innerRadius={80}
+        outerRadius={130}
+      >
         <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
         <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
           <Label
@@ -39,7 +45,8 @@ const WinningRate = () => {
                   <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle">
                     <tspan x={viewBox.cx} y={(viewBox.cy || 0) - 16} className="fill-foreground text-2xl font-bold">
                       {Math.round(
-                        (mergedData.winCount / (mergedData.loseCount + mergedData.winCount + mergedData.drawCount)) *
+                        (winningRateData.winCount /
+                          (winningRateData.loseCount + winningRateData.winCount + winningRateData.drawCount)) *
                           100,
                       )}
                       %
@@ -51,21 +58,21 @@ const WinningRate = () => {
           />
         </PolarRadiusAxis>
         <RadialBar
-          dataKey="lose"
+          dataKey="loseCount"
           fill={chartConfig.loseCount.color}
           stackId="a"
           cornerRadius={5}
           className="stroke-transparent stroke-2"
         />
         <RadialBar
-          dataKey="draw"
+          dataKey="drawCount"
           stackId="a"
           cornerRadius={5}
           fill={chartConfig.drawCount.color}
           className="stroke-transparent stroke-2"
         />
         <RadialBar
-          dataKey="win"
+          dataKey="winCount"
           stackId="a"
           cornerRadius={5}
           fill={chartConfig.winCount.color}
