@@ -63,7 +63,7 @@ export const useCreateAnswer = (request: AnswerRequest) => {
 };
 
 // 결과 조회
-const getInterviewResult = (interviewAnswerId: string): Promise<InterviewResultResponse> => {
+export const getInterviewResult = (interviewAnswerId: string): Promise<InterviewResultResponse> => {
   const data = api.get(`interview/${interviewAnswerId}/result`).json<InterviewResultResponse>();
   return data;
 };
