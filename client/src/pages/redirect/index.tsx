@@ -30,7 +30,7 @@ const RedirectPage = () => {
       }
 
       const authInfo = await getAuthInfo();
-      queryClient.setQueryData(['authInfo'], { authInfo: authInfo, isAuthorized: true });
+      queryClient.setQueryData(['authInfo'], authInfo);
 
       navigate('/');
     };
