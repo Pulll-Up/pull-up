@@ -75,6 +75,7 @@ export const toggleProblemBookmark = async (problemId: string) => {
 const getArchivedProblemsByTitle = async (searchValue: string) => {
   const response = await api.get<GetArchivedProblemAllResponse>(`problem/bookmark?title=${searchValue}`);
   const responseData = await response.json();
+
   return responseData;
 };
 
