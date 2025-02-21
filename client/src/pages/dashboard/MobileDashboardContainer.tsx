@@ -55,7 +55,7 @@ const MobileDashboardContainer = () => {
         </div>
       </TabsContent>
       <TabsContent value="analysis">
-        <div className="flex max-h-[500px] min-h-[300px] flex-col rounded-2xl bg-white p-5">
+        <div className="flex max-h-[400px] min-h-[300px] flex-col rounded-2xl bg-white p-5">
           <p className="text-md font-bold text-stone-800">CS 과목별 강점 확인하기</p>
           <ChartContainer>
             <Analysis />
