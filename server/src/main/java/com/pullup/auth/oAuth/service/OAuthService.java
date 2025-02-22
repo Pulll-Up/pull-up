@@ -48,9 +48,7 @@ public class OAuthService {
         return LoginResponse.isNotFirstLoginAndSolvedToday(email, encryptedTodayInterviewAnswerId);
     }
 
-    public void signUp(Long memberId, SignUpRequest singUpRequest) {
-        memberService.saveInterestSubjects(memberId, singUpRequest.subjectNames());
-        memberService.saveMemberExamStatistic(memberId);
-        memberService.saveMemberGameResult(memberId);
+    public void signUp(Long memberId, SignUpRequest signUpRequest) {
+        memberService.signUp(memberId, signUpRequest.subjectNames());
     }
 }
