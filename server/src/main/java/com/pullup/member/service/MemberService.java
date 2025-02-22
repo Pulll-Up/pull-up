@@ -41,19 +41,12 @@ public class MemberService {
     private final MemberGameResultRepository memberGameResultRepository;
 
     @Transactional
-    public void saveMemberExamStatistic(Long memberId) {
-
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
-
-        List<MemberExamStatistic> statistics = Arrays.stream(Subject.values())
-                .map(subject -> MemberExamStatistic.of(subject, member))
-                .collect(Collectors.toList());
-
-        if (!memberExamStatisticRepository.existsByMemberId(memberId)) {
-            memberExamStatisticRepository.saveAll(statistics);
-        }
+    public void signUp(Long memberId, List<String> subjectNames) {
+        saveInterestSubjects(memberId, subjectNames);
+        saveMemberExamStatistic(memberId);
+        saveMemberGameResult(memberId);
     }
+
 
     @Transactional
     public void saveInterestSubjects(Long memberId, List<String> subjectNames) {
@@ -135,10 +128,6 @@ public class MemberService {
         return DailySolvedHistoryResponse.of(dailySolvedHistoryDtos);
     }
 
-    private long findSolvedDaysById(Long memberId) {
-        return Optional.ofNullable(memberRepository.findSolvedDaysById(memberId)).orElse(0L);
-    }
-
     public void updateSolveStatus(Member member) {
         Long solvedDays = member.getSolvedDays();
         solvedDays |= 1;
@@ -161,13 +150,26 @@ public class MemberService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
     }
 
-    @Transactional
-    public void saveMemberGameResult(Long memberId) {
+    private void saveMemberExamStatistic(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.ERR_MEMBER_NOT_FOUND));
+
+        List<MemberExamStatistic> statistics = Arrays.stream(Subject.values())
+                .map(subject -> MemberExamStatistic.of(subject, member))
+                .collect(Collectors.toList());
+
+        memberExamStatisticRepository.saveAll(statistics);
+
+    }
+
+    private void saveMemberGameResult(Long memberId) {
         Member member = findMemberById(memberId);
         MemberGameResult memberGameResult = MemberGameResult.createMemberGameResult(member);
 
-        if (!memberGameResultRepository.existsByMemberId(memberId)) {
-            memberGameResultRepository.save(memberGameResult);
-        }
+        memberGameResultRepository.save(memberGameResult);
+    }
+
+    private long findSolvedDaysById(Long memberId) {
+        return Optional.ofNullable(memberRepository.findSolvedDaysById(memberId)).orElse(0L);
     }
 }
