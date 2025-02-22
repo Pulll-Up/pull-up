@@ -185,8 +185,11 @@ public class InterviewService {
         return InterviewAnswersResponse.of(interviewAnswerDtos);
     }
 
-    private InterviewAnswerDto makeInterviewAnswerDto(InterviewAnswer interviewAnswer, List<String> keywords,
-                                                      Long memberId) {
+    private InterviewAnswerDto makeInterviewAnswerDto(
+            InterviewAnswer interviewAnswer,
+            List<String> keywords,
+            Long memberId
+    ) {
         return InterviewAnswerDto.of(
                 idEncryptionUtil.encrypt(interviewAnswer.getId()),
                 interviewAnswer.getInterview().getQuestion(),
@@ -238,7 +241,11 @@ public class InterviewService {
     }
 
     @Transactional
-    public void updateInterviewAnswerStrengthAndWeakness(InterviewAnswer interviewAnswer, String strength, String weakness) {
+    public void updateInterviewAnswerStrengthAndWeakness(
+            InterviewAnswer interviewAnswer,
+            String strength,
+            String weakness
+    ) {
         interviewAnswer.updateAnswer(strength, weakness);
         interviewAnswerRepository.save(interviewAnswer);
     }
