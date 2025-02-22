@@ -236,4 +236,10 @@ public class InterviewService {
                 interviewAnswer.getInterview().getAnswer()
         );
     }
+
+    @Transactional
+    public void updateInterviewAnswerStrengthAndWeakness(InterviewAnswer interviewAnswer, String strength, String weakness) {
+        interviewAnswer.updateAnswer(strength, weakness);
+        interviewAnswerRepository.save(interviewAnswer);
+    }
 }

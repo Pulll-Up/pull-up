@@ -66,7 +66,6 @@ public class MemberFacade {
 
         if (interviewAnswer.getStrength() == null || interviewAnswer.getWeakness() == null) {
             String prompt = PromptGenerator.generatePrompt(interviewAnswer.getInterview(), interviewAnswer.getAnswer());
-
             return CompletableFuture.supplyAsync(() -> {
                 ChatGptResponse gptResponse = chatGptService.analyzeAnswer(prompt);
                 return gptResponse.getGptMessageContent();
@@ -74,7 +73,7 @@ public class MemberFacade {
                 String strength = extractJsonField(responseContent, "strength");
                 String weakness = extractJsonField(responseContent, "weakness");
 
-                interviewAnswer.updateAnswer(strength, weakness);
+                interviewService.updateInterviewAnswerStrengthAndWeakness(interviewAnswer, strength, weakness);
 
                 return interviewService.buildMyInterviewAnswerResultResponse(interviewAnswer, interviewAnswerId);
             });
