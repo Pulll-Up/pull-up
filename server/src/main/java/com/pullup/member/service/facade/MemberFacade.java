@@ -61,7 +61,8 @@ public class MemberFacade {
 
     @Transactional
     public CompletableFuture<MyInterviewAnswerResultResponse> getOrGenerateMyInterviewAnswerResult(
-            Long interviewAnswerId) {
+            Long interviewAnswerId
+    ) {
         InterviewAnswer interviewAnswer = interviewService.findByIdWithInterview(interviewAnswerId);
 
         if (interviewAnswer.getStrength() == null || interviewAnswer.getWeakness() == null) {
