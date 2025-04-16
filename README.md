@@ -9,8 +9,7 @@
 
 ## 💡 **프로젝트 소개**
 <div align="center">
-    <img src="https://private-user-images.githubusercontent.com/112616257/418278189-d8547bf4-8b60-4e2b-85ce-ab93af177eab.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDA4Mzg3ODAsIm5iZiI6MTc0MDgzODQ4MCwicGF0aCI6Ii8xMTI2MTYyNTcvNDE4Mjc4MTg5LWQ4NTQ3YmY0LThiNjAtNGUyYi04NWNlLWFiOTNhZjE3N2VhYi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwMzAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDMwMVQxNDE0NDBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1iZmUxZjVkYzUzMDEyNzMzNTFhYjA1ZjQ2MTNlYzI5MWI0ZTk2YzkwM2ZmNDMwNWY4MzQxYmY0NGYyMmQ1ZjQxJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.XamDjJzw5s59FXfAzmGC9qA0J38iHa3GrI3cJ6oWBsw" width="600" />
-
+    <img src="https://github.com/user-attachments/assets/6e1c0c69-5e00-40ff-b982-ba41bd002409" width="800" />
 </div>
 
 
@@ -76,7 +75,7 @@
 
 ## 시스템 아키텍처
    <div align="center" class="flex">
-    <img src="https://private-user-images.githubusercontent.com/112616257/418278209-ede0469c-3903-4cbc-a2ec-8c3e2b83080b.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDA4Mzg3ODAsIm5iZiI6MTc0MDgzODQ4MCwicGF0aCI6Ii8xMTI2MTYyNTcvNDE4Mjc4MjA5LWVkZTA0NjljLTM5MDMtNGNiYy1hMmVjLThjM2UyYjgzMDgwYi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwMzAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDMwMVQxNDE0NDBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT00ZjMwZTE0N2VkOTQ1N2IzYTliYTc1MmZlZTlkYTI1NzkxNzE3NWMwMDM0OGZjNTA4Yjc0Y2EyYjA3ODc4MTU5JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.Gqo15c3-nuA8VSy4RsE2_Na1VZfyTTAFyKnv_HtZCvE" width="600" />
+    <img src="https://github.com/user-attachments/assets/029950ab-d5f7-4970-aebe-3c28f29b55e0" width="800" />
 </div>
 
 <br/>
@@ -95,7 +94,7 @@
 #### 1. **오늘의 문제**  
    - 사용자의 관심과목을 기반으로 매일 면접 문제가 제공되며, AI를 통해 피드백을 받습니다.
 <div align="center">
-    <img src="https://private-user-images.githubusercontent.com/112616257/418278394-c74b7a26-d469-4bf7-a8c8-808d3c50a2ab.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDA4Mzg3ODAsIm5iZiI6MTc0MDgzODQ4MCwicGF0aCI6Ii8xMTI2MTYyNTcvNDE4Mjc4Mzk0LWM3NGI3YTI2LWQ0NjktNGJmNy1hOGM4LTgwOGQzYzUwYTJhYi5naWY_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwMzAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDMwMVQxNDE0NDBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1hYjE2MWIwY2VmZTYzNDE5YzkxZTk2ODUyY2NhMDRmMzAwZjhmMGI2ODMyYmQ5ZTMyODFmOTkxNmNkMjMyYzJlJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.UR-p6jDIIXK65GF8v7oEiC0sfhWpSaK8R1EI_qLk6C4" width="600" />
+    <img src="https://github.com/user-attachments/assets/c8734765-dadf-4448-89ca-d81aef620113" width="800" />
 </div>
 
 <br/>
@@ -103,7 +102,7 @@
 #### 2. **모의고사 페이지**  
    - 다양한 주제의 문제를 선택하고 풀 수 있습니다.  
 <div align="center">
-    <img src="https://private-user-images.githubusercontent.com/112616257/418278430-d81f465b-f75d-474e-b878-a52db06f6f3e.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDA4Mzg3ODAsIm5iZiI6MTc0MDgzODQ4MCwicGF0aCI6Ii8xMTI2MTYyNTcvNDE4Mjc4NDMwLWQ4MWY0NjViLWY3NWQtNDc0ZS1iODc4LWE1MmRiMDZmNmYzZS5naWY_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwMzAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDMwMVQxNDE0NDBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT05M2MyM2Q5MjcxOWRiMTM5YjU0ZjkyMWEyMWQ1ZGYyNzA1N2ZhNGE0OTI4ZWQ2MWMyODI2YjUyZWFiMWQ3ZjY4JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.aF32IccR26OGVBRSopj-xjZBQmRg5Q9UOvS8bTapmFs" width="600" />
+    <img src="https://github.com/user-attachments/assets/d01b116b-ce0b-448e-aa0d-c56cb9a58827" width="800" />
 </div>
 
 <br/>
@@ -111,16 +110,15 @@
 #### 3. **게임 페이지**  
    - 친구와 경쟁하며 CS 퀴즈 게임을 즐길 수 있습니다.  
 <div align="center">
-    <img src="https://private-user-images.githubusercontent.com/112616257/418278439-18d712f8-5025-4077-ae97-58f56c96c0a5.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDA4Mzg3ODAsIm5iZiI6MTc0MDgzODQ4MCwicGF0aCI6Ii8xMTI2MTYyNTcvNDE4Mjc4NDM5LTE4ZDcxMmY4LTUwMjUtNDA3Ny1hZTk3LTU4ZjU2Yzk2YzBhNS5naWY_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwMzAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDMwMVQxNDE0NDBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT01YzA0YjFiMzQwODI4NmZhNDdmZjE2NjBiNGE3MGEzMTRiOWZiOGFiMjhmMTIwMWVlYjdjZjAxYWMxOGVkZTU2JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.E09VBXnYy8LRBZ6DXgzjcIHMWNJq-AS3NAFxsR9l8mk" width="600" />
+    <img src="https://github.com/user-attachments/assets/518d1ab8-d8a2-449a-8d49-66498c3ddd75" width="800" />
 </div>
-
 
 <br/>
 
 #### 4. **통계 및 성적 분석**  
    - 사용자의 전체 학습 현황과 주요 기록을 한눈에 확인할 수 있습니다.
 <div align="center">
-    <img src="https://private-user-images.githubusercontent.com/112616257/418278453-78581243-9a55-41fd-bd03-5cac87686b69.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDA4Mzg3ODAsIm5iZiI6MTc0MDgzODQ4MCwicGF0aCI6Ii8xMTI2MTYyNTcvNDE4Mjc4NDUzLTc4NTgxMjQzLTlhNTUtNDFmZC1iZDAzLTVjYWM4NzY4NmI2OS5naWY_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwMzAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDMwMVQxNDE0NDBaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0yMzdkOTFjZjk3YjA2MWIxZjNhZTdkMDhhMTM5MTA4YjAzNjhmZGE2ZjRiY2I0NDhkYjliODZiM2E5Yzg1MzllJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.jxTMpn_7cgMhatBwhAVVKUPASO8SgiD_-OnROMfLbiU" width="600" />
+    <img src="https://github.com/user-attachments/assets/cb58bc33-6045-4635-921c-4eaafd507455" width="800" />
 </div>
 
 
